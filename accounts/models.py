@@ -25,6 +25,13 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=40, unique=False, blank=False, null=False)  
     email = models.EmailField(max_length=40, unique=True, blank=False, null=False)
     password = models.CharField(max_length=128, unique=False, blank=False, null=False)
+    
+    # New fields
+    address = models.CharField(max_length=100, blank=True, null=True)
+    city = models.CharField(max_length=50, blank=True, null=True)
+    country = models.CharField(max_length=50, blank=True, null=True)
+    birth_day = models.DateField(blank=True, null=True)
+
     subscription = models.BooleanField(verbose_name="Premium", default=False)
 
     is_active = models.BooleanField(default=True)
