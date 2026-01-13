@@ -1,0 +1,188 @@
+<div class="p-4 bg-gray-100 rounded">
+
+    <h3 class="text-lg font-bold">Amine corrosion</h3>
+    <p class="m-5">Answer the following questions in order to continue with the calculation of the corrosion rate.</p>
+
+    <div class="overflow-x-auto">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Basic Data</th>
+                    <th>Comments</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Material of construction (CS or SS)</td>
+                    <td>
+                        Determine the material of construction of equipment/piping.
+                    </td>
+                </tr>
+                <tr>
+                    <td>Amine concentration, wt %</td>
+                    <td>
+                        Determine the amine concentration in the equipment/piping. Due to vaporization of water, a local
+                        increase in amine concentration may need to be considered in evaluating the corrosion of some
+                        reboilers and reclaimers.
+                    </td>
+                </tr>
+                <tr>
+                    <td>Maximum process temperature</td>
+                    <td>
+                        Determine the maximum process temperature. In reboilers and reclaimers, tube metal temperatures
+                        may be higher than the bulk process temperature.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Acid gas loading (mole acid gas/mole active amine)
+                    </td>
+                    <td>
+                        Determine the acid gas loading in the amine. If analytical results are not available, it should
+                        be estimated by a knowledgeable process engineer.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Velocity
+                    </td>
+                    <td>
+                        Determine the maximum velocity of the amine in this equipment/piping.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        HSAS concentration: <br>
+                        MEA and DEA <br>(≤ 2 wt %, 2 to 4 wt %, > 4 wt %)
+                        <br>
+                        MDEA <br>(< 500, 500 to 4000,> 4000 wppm)
+                    </td>
+                    <td>
+                        In MEA and DEA, “HSAS” represents the normal family of amine degradation products.
+                        <br>
+                        In MDEA “HSAS” refers to organic acid contaminants, mainly formate, oxalate, and acetate.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="flex flex-col gap-3">
+
+        <div id="material_check_container" class="flex flex-col gap-3">
+            <label for="type_carbon_lowAlloy">Is the material of construction carbon steel or low alloy?</label>
+            <select required name="type_carbon_lowAlloy" id="type_carbon_lowAlloy"
+                class="select select-bordered w-full max-w-xs">
+                <option value="" disabled selected>Select one</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+        </div>
+
+        <div id="cladding_type_container" class="hidden flex flex-col gap-3">
+            <label for="cladding_material_type">Cladding Material Type</label>
+            <select required name="cladding_material_type" id="cladding_material_type"
+                class="select select-bordered w-full max-w-xs">
+                <option value="" disabled selected>Select one</option>
+                <option value="cs">Mask Carbon Steel / Low Alloy</option>
+                <option value="ss">Mask 300 Series SS</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+
+        <!-- Carbon Steel / Low Alloy Branch -->
+        <div id="cs_inputs_container" class="hidden flex flex-col gap-3">
+
+            <h4 class="font-semibold mt-2">Step 1: Base Corrosion Rate Inputs</h4>
+
+            <label for="amine_type">Type of amine</label>
+            <select required name="amine_type" id="amine_type" class="select select-bordered w-full max-w-xs">
+                <option value="" disabled selected>Select one</option>
+                <option value="MEA">MEA</option>
+                <option value="DEA">DEA</option>
+                <option value="MDEA">MDEA</option>
+            </select>
+
+            <label for="acid_gas_loading">Acid gas loading (mole acid gas/mole active amine)</label>
+            <select required name="acid_gas_loading" id="acid_gas_loading"
+                class="select select-bordered w-full max-w-xs">
+                <option value="" disabled selected>Select one</option>
+            </select>
+
+            <label for="HSAS">HSAS (wt%)</label>
+            <select required name="HSAS" id="HSAS" class="select select-bordered w-full max-w-xs">
+                <option value="" disabled selected>Select one</option>
+            </select>
+
+            <label for="temperature">Maximum Process Temperature</label>
+            <input type="number" step="any" id="temperature" class="input input-bordered w-full max-w-xs"
+                placeholder="Enter temperature">
+
+            <label for="velocity">Velocity</label>
+            <input type="number" step="any" id="velocity" class="input input-bordered w-full max-w-xs"
+                placeholder="Enter velocity">
+
+            <h4 class="font-semibold mt-4">Step 2: Multiplier Input</h4>
+
+            <label for="amine_concentration">Amine concentration (wt%)</label>
+            <input type="number" step="any" id="amine_concentration" class="input input-bordered w-full max-w-xs"
+                placeholder="Enter concentration">
+        </div>
+
+        <!-- Check for 300 Series SS -->
+        <div id="ss_check_container" class="hidden flex flex-col gap-3">
+            <label for="type_300_series_ss">
+                Is material of construction Type 300 Series SS?
+            </label>
+            <select required name="type_300_series_ss" id="type_300_series_ss"
+                class="select select-bordered w-full max-w-xs">
+                <option value="" disabled selected>Select one</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+        </div>
+
+        <!-- SS Branch -->
+        <div id="ss_inputs_container" class="hidden flex flex-col gap-3">
+
+            <label for="acid_gas_loading_ss">Acid gas loading (mole acid gas/mole active amine)</label>
+            <input type="number" step="any" id="acid_gas_loading_ss" class="input input-bordered w-full max-w-xs"
+                placeholder="Enter value (0.1 - 0.7)">
+
+            <label for="temperature_ss">Maximum Process Temperature</label>
+            <input type="number" step="any" id="temperature_ss" class="input input-bordered w-full max-w-xs"
+                placeholder="Enter temperature">
+        </div>
+
+    </div>
+
+    <button class="btn btn-primary m-3 hidden" id="calculate_corrosion_rate">Calculate corrosion rate</button>
+
+    <div id="error-container" class="gap-3 m-3"></div>
+
+    <p class="hidden alert alert-info alert-soft m-3" id="corrosion_rate"></p>
+
+    <div id="specialist_message" class="hidden">
+        <div class="alert alert-warning m-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span>The material is neither Carbon Steel/Low Alloy nor 300 Series SS. <br><strong>Please consult with a
+                    materials specialist.</strong></span>
+        </div>
+
+        <div class="flex flex-col gap-3">
+            <label for="specialist_corrosion_rate">Estimated Corrosion Rate</label>
+            <input type="number" step="any" id="specialist_corrosion_rate" class="input input-bordered w-full max-w-xs"
+                placeholder="Enter rate">
+        </div>
+
+        <button class="btn btn-primary m-3" id="save_specialist_rate">Calculate corrosion rate</button>
+
+        <p class="hidden alert alert-info alert-soft m-3" id="specialist_rate_saved"></p>
+    </div>
+</div>

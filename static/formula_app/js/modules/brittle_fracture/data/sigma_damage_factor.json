@@ -1,0 +1,13 @@
+[
+  { "temp_f": 1200, "temp_c": 649, "df_low": 0.0, "df_medium": 0.0, "df_high": 18 },
+  { "temp_f": 1000, "temp_c": 538, "df_low": 0.0, "df_medium": 0.0, "df_high": 53 },
+  { "temp_f": 800,  "temp_c": 427, "df_low": 0.0, "df_medium": 0.2, "df_high": 160 },
+  { "temp_f": 600,  "temp_c": 316, "df_low": 0.0, "df_medium": 0.9, "df_high": 481 },
+  { "temp_f": 400,  "temp_c": 204, "df_low": 0.0, "df_medium": 1.3, "df_high": 1333 },
+  { "temp_f": 200,  "temp_c": 93,  "df_low": 0.1, "df_medium": 3,   "df_high": 3202 },
+  { "temp_f": 150,  "temp_c": 66,  "df_low": 0.3, "df_medium": 5,   "df_high": 3871 },
+  { "temp_f": 100,  "temp_c": 38,  "df_low": 0.6, "df_medium": 7,   "df_high": 4196 },
+  { "temp_f": 50,   "temp_c": 10,  "df_low": 0.9, "df_medium": 11,  "df_high": 4196 },
+  { "temp_f": 0,    "temp_c": -18, "df_low": 1.0, "df_medium": 20,  "df_high": 4196 },
+  { "temp_f": -50,  "temp_c": -46, "df_low": 1.1, "df_medium": 34,  "df_high": 4196 }
+]

@@ -1,0 +1,132 @@
+<div class="p-4 bg-gray-100 rounded">
+
+    <h3 class="text-lg font-bold">High-temperature Sulfidic and Naphthenic Acid Corrosion</h3>
+    <p class="m-5">Answer the following questions in order to continue with the calculation of the corrosion rate.</p>
+
+    <div class="overflow-x-auto">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Basic Data</th>
+                    <th>Comments</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Material of construction</td>
+                    <td>
+                        Determine the material of construction of the equipment/piping.
+                        For 316 SS, if the Mo content is not known, assume it is < 2.5 wt % </td>
+                </tr>
+                <tr>
+                    <td>Maximum temperature</td>
+                    <td>
+                        Determine the maximum temperature of the process stream.
+                    </td>
+                </tr>
+                <tr>
+                    <td>Sulfur content of the stream</td>
+                    <td>
+                        Determine the sulfur content of the stream that is in this piece of
+                        equipment. If sulfur content is not known, contact a knowledgeable
+                        process engineer for an estimate.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        TAN
+                        (TAN = mg KOH/g oil sample)
+                    </td>
+                    <td>
+                        The TAN of importance is that of the liquid hydrocarbon phase present in
+                        the equipment/piping being evaluated. If not known, consult a
+                        knowledgeable process engineer for an estimate.
+                    </td>
+                </tr>
+                <tr>
+                    <td>Velocity</td>
+                    <td>
+                        Determine the maximum velocity in this equipment/piping. Although
+                        conditions in a vessel may be essentially stagnant, the velocity in flowing
+                        nozzles should be considered.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="flex flex-col gap-3">
+        <label for="material">Material</label>
+        <select class="select" name="material" id="material">
+            <option value="" disabled selected>Select one</option>
+            <option value="carbon steel">carbon steel</option>
+            <option value="1Cr-0.2 Mo">1Cr-0.2 Mo</option>
+            <option value="1Cr-0.5 Mo">1Cr-0.5 Mo</option>
+            <option value="1.25Cr-0.5Mo">1.25Cr-0.5Mo</option>
+            <option value="2.25Cr-1Mo">2.25Cr-1Mo</option>
+            <option value="3Cr-1Mo">3Cr-1Mo</option>
+            <option value="5Cr-0.5Mo">5Cr-0.5Mo</option>
+            <option value="7Cr-1Mo">7Cr-1Mo</option>
+            <option value="9Cr-1Mo">9Cr-1Mo</option>
+            <option value="12 % Cr Steel">12 % Cr Steel</option>
+            <option value="Austenitic SS Without Mo">Austenitic SS Without Mo</option>
+            <option value="316 SS with < 2.5 % Mo">316 SS with < 2.5 % Mo</option>
+            <option value="316 SS with >= 2.5 % Mo">316 SS with >= 2.5 % Mo</option>
+            <option value="317 SS">317 SS</option>
+        </select>
+
+        <div id="cladding_type_container" class="hidden flex flex-col gap-3">
+            <label for="cladding_material_type">Cladding Material Type</label>
+            <select required name="cladding_material_type" id="cladding_material_type"
+                class="select select-bordered w-full max-w-xs">
+                <option value="" disabled selected>Select one</option>
+                <option value="carbon steel">carbon steel</option>
+                <option value="1Cr-0.2 Mo">1Cr-0.2 Mo</option>
+                <option value="1Cr-0.5 Mo">1Cr-0.5 Mo</option>
+                <option value="1.25Cr-0.5Mo">1.25Cr-0.5Mo</option>
+                <option value="2.25Cr-1Mo">2.25Cr-1Mo</option>
+                <option value="3Cr-1Mo">3Cr-1Mo</option>
+                <option value="5Cr-0.5Mo">5Cr-0.5Mo</option>
+                <option value="7Cr-1Mo">7Cr-1Mo</option>
+                <option value="9Cr-1Mo">9Cr-1Mo</option>
+                <option value="12 % Cr Steel">12 % Cr Steel</option>
+                <option value="Austenitic SS Without Mo">Austenitic SS Without Mo</option>
+                <option value="316 SS with < 2.5 % Mo">316 SS with < 2.5 % Mo</option>
+                <option value="316 SS with >= 2.5 % Mo">316 SS with >= 2.5 % Mo</option>
+                <option value="317 SS">317 SS</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+        <label for="sulfur_concentration">Sulfur concentration (wt%)</label>
+        <select class="select" name="sulfur_concentration" id="sulfur_concentration">
+            <option value="" disabled selected>Select one</option>
+            <option value="0.2">0.2</option>
+            <option value="0.4">0.4</option>
+            <option value="0.8">0.8</option>
+            <option value="1.5">1.5</option>
+            <option value="2.5">2.5</option>
+            <option value="3.0">3.0</option>
+        </select>
+        <label for="tan">TAN (mg KOH/g oil sample)</label>
+        <select class="select" disabled name="tan" id="tan">
+            <option value="" disabled selected>Select first a material and a sulfur concentration</option>
+        </select>
+        <label for="velocity">Velocity</label>
+        <input required type="number" step="any" name="velocity" id="velocity" class="input">
+        <label for="maximum_process_temperature">Maximum process temperature</label>
+        <small class="text-gray-600 -mt-2 mb-2">Pre-filled from Table 4.1 (Operating Temperature). You can modify if
+            needed.</small>
+        <input required type="number" step="any" name="maximum_process_temperature" id="maximum_process_temperature"
+            class="input">
+    </div>
+
+    <button class="btn btn-primary m-3" id="calculate_corrosion_rate">Calculate corrosion rate</button>
+
+    <div id="error-container" class="gap-3 m-3"></div>
+
+    <p class="hidden alert alert-info alert-soft m-3" id="corrosion_rate"></p>
+    <p class="hidden alert alert-warning alert-soft m-3" id="velocity_message"></p>
+
+</div>

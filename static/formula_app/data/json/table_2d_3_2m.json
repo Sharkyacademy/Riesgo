@@ -1,0 +1,11 @@
+[
+    {"temp": -12, "severe": 0, "moderate": 0, "mild": 0, "dry": 0},
+    {"temp": -8, "severe": 0.076, "moderate": 0.025, "mild": 0, "dry": 0},
+    {"temp": 6, "severe": 0.254, "moderate": 0.127, "mild": 0.076, "dry": 0.025},
+    {"temp": 32, "severe": 0.254, "moderate": 0.127, "mild": 0.076, "dry": 0.025},
+    {"temp": 71, "severe": 0.508, "moderate": 0.254, "mild": 0.127, "dry": 0.051},
+    {"temp": 107, "severe": 0.254, "moderate": 0.127, "mild": 0.025, "dry": 0.025},
+    {"temp": 135, "severe": 0.254, "moderate": 0.051, "mild": 0.025, "dry": 0},
+    {"temp": 162, "severe": 0.127, "moderate": 0.025, "mild": 0, "dry": 0},
+    {"temp": 176, "severe": 0, "moderate": 0, "mild": 0, "dry": 0}
+]

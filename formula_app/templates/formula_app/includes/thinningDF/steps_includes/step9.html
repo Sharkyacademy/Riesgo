@@ -1,0 +1,85 @@
+<div class="flex flex-col h-full w-full">
+    <div class="mb-4">
+        <h2 class="text-2xl font-bold text-primary mb-4 border-b pb-2">Step 9. Inspection Effectiveness Factors</h2>
+        <p class="text-sm text-gray-600 mb-4">
+            Calculate the inspection effectiveness factors (I<sup>Thin</sup><sub>1</sub>, I<sup>Thin</sup><sub>2</sub>,
+            I<sup>Thin</sup><sub>3</sub>) for each damage state using Equation 2.16. These factors combine the prior
+            probabilities with the inspection history.
+        </p>
+
+        <!-- Read-Only Review of Step 8 Data -->
+        <div class="p-4 bg-gray-50 rounded-box border border-gray-200 mb-6">
+            <h3 class="font-bold text-gray-700 mb-2">Review Inspection Data (From Step 8)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="form-control">
+                    <label class="label"><span class="label-text">Confidence Level</span></label>
+                    <input type="text" id="step9_confidence" class="input input-bordered w-full bg-gray-100" readonly />
+                </div>
+                <div class="form-control">
+                    <label class="label"><span class="label-text">Inspections (A/B/C/D)</span></label>
+                    <input type="text" id="step9_counts" class="input input-bordered w-full bg-gray-100" readonly />
+                </div>
+            </div>
+        </div>
+
+        <!-- Calculation Action -->
+        <div class="flex justify-end">
+            <button id="step9_calc_btn" class="btn btn-primary">Calculate Factors (I)</button>
+        </div>
+
+        <!-- Error Container (Standardized) -->
+        <div id="step9_error_container" class="alert alert-error hidden mb-4 mt-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span id="step9_error_message">Error!</span>
+        </div>
+
+        <!-- Results Container -->
+        <div id="step9_result_container" class="hidden mt-6 flex flex-col gap-4">
+
+            <!-- I-Factors Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- I1 -->
+                <div class="stat bg-base-100 shadow rounded-box border border-base-200">
+                    <div class="stat-title text-sm font-bold">I<sup>Thin</sup><sub>1</sub> (State 1)</div>
+                    <div class="stat-value text-primary text-2xl" id="step9_i1">0.0000</div>
+                    <div class="stat-desc">No worse than expected</div>
+                </div>
+
+                <!-- I2 -->
+                <div class="stat bg-base-100 shadow rounded-box border border-base-200">
+                    <div class="stat-title text-sm font-bold">I<sup>Thin</sup><sub>2</sub> (State 2)</div>
+                    <div class="stat-value text-primary text-2xl" id="step9_i2">0.0000</div>
+                    <div class="stat-desc">Somewhat worse</div>
+                </div>
+
+                <!-- I3 -->
+                <div class="stat bg-base-100 shadow rounded-box border border-base-200">
+                    <div class="stat-title text-sm font-bold">I<sup>Thin</sup><sub>3</sub> (State 3)</div>
+                    <div class="stat-value text-primary text-2xl" id="step9_i3">0.0000</div>
+                    <div class="stat-desc">Considerably worse</div>
+                </div>
+            </div>
+
+            <!-- Detailed Explanation (Optional standard alert) -->
+            <div class="alert alert-info alert-soft">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    class="stroke-current shrink-0 w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <div>
+                    <span class="font-bold">Interpretation:</span>
+                    <span class="text-sm">These factors represent the weight of evidence for each damage state. Higher
+                        values indicate higher probability.</span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+<!-- No inline script, loaded globally -->

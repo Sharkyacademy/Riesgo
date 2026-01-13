@@ -1,0 +1,138 @@
+<div class="p-4 bg-gray-100 rounded">
+
+    <h3 class="text-lg font-bold">High-temperature H2S/H2 Corrosion</h3>
+    <p class="m-5">Answer the following questions in order to continue with the calculation of the corrosion rate.</p>
+
+    <div class="overflow-x-auto">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Basic Data</th>
+                    <th>Comments</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Material of construction</td>
+                    <td>
+                        Determine the material of construction of the equipment/piping.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Type of hydrocarbon present
+                        (naphtha or gas oil)
+                    </td>
+                    <td>
+                        The Couper–Gorman corrosion rate curves are dependent on the type of
+                        hydrocarbon stream present [95] [100]
+                        . There are two categories as follows.
+                        <br>
+                        1) Naphtha refers to those hydrocarbon streams of both light and heavy
+                        naphtha as well as light distillates (streams typically boiling at < 430 °F). <br>
+                            2) Gas oil refers to those hydrocarbon streams that include distillate, atmospheric gas
+                            oils, resid, and other
+                            heavier process hydrocarbons (streams typically boiling at> 430 °F).
+                    </td>
+                </tr>
+                <tr>
+                    <td>Maximum temperature</td>
+                    <td>
+                        Determine the maximum process temperature.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        H2S content of the vapor (mole %)
+                    </td>
+                    <td>
+                        Determine the H2S content in the vapor.
+                        <small class="text-gray-600">NOTE mole % = volume % (not wt %).</small>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="flex flex-col gap-3">
+        <label for="material">Material of construction</label>
+        <select class="select" required name="material" id="material">
+            <option value="">Select material</option>
+            <option value="carbon steel">Carbon steel</option>
+            <option value="1cr-0.2 mo">1Cr-0.2 Mo</option>
+            <option value="1cr-0.5 mo">1Cr-0.5 Mo</option>
+            <option value="1.25cr-0.5mo">1.25Cr-0.5Mo</option>
+            <option value="2.25cr-1mo">2.25Cr-1Mo</option>
+            <option value="3cr-1mo">3Cr-1Mo</option>
+            <option value="5cr-0.5mo">5Cr-0.5Mo</option>
+            <option value="7cr steel">7Cr steel</option>
+            <option value="9cr-1mo">9Cr-1Mo</option>
+            <option value="12cr steel">12Cr Steel</option>
+            <option value="304 stainless steel">304 stainless steel</option>
+            <option value="304l stainless steel">304L stainless steel</option>
+            <option value="316 stainless steel">316 stainless steel</option>
+            <option value="316l stainless steel">316L stainless steel</option>
+            <option value="321 stainless steel">321 stainless steel</option>
+            <option value="347 stainless steel">347 stainless steel</option>
+        </select>
+
+        <div id="cladding_type_container" class="hidden flex flex-col gap-3">
+            <label for="cladding_material_type">Cladding Material Type</label>
+            <select required name="cladding_material_type" id="cladding_material_type"
+                class="select select-bordered w-full max-w-xs">
+                <option value="" disabled selected>Select one</option>
+                <option value="carbon steel">Carbon steel</option>
+                <option value="1cr-0.2 mo">1Cr-0.2 Mo</option>
+                <option value="1cr-0.5 mo">1Cr-0.5 Mo</option>
+                <option value="1.25cr-0.5mo">1.25Cr-0.5Mo</option>
+                <option value="2.25cr-1mo">2.25Cr-1Mo</option>
+                <option value="3cr-1mo">3Cr-1Mo</option>
+                <option value="5cr-0.5mo">5Cr-0.5Mo</option>
+                <option value="7cr steel">7Cr steel</option>
+                <option value="9cr-1mo">9Cr-1Mo</option>
+                <option value="12cr steel">12Cr Steel</option>
+                <option value="304 stainless steel">304 stainless steel</option>
+                <option value="304l stainless steel">304L stainless steel</option>
+                <option value="316 stainless steel">316 stainless steel</option>
+                <option value="316l stainless steel">316L stainless steel</option>
+                <option value="321 stainless steel">321 stainless steel</option>
+                <option value="347 stainless steel">347 stainless steel</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+        <label for="hydrocarbon">Type of hydrocarbon present (naphtha or gas oil)</label>
+        <select class="select" required name="hydrocarbon" id="hydrocarbon">
+            <option value="" disabled selected>Select hydrocarbon</option>
+            <option value="naphtha">Naphtha</option>
+            <option value="gas oil">Gas oil</option>
+        </select>
+        <label for="maximum_process_temperature">Maximum process temperature</label>
+        <small class="text-gray-600 -mt-2 mb-2">
+            Pre-filled from Table 4.1 (Operating Temperature). You can modify if
+            needed. The value will be rounded to the nearest degree available.
+        </small>
+        <input required class="input" required type="number" step="any" name="maximum_process_temperature"
+            id="maximum_process_temperature">
+        <label for="h2s_concentration">H2S concentration of the vapor (mole %)</label>
+        <select required class="select" name="h2s_concentration" id="h2s_concentration">
+            <option value="" disabled selected>Select one</option>
+            <option value="0.002">0.002</option>
+            <option value="0.0035">0.0035</option>
+            <option value="0.008">0.008</option>
+            <option value="0.035">0.035</option>
+            <option value="0.08">0.08</option>
+            <option value="0.30">0.30</option>
+            <option value="0.75">0.75</option>
+            <option value="1.00">1.00</option>
+        </select>
+    </div>
+
+    <button class="btn btn-primary m-3" id="calculate_corrosion_rate">Calculate corrosion rate</button>
+
+    <div id="error-container" class="gap-3 m-3"></div>
+
+    <p class="hidden alert alert-info alert-soft m-3" id="corrosion_rate"></p>
+
+</div>

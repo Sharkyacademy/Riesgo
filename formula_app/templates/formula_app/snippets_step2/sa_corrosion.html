@@ -1,0 +1,140 @@
+<div class="p-4 bg-gray-100 rounded">
+
+    <h3 class="text-lg font-bold">Sulfuric Acid Corrosion</h3>
+    <p class="m-5">Answer the following questions in order to continue with the calculation of the corrosion rate.</p>
+
+    <div class="overflow-x-auto">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Basic Data</th>
+                    <th>Comments</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Material of construction</td>
+                    <td>
+                        Determine the material of construction of the equipment/piping.
+                    </td>
+                </tr>
+                <tr>
+                    <td>Acid concentration (wt %)</td>
+                    <td>
+                        Determine the concentration of the H₂SO₄ present in this equipment/piping. If
+                        analytical results are not readily available, it should be estimated by a knowledgeable
+                        process engineer.
+                    </td>
+                </tr>
+                <tr>
+                    <td>Maximum temperature, °F (°C)</td>
+                    <td>
+                        Determine the maximum temperature present in this equipment/piping. This may be
+                        the maximum process temperature, but local heating conditions such as effect of the
+                        sun or heat tracing should be considered.
+                    </td>
+                </tr>
+                <tr>
+                    <td>Velocity of acid, ft/s (m/s)</td>
+                    <td>
+                        Determine the maximum velocity of the acid in this equipment/piping. Although
+                        conditions in a vessel may be essentially stagnant, the acid velocity in flowing nozzles
+                        (inlet, outlet, etc.) should be considered.
+                    </td>
+                </tr>
+                <tr>
+                    <td>Oxygen/oxidant present? (Yes or No)</td>
+                    <td>
+                        Determine whether the acid contains oxygen or some other oxidant. If in doubt,
+                        consult a knowledgeable process engineer. These data are only necessary if the
+                        material of construction is Alloy B-2. For carbon steel and other alloys, the corrosion
+                        rates in the tables assume the acid does not contain oxygen/oxidants.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="flex flex-col gap-3">
+
+        <label for="oxygen_present">Oxygen/oxidant present? (Yes or No)</label>
+        <select required name="oxygen_present" id="oxygen_present" class="select select-bordered w-full max-w-xs">
+            <option value="" disabled selected>Select one</option>
+            <option value="yes">yes</option>
+            <option value="no">no</option>
+        </select>
+
+        <label for="material_of_construction">Material of construction</label>
+        <select required id="material_of_construction" class="select select-bordered w-full max-w-xs">
+            <option value="" disabled selected>Select</option>
+            <option value="alloy b-2">Alloy B-2</option>
+            <option value="alloy c-276">Alloy C-276</option>
+            <option value="alloy 20">Alloy 20</option>
+            <option value="316 ss">316 SS</option>
+            <option value="304 ss">304 SS</option>
+            <option value="carbon steel">Carbon Steel</option>
+        </select>
+
+        <div id="cladding_type_container" class="hidden flex flex-col gap-3">
+            <label for="cladding_material_type">Cladding Material Type</label>
+            <select required name="cladding_material_type" id="cladding_material_type"
+                class="select select-bordered w-full max-w-xs">
+                <option value="" disabled selected>Select one</option>
+                <option value="carbon steel">Carbon Steel</option>
+                <option value="304 ss">304 SS</option>
+                <option value="316 ss">316 SS</option>
+                <option value="alloy 20">Alloy 20</option>
+                <option value="alloy c-276">Alloy C-276</option>
+                <option value="alloy b-2">Alloy B-2</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+
+        <!-- Specialist Consultation Message -->
+        <div id="specialist_message_container" class="hidden">
+            <div class="alert alert-warning m-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <span>Consult a Corrosion specialist for estimated Corrosion Rate</span>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <label for="specialist_corrosion_rate">Corrosion Rate from Specialist</label>
+                <input type="number" id="specialist_corrosion_rate" class="input input-bordered w-full max-w-xs"
+                    placeholder="Enter the corrosion rate provided by specialist" step="0.01">
+                <button class="btn btn-primary m-3 hidden" id="set_corrosion_rate">Set Corrosion Rate</button>
+            </div>
+        </div>
+
+        <!-- Additional Inputs Container (hidden when specialist consultation is needed) -->
+        <div id="additional_inputs_container" class="hidden flex flex-col gap-3">
+            <label for="acid_concentration">Acid concentration (wt %)</label>
+            <select class="select select-bordered w-full max-w-xs" name="acid_concentration" id="acid_concentration">
+                <option value="" selected disabled>Select one</option>
+            </select>
+
+            <label for="maximum_temperature">Maximum temperature</label>
+            <input type="number" step="any" class="input input-bordered w-full max-w-xs" required
+                name="maximum_temperature" id="maximum_temperature" placeholder="Enter temperature">
+
+            <label for="velocity_of_acid">Velocity of acid</label>
+            <select class="select select-bordered w-full max-w-xs" name="velocity_of_acid" id="velocity_of_acid">
+                <option value="" selected disabled>Select one</option>
+            </select>
+        </div>
+
+    </div>
+
+    <button class="btn btn-primary m-3 hidden" id="calculate_corrosion_rate">Calculate corrosion rate</button>
+
+    <div id="error-container" class="gap-3 m-3"></div>
+
+    <p class="hidden alert alert-info alert-soft m-3" id="corrosion_rate"></p>
+    <p class="hidden alert alert-warning alert-soft m-3" id="velocity_message"></p>
+
+</div>

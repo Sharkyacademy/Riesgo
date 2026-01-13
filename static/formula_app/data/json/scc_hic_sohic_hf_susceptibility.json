@@ -1,0 +1,18 @@
+{
+    "description": "Table 2.C.6.2 - Susceptibility to Cracking for HIC/SOHIC-HF",
+    "note": "Typically includes A70, A201, A212, A285, A515, and most A516 before about 1990.",
+    "data": {
+        "Non-PWHT": {
+            "High_Sulfur": "High",
+            "Low_Sulfur": "High",
+            "Seamless_Pipe": "Low"
+        },
+        "PWHT": {
+            "High_Sulfur": "High",
+            "Low_Sulfur": "Medium",
+            "Seamless_Pipe": "Low"
+        }
+    },
+    "sulfur_threshold": 0.01,
+    "sulfur_threshold_note": "High Sulfur: > 0.01% S, Low Sulfur: ≤ 0.01% S"
+}

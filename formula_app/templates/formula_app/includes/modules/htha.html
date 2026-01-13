@@ -1,0 +1,223 @@
+<div id="htha_module" class="module-container hidden space-y-8 animate-fade-in">
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b pb-4 mb-4">
+        <h2 class="text-2xl font-bold text-gray-900">High Temperature Hydrogen Attack (HTHA)</h2>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="card bg-white shadow-xl border border-gray-200 p-6">
+        
+        <div class="prose max-w-none mb-6">
+            <p class="text-gray-600">
+                This module calculates the High Temperature Hydrogen Attack (HTHA) Damage Factor ($D_{f}^{htha}$) based on material susceptibility, temperature, and hydrogen partial pressure.
+            </p>
+        </div>
+
+        <!-- Data Required Section (General) -->
+        <div class="flex justify-between items-center mb-2">
+            <h4 class="font-bold text-md text-blue-900">Data Required for Determination of Susceptibility to HTHA</h4>
+        </div>
+        
+        <div id="htha_data_table_container" class="bg-base-100 rounded-box border shadow-sm mb-8 transition-all duration-300">
+            <div class="overflow-x-auto">
+                <table class="table w-full flex lg:table">
+                <thead class="bg-blue-50 hidden lg:table-header-group">
+                    <tr>
+                        <th class="font-bold text-blue-900 text-base w-1/4">Required Data</th>
+                        <th class="font-bold text-blue-900 text-base w-1/2">Comments</th>
+                        <th class="font-bold text-blue-900 text-base w-1/4">Input Value</th>
+                    </tr>
+                </thead>
+                <tbody class="w-full flex flex-col lg:table-row-group">
+                    <tr class="flex flex-col lg:table-row mb-4 border border-gray-200 rounded-lg p-4 lg:p-0 lg:border-none lg:mb-0 bg-white">
+                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 font-medium">
+                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Required Data</span>
+                            Material of construction
+                        </td>
+                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 text-gray-600">
+                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Comments</span>
+                            The component generic construction material (e.g. carbon steel, C-1/2 Mo, 2 1/4Cr-1 Mo).
+                        </td>
+                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4">
+                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Input Value</span>
+                             <div class="form-control w-full">
+                                <select id="htha_material" class="select select-bordered select-sm w-full">
+                                    <option value="" disabled selected>Select Material</option>
+                                    <option value="Carbon Steel">Carbon Steel</option>
+                                    <option value="C-0.5Mo">C-1/2 Mo</option>
+                                    <option value="1Cr-0.5Mo">1Cr-1/2Mo</option>
+                                    <option value="1.25Cr-0.5Mo">1 1/4Cr-1/2Mo</option>
+                                    <option value="2.25Cr-1Mo">2 1/4Cr-1Mo</option>
+                                    <option value="3Cr-1Mo">3Cr-1Mo</option>
+                                    <option value="5Cr-0.5Mo">5Cr-1/2Mo</option>
+                                    <option value="7Cr-1Mo">7Cr-1Mo</option>
+                                    <option value="9Cr-1Mo">9Cr-1Mo</option>
+                                </select>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="flex flex-col lg:table-row mb-4 border border-gray-200 rounded-lg p-4 lg:p-0 lg:border-none lg:mb-0 bg-white">
+                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 font-medium">
+                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Required Data</span>
+                            Hydrogen partial pressure, MPa (psia)
+                        </td>
+                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 text-gray-600">
+                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Comments</span>
+                            Determine the hydrogen partial pressure, which is equal to the product of the mole fraction of hydrogen and the total pressure (absolute).
+                        </td>
+                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4">
+                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Input Value</span>
+                             <div class="form-control w-full">
+                                <input type="number" id="htha_pressure" class="input input-bordered input-sm w-full" placeholder="Enter Pressure" step="0.01" />
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="flex flex-col lg:table-row mb-4 border border-gray-200 rounded-lg p-4 lg:p-0 lg:border-none lg:mb-0 bg-white">
+                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 font-medium">
+                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Required Data</span>
+                            Temperature, °F (°C)
+                        </td>
+                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 text-gray-600">
+                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Comments</span>
+                            The temperature of exposure.
+                        </td>
+                         <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4">
+                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Input Value</span>
+                             <div class="flex gap-2">
+                                 <input type="number" id="htha_temperature" class="input input-bordered input-sm w-full" placeholder="Enter Temp" step="0.1" />
+                                 <select id="htha_temp_unit" class="select select-bordered select-sm w-24" disabled>
+                                     <option value="C">°C</option>
+                                     <option value="F">°F</option>
+                                 </select>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+            <!-- Action Bar -->
+            <div class="p-3 bg-gray-50 border-t flex justify-end">
+                <button id="btn_htha_save_hide" class="btn btn-sm btn-primary gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                      <title>Save Table</title>
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 3.75V16.5L12 14.25 7.5 16.5V3.75m9 0H18A2.25 2.25 0 0120.25 6v12A2.25 2.25 0 0118 20.25H6A2.25 2.25 0 013.75 18V6A2.25 2.25 0 016 3.75h1.5m9 0h-9" />
+                    </svg>
+                    Save Table
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 1: Determine Material, Temperature, and H2 Partial Pressure (Summary) -->
+        <div id="htha_step1_section" class="animate-fade-in mb-8 hidden">
+            <h3 class="font-bold text-lg text-blue-950 mb-2 border-b-2 border-gray-100 pb-2">Step 1: Determine Material, Temperature and H2 Partial Pressure</h3>
+            <p class="text-sm text-gray-600 mb-4">
+                The following values have been determined for the assessment:
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="p-4 bg-blue-50 border border-blue-100 rounded-lg">
+                    <span class="block text-xs text-blue-800 font-bold uppercase mb-1">Material</span>
+                    <span class="text-lg font-bold text-blue-900" id="val_htha_material">--</span>
+                </div>
+                <div class="p-4 bg-blue-50 border border-blue-100 rounded-lg">
+                    <span class="block text-xs text-blue-800 font-bold uppercase mb-1">Temperature</span>
+                    <span class="text-lg font-bold text-blue-900" id="val_htha_temp">--</span>
+                    <span class="text-xs text-blue-800">°C</span>
+                </div>
+                 <div class="p-4 bg-blue-50 border border-blue-100 rounded-lg">
+                    <span class="block text-xs text-blue-800 font-bold uppercase mb-1">H2 Partial Pressure</span>
+                    <span class="text-lg font-bold text-blue-900" id="val_htha_pressure">--</span>
+                    <span class="text-xs text-blue-800">MPa</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: HTHA History -->
+        <!-- Step 2: HTHA History -->
+        <div id="htha_step2_section" class="animate-fade-in mb-8 hidden">
+            <h3 class="font-bold text-lg text-blue-950 mb-2 border-b-2 border-gray-100 pb-2">Step 2: HTHA History</h3>
+            
+            <div class="form-control w-full max-w-md">
+                <label class="label">
+                    <span class="label-text font-semibold text-gray-700">Has HTHA damage historically been observed in the component?</span>
+                </label>
+                <select id="htha_damage_observed" class="select select-bordered w-full" autocomplete="off">
+                    <option value="" selected>Select Option</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+
+            <!-- Step 2.1: Replaced In Kind (Hidden by default) -->
+            <div id="htha_step2_1_section" class="mt-4 ml-6 hidden border-l-2 border-gray-200 pl-4">
+                 <div class="form-control w-full max-w-md">
+                    <label class="label">
+                        <span class="label-text font-semibold text-gray-700">Is the component replaced in Kind?</span>
+                    </label>
+                    <select id="htha_replaced_in_kind" class="select select-bordered w-full" autocomplete="off">
+                        <option value="" selected>Select Option</option>
+                        <option value="No, replaced with upgraded materials">No, replaced with upgraded materials</option>
+                        <option value="Yes, replaced in kind">Yes, replaced in kind</option>
+                        <option value="No, not replaced">No, not replaced</option>
+                    </select>
+                </div>
+
+                <!-- Warning for Upgraded Materials -->
+                <div id="htha_upgraded_material_warning" class="alert alert-warning mt-4 hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                    <span class="text-sm">Please update the component material in the <strong>Step 1</strong> table to reflect the upgraded material.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3.1: Material Verification -->
+        <div id="htha_step3_1_section" class="animate-fade-in mb-8 hidden">
+            <h3 class="font-bold text-lg text-blue-950 mb-2 border-b-2 border-gray-100 pb-2">Step 3: Material Verification</h3>
+            
+            <div class="form-control w-full max-w-xl">
+                <label class="label">
+                    <span class="label-text font-semibold text-gray-700">Is the component Carbon or C-1/2 Mo steel?</span>
+                </label>
+                <select id="htha_material_verification" class="select select-bordered w-full" autocomplete="off">
+                    <option value="" selected>Select Option</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Step 3.2: Assign Susceptibility (Content) -->
+        <div id="htha_step3_2_section" class="animate-fade-in mb-8 hidden">
+             <p id="htha_step3_2_description" class="text-sm text-gray-600 mb-4 font-semibold">
+                Assign susceptibility based on operating condition and Figure 2.E.2.1.
+            </p>
+            
+            <!-- Result Display -->
+            <div id="htha_susceptibility_result_display" class="hidden">
+                 <div id="htha_susceptibility_card" class="alert shadow-sm border">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <div>
+                        <h3 class="font-bold" id="htha_susceptibility_title">Susceptibility</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4: Determine HTHA Damage Factor -->
+        <div id="htha_results" class="mt-8 hidden animate-fade-in">
+             <h3 class="font-bold text-lg text-blue-950 mb-2 border-b-2 border-gray-100 pb-2">Step 4: Determine HTHA Damage Factor</h3>
+             <p class="text-sm text-gray-600 mb-4">
+                The Damage Factor is determined using Table 2.E.2.2 based on the susceptibility from Step 2 or Step 3.
+            </p>
+
+             <div class="stats shadow w-full">
+                <div class="stat">
+                    <div class="stat-title">Damage Factor ($D_{f}^{htha}$)</div>
+                    <div class="stat-value text-primary" id="htha_df_result">-</div>
+                    <div class="stat-desc">High Temperature Hydrogen Attack</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

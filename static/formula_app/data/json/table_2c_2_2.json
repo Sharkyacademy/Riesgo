@@ -1,0 +1,37 @@
+{
+  "drivers": {
+    "Severe": {
+      "description": "High wetting (>60%), high rainfall, coastal, chloride > 1500",
+      "temps": {
+        "low": 0.0,
+        "medium": 0.0,
+        "high": 0.0
+      }
+    },
+    "Moderate": {
+      "description": "Freq wet (30-60%), cooling tower downwind, chloride 300-1500",
+      "temps": {
+        "low": 0.0,
+        "medium": 0.0,
+        "high": 0.0
+      }
+    },
+    "Mild": {
+      "description": "Occasionally wet (<30%), moderate rainfall, chloride 60-300",
+      "temps": {
+        "low": 0.0,
+        "medium": 0.0,
+        "high": 0.0
+      }
+    },
+    "Dry": {
+      "description": "Very dry, cold, low rainfall, inside building, chloride < 60",
+      "temps": {
+        "low": 0.0,
+        "medium": 0.0,
+        "high": 0.0
+      }
+    }
+  },
+  "note": "Corrosion rates (mpy) to be filled based on Temp interpretation of Table 2.C.2.2"
+}

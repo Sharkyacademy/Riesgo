@@ -1,0 +1,338 @@
+<div id="amine_content" class="p-4">
+    <!-- Required Data Table -->
+    <div class="mb-6 animate-fade-in">
+        <h4 class="font-bold text-md text-blue-900 mb-2">Required Data (Table 2.C.3.1)</h4>
+        <div class="overflow-x-auto bg-base-100 rounded-box border shadow-sm">
+            <table class="table table-sm table-zebra w-full" id="table_scc_amine_required_data">
+                <thead class="bg-blue-900 text-white">
+                    <tr>
+                        <th>Required Data</th>
+                        <th>Comments</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody_scc_amine_required_data">
+                    <!-- Loaded via JS -->
+                    <tr><td colspan="2" class="text-center italic text-gray-400">Loading required data...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Step 1: Susceptibility Determination -->
+    <div id="div_amine_step1" class="mt-6 animate-fade-in">
+        <h4 class="font-bold text-md text-blue-900 mb-2">Step 1: Susceptibility Determination</h4>
+        <div class="text-gray-700 mb-4 text-sm">
+            Determine the susceptibility to amine cracking using the decision flow (Figure 2.C.3.1).
+        </div>
+
+        <!-- Decision Flow -->
+        <div class="space-y-4">
+            <!-- Q1: Cracks Present? -->
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text font-semibold">Are cracks present?</span>
+                </label>
+                <select id="sel_amine_cracks_present" class="select select-bordered select-sm w-full max-w-xs">
+                    <option value="" disabled selected>Select...</option>
+                    <option value="No">No</option>
+                    <option value="Yes">Yes</option>
+                </select>
+            </div>
+
+            <!-- Q2: Cracks Removed? (if cracks = Yes) -->
+            <div id="div_amine_cracks_removed" class="hidden form-control">
+                <label class="label">
+                    <span class="label-text font-semibold">Have cracks been removed?</span>
+                </label>
+                <select id="sel_amine_cracks_removed" class="select select-bordered select-sm w-full max-w-xs">
+                    <option value="" disabled selected>Select...</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+
+            <!-- Q3: Stress Relieved (PWHT)? (if cracks = No) -->
+            <div id="div_amine_stress_relieved" class="hidden form-control">
+                <label class="label">
+                    <span class="label-text font-semibold">Is the component stress relieved (PWHT)?</span>
+                </label>
+                <select id="sel_amine_stress_relieved" class="select select-bordered select-sm w-full max-w-xs">
+                    <option value="" disabled selected>Select...</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+
+            <!-- Q4: Exposed to Lean Amine? (if stress relieved = No) -->
+            <div id="div_amine_lean" class="hidden form-control">
+                <label class="label">
+                    <span class="label-text font-semibold">Is component exposed to lean amine?</span>
+                    <span class="label-text-alt text-gray-500">Lean = low levels of H₂S or CO₂</span>
+                </label>
+                <select id="sel_amine_lean" class="select select-bordered select-sm w-full max-w-xs">
+                    <option value="" disabled selected>Select...</option>
+                    <option value="No">No</option>
+                    <option value="Yes">Yes</option>
+                </select>
+            </div>
+
+            <!-- Q5: Exposed to MEA or DIPA? (if lean = Yes) -->
+            <div id="div_amine_mea_dipa" class="hidden form-control">
+                <label class="label">
+                    <span class="label-text font-semibold">Is component exposed to MEA or DIPA?</span>
+                </label>
+                <select id="sel_amine_mea_dipa" class="select select-bordered select-sm w-full max-w-xs">
+                    <option value="" disabled selected>Select...</option>
+                    <option value="No">No</option>
+                    <option value="Yes">Yes</option>
+                </select>
+            </div>
+
+            <!-- Q6: Exposed to DEA? (if MEA/DIPA = No) -->
+            <div id="div_amine_dea" class="hidden form-control">
+                <label class="label">
+                    <span class="label-text font-semibold">Is component exposed to DEA?</span>
+                </label>
+                <select id="sel_amine_dea" class="select select-bordered select-sm w-full max-w-xs">
+                    <option value="" disabled selected>Select...</option>
+                    <option value="No">No</option>
+                    <option value="Yes">Yes</option>
+                </select>
+            </div>
+
+            <!-- MEA/DIPA Path -->
+            <div id="div_amine_mea_dipa_path" class="hidden space-y-4 p-4 bg-gray-50 rounded-md border border-gray-300">
+                <h5 class="font-bold text-sm text-gray-700">MEA/DIPA Assessment</h5>
+                
+                <!-- Temperature -->
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text font-semibold">Maximum Process Temperature</span>
+                    </label>
+                    <div class="flex gap-2 items-center">
+                        <input type="number" id="inp_amine_temp_mea" class="input input-bordered input-sm w-32" 
+                               placeholder="e.g. 200" step="1" min="0" />
+                        <select id="sel_amine_temp_unit_mea" class="select select-bordered select-sm w-24">
+                            <option value="F">°F</option>
+                            <option value="C">°C</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Heat Traced? (if temp 100-180) -->
+                <div id="div_amine_heat_traced_mea" class="hidden form-control">
+                    <label class="label">
+                        <span class="label-text font-semibold">Is component heat traced?</span>
+                    </label>
+                    <select id="sel_amine_heat_traced_mea" class="select select-bordered select-sm w-full max-w-xs">
+                        <option value="" disabled selected>Select...</option>
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                </div>
+
+                <!-- Steamed Out? (if heat traced = No or temp < 100) -->
+                <div id="div_amine_steamed_mea" class="hidden form-control">
+                    <label class="label">
+                        <span class="label-text font-semibold">Has component been steamed out?</span>
+                        <span class="label-text-alt text-gray-500">Prior to water flushing</span>
+                    </label>
+                    <select id="sel_amine_steamed_mea" class="select select-bordered select-sm w-full max-w-xs">
+                        <option value="" disabled selected>Select...</option>
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- DEA Path -->
+            <div id="div_amine_dea_path" class="hidden space-y-4 p-4 bg-gray-50 rounded-md border border-gray-300">
+                <h5 class="font-bold text-sm text-gray-700">DEA Assessment</h5>
+                
+                <!-- Temperature -->
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text font-semibold">Maximum Process Temperature</span>
+                    </label>
+                    <div class="flex gap-2 items-center">
+                        <input type="number" id="inp_amine_temp_dea" class="input input-bordered input-sm w-32" 
+                               placeholder="e.g. 200" step="1" min="0" />
+                        <select id="sel_amine_temp_unit_dea" class="select select-bordered select-sm w-24">
+                            <option value="F">°F</option>
+                            <option value="C">°C</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Heat Traced? (if temp 140-180) -->
+                <div id="div_amine_heat_traced_dea" class="hidden form-control">
+                    <label class="label">
+                        <span class="label-text font-semibold">Is component heat traced?</span>
+                    </label>
+                    <select id="sel_amine_heat_traced_dea" class="select select-bordered select-sm w-full max-w-xs">
+                        <option value="" disabled selected>Select...</option>
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                </div>
+
+                <!-- Steamed Out? (if heat traced = No or temp < 140) -->
+                <div id="div_amine_steamed_dea" class="hidden form-control">
+                    <label class="label">
+                        <span class="label-text font-semibold">Has component been steamed out?</span>
+                        <span class="label-text-alt text-gray-500">Prior to water flushing</span>
+                    </label>
+                    <select id="sel_amine_steamed_dea" class="select select-bordered select-sm w-full max-w-xs">
+                        <option value="" disabled selected>Select...</option>
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Message -->
+        <div id="err_amine_step1" class="hidden text-red-600 text-sm mt-4 font-semibold"></div>
+
+        <!-- Result Display -->
+        <div id="div_amine_step1_result" class="hidden mt-6 p-4 bg-blue-50 border border-blue-200 rounded-md">
+            <div class="flex items-center justify-between">
+                <span class="font-bold text-gray-800">Susceptibility:</span>
+                <span id="val_amine_susceptibility" class="text-2xl font-extrabold text-blue-900">--</span>
+            </div>
+            <div id="msg_amine_susceptibility_note" class="text-sm text-gray-600 mt-2 italic"></div>
+        </div>
+    </div>
+
+    <!-- Step 2: Severity Index -->
+    <div id="div_amine_step2" class="hidden mt-8">
+        <h4 class="font-bold text-lg text-blue-900 mb-3 border-b pb-2">Step 2: Severity Index</h4>
+        
+        <div class="bg-gray-50 p-4 rounded-md">
+            <p class="text-sm text-gray-700 mb-4">
+                Determine the severity index from Table 2.C.2.2 based on the susceptibility determined in Step 1.
+            </p>
+            
+            <!-- Severity Index Result -->
+            <div id="div_amine_step2_result" class="p-4 bg-white border border-gray-300 rounded-md">
+                <div class="flex items-center justify-between">
+                    <span class="font-bold text-gray-800">Severity Index (SVI):</span>
+                    <span id="val_amine_svi" class="text-2xl font-extrabold text-blue-900">--</span>
+                </div>
+                <div id="msg_amine_svi_note" class="text-sm text-gray-600 mt-2 italic"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 3: Time in Service -->
+    <div id="div_amine_step3" class="hidden mt-8">
+        <h4 class="font-bold text-lg text-blue-900 mb-3 border-b pb-2">Step 3: Time in Service</h4>
+        
+        <div class="bg-gray-50 p-4 rounded-md">
+            <p class="text-sm text-gray-700 mb-4">
+                Determine the time in service (age) since the last Level A, B, or C inspection was performed with no cracking detected or cracking was repaired.
+            </p>
+            
+            <!-- Date Input -->
+            <div class="form-control w-full max-w-xs">
+                <label class="label">
+                    <span class="label-text font-semibold">Date of Installation (or last effective inspection)</span>
+                </label>
+                <input type="date" id="inp_amine_inspection_date" class="input input-bordered input-sm w-full max-w-xs" />
+                <div id="err_amine_step3" class="hidden text-red-600 text-sm mt-1"></div>
+            </div>
+
+            <!-- Age Result (simple text) -->
+            <div id="div_amine_step3_result" class="hidden mt-2">
+                <span class="text-gray-600">Calculated Age: </span>
+                <span id="val_amine_age" class="font-bold text-gray-800">--</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 4: Inspection History -->
+    <div id="div_amine_step4" class="hidden mt-8">
+        <h4 class="font-bold text-lg text-blue-900 mb-3 border-b pb-2">Step 4: Inspection History</h4>
+        
+        <div class="bg-gray-50 p-4 rounded-md">
+            <p class="text-sm text-gray-700 mb-4">
+                Determine the number of inspections and corresponding inspection effectiveness category for all past inspections. Combine inspections to the highest effectiveness using Part 2, Section 3.4.3 (2:1 equivalency rule).
+            </p>
+            
+            <!-- Inspection Category Inputs -->
+            <div class="grid grid-cols-2 gap-4 max-w-lg">
+                <div class="form-control">
+                    <label class="label"><span class="label-text font-semibold">Category A (Highly Effective)</span></label>
+                    <input type="number" id="inp_amine_insp_A" class="input input-bordered input-sm w-full" value="0" min="0" />
+                </div>
+                <div class="form-control">
+                    <label class="label"><span class="label-text font-semibold">Category B (Usually Effective)</span></label>
+                    <input type="number" id="inp_amine_insp_B" class="input input-bordered input-sm w-full" value="0" min="0" />
+                </div>
+                <div class="form-control">
+                    <label class="label"><span class="label-text font-semibold">Category C (Fairly Effective)</span></label>
+                    <input type="number" id="inp_amine_insp_C" class="input input-bordered input-sm w-full" value="0" min="0" />
+                </div>
+                <div class="form-control">
+                    <label class="label"><span class="label-text font-semibold">Category D (Poorly Effective)</span></label>
+                    <input type="number" id="inp_amine_insp_D" class="input input-bordered input-sm w-full" value="0" min="0" />
+                </div>
+            </div>
+
+            <!-- Equivalency Result -->
+            <div id="div_amine_step4_result" class="hidden mt-4 p-3 bg-white border border-gray-300 rounded-md">
+                <div class="font-bold text-gray-800">Final Effective Inspection (after equivalency):</div>
+                <div class="text-blue-800 text-lg mt-1">
+                    <span id="val_amine_final_eff_cat" class="font-bold">--</span> 
+                    <span class="text-sm text-gray-600">(Count: <span id="val_amine_final_eff_count">--</span>)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 5: Base Damage Factor -->
+    <div id="div_amine_step5" class="hidden mt-8">
+        <h4 class="font-bold text-lg text-blue-900 mb-3 border-b pb-2">Step 5: Base Damage Factor</h4>
+        
+        <div class="bg-gray-50 p-4 rounded-md">
+            <p class="text-sm text-gray-700 mb-4">
+                Determine the Base Damage Factor from Table 2.C.1.3 using the Severity Index (Step 2), Time in Service (Step 3), and Inspection History (Step 4).
+            </p>
+            
+            <!-- Base DF Result -->
+            <div id="div_amine_step5_result" class="p-4 bg-white border border-gray-300 rounded-md">
+                <div class="flex items-center justify-between">
+                    <span class="font-bold text-gray-800">Base Damage Factor (D<sub>f-base</sub>):</span>
+                    <span id="val_amine_base_df" class="text-2xl font-extrabold text-blue-900">--</span>
+                </div>
+                <div id="msg_amine_base_df_note" class="text-sm text-gray-600 mt-2 italic"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 6: Final Damage Factor -->
+    <div id="div_amine_step6" class="hidden mt-8">
+        <h4 class="font-bold text-lg text-blue-900 mb-3 border-b pb-2">Step 6: Final Damage Factor</h4>
+        
+        <div class="bg-gray-50 p-4 rounded-md">
+            <p class="text-sm text-gray-700 mb-4">
+                Calculate the escalation in the Damage Factor based on the time in service since the last inspection using Equation (2.C.2). The probability for cracking increases with time since the last inspection.
+            </p>
+            
+            <!-- Formula Display -->
+            <div class="mb-4 p-3 bg-gray-100 border border-gray-300 rounded-md text-sm">
+                <div class="text-gray-600 text-xs mb-1">Equation 2.C.2:</div>
+                <div class="text-center">
+                    D<sub>f</sub><sup>amine</sup> = min( (D<sub>fB</sub><sup>amine</sup> × (max(age, 1.0))<sup>1.1</sup>) / F<sub>OM</sub>, 5000 )
+                </div>
+            </div>
+            
+            <!-- Final DF Result -->
+            <div id="div_amine_step6_result" class="p-6 bg-blue-50 border border-blue-200 rounded-md text-center">
+                <div class="text-gray-700 font-semibold mb-2">Final Amine Cracking Damage Factor</div>
+                <div id="val_amine_final_df" class="text-5xl font-extrabold text-blue-900 mb-2">--</div>
+                <div id="msg_amine_final_df_note" class="text-sm text-green-600 font-semibold">Calculation Complete</div>
+            </div>
+        </div>
+    </div>
+</div>

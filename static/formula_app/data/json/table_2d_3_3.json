@@ -1,0 +1,15 @@
+[
+    {"type": "Unknown/unspecified", "factor": 1.5},
+    {"type": "Asbestos", "factor": 1.5},
+    {"type": "Cellular glass", "factor": 0.75},
+    {"type": "Expanded perlite", "factor": 1.0},
+    {"type": "Fiberglass", "factor": 1.25},
+    {"type": "Type E fiberglass", "factor": 1.25},
+    {"type": "Mineral wool", "factor": 1.5},
+    {"type": "Mineral wool (water resistant)", "factor": 1.25},
+    {"type": "Calcium silicate", "factor": 1.25},
+    {"type": "Flexible aerogel", "factor": 1.25},
+    {"type": "Microporous blanket", "factor": 1.0},
+    {"type": "Intumescent coating", "factor": 0.75},
+    {"type": "Cementitious coating", "factor": 1.0}
+]

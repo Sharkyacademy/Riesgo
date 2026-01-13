@@ -1,0 +1,10 @@
+{
+    "description": "Table 2.C.6.3 - Online Monitoring Adjustment Factors for HIC/SOHIC-HF",
+    "note": "The adjustment factors shown above are estimates providing a measure of the relative effectiveness of various online monitoring methods. Factors based on the user's experience can be used as a substitute for the values presented in this table.",
+    "factors": {
+        "None": 1,
+        "Key_Process_Variables": 2,
+        "Hydrogen_Probes": 2,
+        "Both": 4
+    }
+}

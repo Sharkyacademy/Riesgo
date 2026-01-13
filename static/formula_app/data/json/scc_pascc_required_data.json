@@ -1,0 +1,37 @@
+{
+    "description": "Table 2.C.8.1 - Data Required for Determination of the DF—PASCC",
+    "required_data": [
+        {
+            "parameter": "Susceptibility (Low, Medium, High)",
+            "comment": "The susceptibility is determined by expert advice or using the procedures in this section."
+        },
+        {
+            "parameter": "Thermal history (solution annealed, stabilized before welding, stabilized after welding)",
+            "comment": "Determine the thermal history of the material. Consider especially whether thermal stabilization heat treatment was performed after all welding."
+        },
+        {
+            "parameter": "Maximum operating temperature, °F (°C)",
+            "comment": "Determine the maximum operating temperature (TMO) of the component. Consider any high temperature exposure such as during decoking."
+        },
+        {
+            "parameter": "Presence of sulfides, moisture, and oxygen: during operation? (Yes or No), during shutdown? (Yes or No)",
+            "comment": "Determine whether these constituents are present in the component. If uncertain, consult with a process engineer. Consider whether high-temperature component in sulfidic service is opened to environment during shutdown."
+        },
+        {
+            "parameter": "Downtime protection used? (Yes or No)",
+            "comment": "Determine whether downtime protection for PASCC has been provided per NACE RP0170. This may include soda ash washing, nitrogen blanketing, or dehumidification."
+        },
+        {
+            "parameter": "Age (years)",
+            "comment": "Use inspection history to determine the time since the last SCC inspection."
+        },
+        {
+            "parameter": "Inspection effectiveness category",
+            "comment": "The effectiveness category that has been performed on the component."
+        },
+        {
+            "parameter": "Number of inspections",
+            "comment": "The number of inspections in each effectiveness category that have been performed."
+        }
+    ]
+}

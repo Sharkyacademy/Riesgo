@@ -1,0 +1,38 @@
+{
+  "High": {
+    "As-welded": [
+      { "max": 200, "result": "Low" },
+      { "min": 200, "max": 237, "result": "Medium" },
+      { "min": 237, "result": "High" }
+    ],
+    "PWHT": [
+      { "max": 200, "result": "None" },
+      { "min": 200, "max": 237, "result": "Low" },
+      { "min": 237, "result": "Medium" }
+    ]
+  },
+  "Moderate": {
+    "As-welded": [
+      { "max": 200, "result": "Low" },
+      { "min": 200, "max": 237, "result": "Medium" },
+      { "min": 237, "result": "High" }
+    ],
+    "PWHT": [
+      { "max": 200, "result": "None" },
+      { "min": 200, "max": 237, "result": "None" },
+      { "min": 237, "result": "Low" }
+    ]
+  },
+  "Low": {
+    "As-welded": [
+      { "max": 200, "result": "Low" },
+      { "min": 200, "max": 237, "result": "Low" },
+      { "min": 237, "result": "Medium" }
+    ],
+    "PWHT": [
+      { "max": 200, "result": "None" },
+      { "min": 200, "max": 237, "result": "None" },
+      { "min": 237, "result": "None" }
+    ]
+  }
+}

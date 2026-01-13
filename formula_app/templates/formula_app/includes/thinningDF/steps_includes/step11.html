@@ -1,0 +1,89 @@
+<div class="flex flex-col h-full w-full">
+    <div class="mb-4">
+        <h2 class="text-2xl font-bold text-primary mb-4 border-b pb-2">Step 11. Reliability Parameters (&beta;)</h2>
+        <p class="text-sm text-gray-600 mb-4">
+            Calculate the reliability parameters (&beta;<sup>Thin</sup><sub>1</sub>, &beta;<sup>Thin</sup><sub>2</sub>,
+            &beta;<sup>Thin</sup><sub>3</sub>) using Equation 2.18 based on the thinning factor (A<sub>rt</sub>) and
+            strength ratio (SR<sup>Thin</sup><sub>p</sub>).
+        </p>
+
+        <!-- Review Data Inputs -->
+        <div class="p-4 bg-gray-50 rounded-box border border-gray-200 mb-6">
+            <h3 class="font-bold text-gray-700 mb-2">Review Parameters (From Step 5 & 7)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="form-control">
+                    <label class="label"><span class="label-text">Ar Thinning Parameter (A<sub>rt</sub>)</span></label>
+                    <input type="text" id="step11_art" class="input input-bordered w-full bg-gray-100" readonly />
+                </div>
+                <div class="form-control">
+                    <label class="label"><span class="label-text">Strength Ratio
+                            (SR<sup>Thin</sup><sub>p</sub>)</span></label>
+                    <input type="text" id="step11_srp" class="input input-bordered w-full bg-gray-100" readonly />
+                </div>
+            </div>
+
+            <div class="mt-4 text-xs text-gray-500">
+                <strong>Assumed COVs:</strong> COV<sub>&Delta;t</sub> = 0.20, COV<sub>Sf</sub> = 0.20, COV<sub>P</sub> =
+                0.05
+            </div>
+        </div>
+
+        <!-- Calculation Action -->
+        <div class="flex justify-end">
+            <button id="step11_calc_btn" class="btn btn-primary">Calculate Beta (&beta;)</button>
+        </div>
+
+        <!-- Error Container -->
+        <div id="step11_error_container" class="alert alert-error hidden mb-4 mt-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span id="step11_error_message">Error!</span>
+        </div>
+
+        <!-- Results Container -->
+        <div id="step11_result_container" class="hidden mt-6 flex flex-col gap-4">
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Beta 1 -->
+                <div class="stat bg-base-100 shadow rounded-box border border-base-200">
+                    <div class="stat-title text-sm font-bold">&beta;<sup>Thin</sup><sub>1</sub> (State 1)</div>
+                    <div class="stat-value text-info text-2xl" id="step11_beta1">0.0000</div>
+                    <div class="stat-desc">D<sub>S1</sub> = 1</div>
+                </div>
+
+                <!-- Beta 2 -->
+                <div class="stat bg-base-100 shadow rounded-box border border-base-200">
+                    <div class="stat-title text-sm font-bold">&beta;<sup>Thin</sup><sub>2</sub> (State 2)</div>
+                    <div class="stat-value text-info text-2xl" id="step11_beta2">0.0000</div>
+                    <div class="stat-desc">D<sub>S2</sub> = 2</div>
+                </div>
+
+                <!-- Beta 3 -->
+                <div class="stat bg-base-100 shadow rounded-box border border-base-200">
+                    <div class="stat-title text-sm font-bold">&beta;<sup>Thin</sup><sub>3</sub> (State 3)</div>
+                    <div class="stat-value text-info text-2xl" id="step11_beta3">0.0000</div>
+                    <div class="stat-desc">D<sub>S3</sub> = 4</div>
+                </div>
+            </div>
+
+            <!-- Info Message -->
+            <div class="alert alert-info alert-soft">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    class="stroke-current shrink-0 w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <div>
+                    <span class="font-bold">Info:</span>
+                    <span class="text-sm">These parameters represent reliability indices for each damage state
+                        scenario.</span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>

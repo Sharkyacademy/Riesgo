@@ -1,0 +1,25 @@
+{
+    "modifiers": [
+        {
+            "variable": "Chloride",
+            "condition": "< 10 ppm",
+            "adjustment": -1
+        },
+        {
+            "variable": "Oxygen",
+            "condition": "< 90 ppb",
+            "adjustment": -1
+        },
+        {
+            "variable": "Chloride",
+            "condition": "> 100 ppm",
+            "adjustment": 1
+        },
+        {
+            "variable": "Deposits",
+            "condition": "Present",
+            "adjustment": 1
+        }
+    ],
+    "levels": ["None", "Low", "Medium", "High"]
+}

@@ -1,0 +1,62 @@
+{
+  "title": "Table 2.D.3.1—Data Required for Determination of the DF—CUI",
+  "headers": ["Required Data", "Comments"],
+  "rows": [
+    {
+      "data": "Insulation type",
+      "comments": "Type of insulation per Table 2.D.3.3."
+    },
+    {
+      "data": "Driver",
+      "comments": "The drivers for external CUI corrosion. See 2.D.2.8.2 for driver descriptions and selection."
+    },
+    {
+      "data": "Corrosion rate, mpy (mm/y)",
+      "comments": "Corrosion rate for external CUI corrosion. Based on temperature, and driver (see below), or user input."
+    },
+    {
+      "data": "Coating installation date",
+      "comments": "The date the coating was installed."
+    },
+    {
+      "data": "Coating quality",
+      "comments": "Relates to the type of coating applied under the insulation, for example:<br>None—no coating or primer only;<br>Medium—single coat epoxy;<br>High—multi-coat epoxy or filled epoxy."
+    },
+    {
+      "data": "Equipment design/fabrication penalty (Yes/No)",
+      "comments": "If the equipment has a design or fabrication detail that allows water to pool and increase metal loss rates, such as piping supported directly on beams, vessel external stiffener rings, or insulation supports, or other such configuration that does not allow egress and/or does not allow for proper coating maintenance, external metal loss can be more severe."
+    },
+    {
+      "data": "Complexity",
+      "comments": "The number of protrusions such as branch connections, nozzles, pipe supports, poorly designed insulation support rings, etc., and any design feature that would promote the retention and/or collection of moisture.<br>The complexity is defined as follows:<br>Below Average—penetrations in the insulation system do not exist;<br>Average—some penetrations in the insulation systems, or the insulation system is slightly complex do to some appurtenances or multiple branches in a piping system;<br>Above Average—many penetrations in the insulation systems, or the insulation system is very complex do to many appurtenances or multiple branches in a piping system."
+    },
+    {
+      "data": "Insulation condition? (Above Average, Average, or Below Average)",
+      "comments": "Determine the insulation condition based on external visual inspection of jacketing condition. Above Average insulation will show no signs of damage (i.e. punctures, torn, or missing waterproofing, and missing caulking) or staining (staining (i.e. brown, green, or black stains). Take careful note of areas where water water can enter into the insulation system, such as inspection ports and areas where the insulation is penetrated (i.e. nozzles, ring supports, and clips). Horizontal areas also accumulate water.<br>Average insulation condition will have good jacketing with some areas of failed weatherproofing or small damaged areas.<br>NOTE: Penetrations to CUI susceptible/critical insulation systems found in poor plants. This should be considered when determining if any adjustment or penalty multipliers apply."
+    },
+    {
+      "data": "Pipe support penalty? (Yes/No)",
+      "comments": "If piping is supported directly on beams or other such configuration that does not allow for proper coating maintenance, CUI can be more severe."
+    },
+    {
+      "data": "Interface penalty? (Yes/No)",
+      "comments": "If the piping has an interface where either soil or water, this area is subject to increased corrosion."
+    },
+    {
+      "data": "Inspection effectiveness category",
+      "comments": "The effectiveness category that has been performed on the component."
+    },
+    {
+      "data": "Number of inspections",
+      "comments": "The number of inspections in each effectiveness category that have been performed."
+    },
+    {
+      "data": "Thickness reading",
+      "comments": "The thickness used for the DF calculation is either the furnished thickness or the measured thickness (see Part 2, Section 4.5.6)."
+    },
+    {
+      "data": "Thickness reading date",
+      "comments": "The date at which the thickness measurement used in the calculation was obtained. If no acceptable inspection has been conducted, the installation date should be used."
+    }
+  ]
+}

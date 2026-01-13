@@ -1,0 +1,43 @@
+{
+  "carbon_steels": [
+    {"min_yield_strength": 200, "curve_a": 42, "curve_b": 21, "curve_c": 0, "curve_d": -15},
+    {"min_yield_strength": 210, "curve_a": 38, "curve_b": 17, "curve_c": -4, "curve_d": -18},
+    {"min_yield_strength": 220, "curve_a": 36, "curve_b": 15, "curve_c": -7, "curve_d": -21},
+    {"min_yield_strength": 230, "curve_a": 33, "curve_b": 1, "curve_c": -9, "curve_d": -23},
+    {"min_yield_strength": 240, "curve_a": 31, "curve_b": 10, "curve_c": -11, "curve_d": -26},
+    {"min_yield_strength": 260, "curve_a": 27, "curve_b": 6, "curve_c": -15, "curve_d": -29},
+    {"min_yield_strength": 280, "curve_a": 24, "curve_b": 3, "curve_c": -18, "curve_d": -32},
+    {"min_yield_strength": 300, "curve_a": 22, "curve_b": 1, "curve_c": -21, "curve_d": -35},
+    {"min_yield_strength": 320, "curve_a": 19, "curve_b": -2, "curve_c": -23, "curve_d": -37},
+    {"min_yield_strength": 340, "curve_a": 17, "curve_b": -4, "curve_c": -25, "curve_d": -39},
+    {"min_yield_strength": 360, "curve_a": 15, "curve_b": -6, "curve_c": -27, "curve_d": -41}
+  ],
+  "low_alloy_steels": [
+    {"min_yield_strength": 200, "curve_a": 55, "curve_b": 33, "curve_c": 12, "curve_d": -2},
+    {"min_yield_strength": 210, "curve_a": 50, "curve_b": 29, "curve_c": 8, "curve_d": -7},
+    {"min_yield_strength": 220, "curve_a": 46, "curve_b": 25, "curve_c": 4, "curve_d": -11},
+    {"min_yield_strength": 230, "curve_a": 43, "curve_b": 22, "curve_c": 1, "curve_d": -14},
+    {"min_yield_strength": 240, "curve_a": 40, "curve_b": 19, "curve_c": -2, "curve_d": -16},
+    {"min_yield_strength": 250, "curve_a": 38, "curve_b": 17, "curve_c": -4, "curve_d": -19},
+    {"min_yield_strength": 260, "curve_a": 36, "curve_b": 15, "curve_c": -6, "curve_d": -21},
+    {"min_yield_strength": 270, "curve_a": 34, "curve_b": 13, "curve_c": 8, "curve_d": -23},
+    {"min_yield_strength": 280, "curve_a": 32, "curve_b": 11, "curve_c": -10, "curve_d": -24},
+    {"min_yield_strength": 290, "curve_a": 31, "curve_b": 10, "curve_c": -11, "curve_d": -26},
+    {"min_yield_strength": 300, "curve_a": 30, "curve_b": 8, "curve_c": -13, "curve_d": -27},
+    {"min_yield_strength": 310, "curve_a": 28, "curve_b": 7, "curve_c": -14, "curve_d": -28},
+    {"min_yield_strength": 320, "curve_a": 27, "curve_b": 6, "curve_c": -15, "curve_d": -30},
+    {"min_yield_strength": 330, "curve_a": 26, "curve_b": 5, "curve_c": -16, "curve_d": -31},
+    {"min_yield_strength": 340, "curve_a": 25, "curve_b": 4, "curve_c": -17, "curve_d": -32},
+    {"min_yield_strength": 360, "curve_a": 23, "curve_b": 2, "curve_c": -19, "curve_d": -34},
+    {"min_yield_strength": 380, "curve_a": 21, "curve_b": 0, "curve_c": -21, "curve_d": -36},
+    {"min_yield_strength": 400, "curve_a": 19, "curve_b": -2, "curve_c": -23, "curve_d": -37},
+    {"min_yield_strength": 420, "curve_a": 18, "curve_b": -3, "curve_c": -24, "curve_d": -39},
+    {"min_yield_strength": 440, "curve_a": 16, "curve_b": -5, "curve_c": -26, "curve_d": -40},
+    {"min_yield_strength": 460, "curve_a": 15, "curve_b": -6, "curve_c": -27, "curve_d": -42},
+    {"min_yield_strength": 480, "curve_a": 14, "curve_b": -7, "curve_c": -28, "curve_d": -43},
+    {"min_yield_strength": 500, "curve_a": 13, "curve_b": -8, "curve_c": -29, "curve_d": -44},
+    {"min_yield_strength": 520, "curve_a": 12, "curve_b": -9, "curve_c": -30, "curve_d": -45},
+    {"min_yield_strength": 540, "curve_a": 11, "curve_b": -10, "curve_c": -31, "curve_d": -46},
+    {"min_yield_strength": 560, "curve_a": 10, "curve_b": -11, "curve_c": -32, "curve_d": -47}
+  ]
+}

@@ -1,0 +1,49 @@
+<div id="damage_mechanism_selection" class="card bg-white shadow-xl border border-gray-100 p-6 animate-fade-in">
+    <h2 class="text-xl font-semibold text-blue-950 mb-4 border-b pb-2">Step 0: Select Active Damage Mechanisms</h2>
+    <p class="text-gray-600 mb-6">Select the damage mechanisms applicable to this component to proceed with the assessment.</p>
+    
+    <div class="space-y-4">
+        
+        <div class="form-control">
+            <label class="label cursor-pointer justify-start gap-4">
+                <input type="checkbox" id="dm_thinning" class="checkbox checkbox-primary" />
+                <span class="label-text font-medium text-lg">Thinning (Corrosion/Erosion)</span>
+            </label>
+        </div>
+
+        <div class="form-control">
+            <label class="label cursor-pointer justify-start gap-4">
+                <input type="checkbox" id="dm_scc" class="checkbox checkbox-primary" />
+                <span class="label-text font-medium text-lg">Stress Corrosion Cracking (SCC)</span>
+            </label>
+        </div>
+
+        <div class="form-control">
+            <label class="label cursor-pointer justify-start gap-4">
+                <input type="checkbox" id="dm_external" class="checkbox checkbox-primary" />
+                <span class="label-text font-medium text-lg">External Damage</span>
+            </label>
+        </div>
+
+            <div class="form-control">
+            <label class="label cursor-pointer justify-start gap-4">
+                <input type="checkbox" id="dm_htha" class="checkbox checkbox-primary" />
+                <span class="label-text font-medium text-lg">High Temperature Hydrogen Attack (HTHA)</span>
+            </label>
+        </div>
+
+        <div class="form-control">
+            <label class="label cursor-pointer justify-start gap-4">
+                <input type="checkbox" id="dm_brittle" class="checkbox checkbox-primary" />
+                <span class="label-text font-medium text-lg">Brittle Fracture</span>
+            </label>
+        </div>
+    </div>
+
+    <div class="mt-8 flex justify-end items-center gap-4">
+        <div id="dm_selection_error" class="text-error font-medium hidden animate-fade-in">Reference Error</div>
+        <button id="btn_continue_dm" class="btn btn-primary text-white hover-lift">
+            Continue
+        </button>
+    </div>
+</div>

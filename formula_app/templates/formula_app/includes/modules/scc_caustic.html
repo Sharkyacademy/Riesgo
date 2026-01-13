@@ -1,0 +1,211 @@
+                <!-- Caustic Cracking Inputs -->
+                <div id="div_scc_caustic_inputs" class="space-y-4 animate-fade-in">
+                    
+                    <!-- Question 1: Cracks Present? -->
+                    <div class="form-control">
+                        <label class="label"><span class="label-text font-semibold">Are cracks present?</span></label>
+                        <select id="scc_caustic_cracks_present" class="select select-bordered select-sm w-full max-w-xs">
+                            <option value="">Select...</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+
+                    <!-- Question 2: Cracks Removed? (Dependent on Q1=Yes) -->
+                    <div id="div_scc_caustic_cracks_removed" class="form-control hidden">
+                        <label class="label"><span class="label-text font-semibold">Have the cracks been removed?</span></label>
+                        <select id="scc_caustic_cracks_removed" class="select select-bordered select-sm w-full max-w-xs">
+                            <option value="">Select...</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+
+                    <!-- Question 3: Stress Relieved? (Dependent on Q1=No OR Q2=Yes) -->
+                    <div id="div_scc_caustic_stress_relieved" class="form-control hidden">
+                        <label class="label"><span class="label-text font-semibold">Is the component PWHT / Stress Relieved?</span></label>
+                        <select id="scc_caustic_stress_relieved" class="select select-bordered select-sm w-full max-w-xs">
+                            <option value="">Select...</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+
+                    <!-- Detailed Inputs (Dependent on Q3=No) -->
+                    <div id="div_scc_caustic_details" class="hidden space-y-4">
+                        
+                        <!-- Unit Selection (F or C) -->
+                         <div class="form-control w-full max-w-xs">
+                             <label class="label">
+                                 <span class="label-text font-semibold">Temperature Unit</span>
+                             </label>
+                             <select id="scc_caustic_temp_unit" class="select select-bordered select-sm">
+                                 <option value="F">Fahrenheit (°F)</option>
+                                 <option value="C">Celsius (°C)</option>
+                             </select>
+                         </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+                        <div class="form-control w-full">
+                            <label class="label">
+                                <span class="label-text font-semibold">NaOH Concentration (wt%)</span>
+                            </label>
+                            <input type="number" id="scc_caustic_naoh_conc" class="input input-bordered w-full" placeholder="e.g. 10" />
+                        </div>
+
+                        <div class="form-control w-full">
+                            <label class="label">
+                                <span class="label-text font-semibold">Max Process Temperature (deg F)</span>
+                            </label>
+                            <input type="number" id="scc_caustic_temp" class="input input-bordered w-full" placeholder="e.g. 150" />
+                        </div>
+                    </div>
+
+                    <!-- Graph Visualization Container -->
+                    <div id="div_scc_caustic_graph" class="mt-4 hidden p-4 border rounded-lg bg-base-100 flex flex-col items-center">
+                        <h4 class="font-bold text-gray-600 mb-2">Susceptibility Graph (Figure 2.C.4.1)</h4>
+                        
+                        <div class="relative w-full max-w-lg aspect-video bg-gray-200 rounded flex items-center justify-center overflow-hidden border border-gray-300">
+                             <img src="/static/formula_app/img/nace_caustic_graph.png" alt="NACE Caustic Soda Service Graph" class="w-full h-full object-contain" />
+                            
+                            <!-- Overlay Result -->
+                            <div id="scc_caustic_graph_overlay" class="absolute inset-0 flex items-center justify-center pointer-events-none hidden bg-black/5">
+                                <div class="badge badge-lg p-4 shadow-xl text-lg font-bold" id="scc_caustic_graph_badge">
+                                    Testing Point
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Area A is now determined automatically by Graph Logic - HIDDEN -->
+                    <div class="hidden">
+                        <input type="checkbox" id="scc_caustic_area_a" class="hidden">
+                    </div>
+
+                        <!-- Heat Traced (Vis dependent on Area A) -->
+                        <div id="div_scc_caustic_heat_traced" class="form-control hidden">
+                             <label class="label"><span class="label-text font-semibold">Is the component Heat Traced?</span></label>
+                            <select id="scc_caustic_heat_traced" class="select select-bordered select-sm w-full max-w-xs">
+                                <option value="">Select...</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+
+                        <!-- Steamed Out (Vis dependent on Heat Traced) -->
+                        <div id="div_scc_caustic_steamed_out" class="form-control hidden">
+                             <label class="label"><span class="label-text font-semibold">Is the component Steamed Out?</span></label>
+                            <select id="scc_caustic_steamed_out" class="select select-bordered select-sm w-full max-w-xs">
+                                <option value="">Select...</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Result Display (Step 1) -->
+                    <div id="scc_caustic_result" class="hidden mt-4">
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-bold text-gray-900">Susceptibility Category (Step 1):</h3>
+                            <div class="text-lg font-bold" id="scc_caustic_susceptibility_val">--</div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Severity Index Result -->
+                    <div id="div_scc_caustic_step2" class="hidden mt-6 animate-fade-in pl-0">
+                        <h3 class="font-bold text-lg text-blue-900 mb-2">Step 2: Severity Index Determination</h3>
+        <div class="text-gray-700">
+            Based on the Susceptibility determined in Step 1, the Severity Index (S<sub>VI</sub>) is <span id="scc_caustic_svi_val" class="font-bold text-black text-lg">--</span>.
+        </div>
+                         <div class="mt-2 text-xs text-green-600 font-semibold hidden" id="msg_step2_saved">
+                                Value saved to session!
+                         </div>
+                    </div>
+
+                    <!-- Step 3: Time in Service -->
+                    <div id="div_scc_caustic_step3" class="hidden mt-6 animate-fade-in pl-0">
+                         <h3 class="font-bold text-lg text-blue-900 mb-2">Step 3: Time in Service Determination</h3>
+                         <div class="form-control w-full max-w-xs">
+                            <label class="label">
+                                <span class="label-text font-semibold">Date of Installation (or last effective inspection)</span>
+                            </label>
+                            <input type="date" id="scc_caustic_install_date" class="input input-bordered w-full max-w-xs" />
+                            <label class="label">
+                                <span class="label-text-alt text-gray-500">Calculated Age: <span id="scc_caustic_age_val" class="font-bold text-black">--</span> years</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Inspection History -->
+                    <div id="div_scc_caustic_step4" class="hidden mt-6 animate-fade-in pl-0">
+                         <h3 class="font-bold text-lg text-blue-900 mb-2">Step 4: Inspection History</h3>
+                         <div class="text-gray-700 mb-2">Enter the number of inspections performed during the in-service time for each category (Section 2.C.4.6.2).</div>
+                         
+                         <div class="grid grid-cols-2 gap-4 max-w-lg">
+                             <div class="form-control">
+                                 <label class="label"><span class="label-text">Category A (Highly Effective)</span></label>
+                                 <input type="number" id="scc_caustic_insp_A" class="input input-bordered w-full" value="0" min="0" />
+                             </div>
+                             <div class="form-control">
+                                 <label class="label"><span class="label-text">Category B (Usually Effective)</span></label>
+                                 <input type="number" id="scc_caustic_insp_B" class="input input-bordered w-full" value="0" min="0" />
+                             </div>
+                             <div class="form-control">
+                                 <label class="label"><span class="label-text">Category C (Fairly Effective)</span></label>
+                                 <input type="number" id="scc_caustic_insp_C" class="input input-bordered w-full" value="0" min="0" />
+                             </div>
+                             <div class="form-control">
+                                 <label class="label"><span class="label-text">Category D (Poorly Effective)</span></label>
+                                 <input type="number" id="scc_caustic_insp_D" class="input input-bordered w-full" value="0" min="0" />
+                             </div>
+                         </div>
+                         
+                         <div id="scc_caustic_step4_result" class="mt-4 p-3 bg-gray-50 rounded hidden">
+                             <div class="font-bold text-gray-900">Final Effective Inspection (after equivalency):</div>
+                             <div class="text-blue-800 text-lg">
+                                 <span id="scc_caustic_final_eff_cat" class="font-bold">--</span> 
+                                 <span class="text-sm text-gray-600">(Count: <span id="scc_caustic_final_eff_count">--</span>)</span>
+                             </div>
+                         </div>
+                    </div>
+
+                    <!-- Step 5: Base Damage Factor -->
+                    <div id="div_scc_caustic_step5" class="hidden mt-6 animate-fade-in pl-0">
+                         <h3 class="font-bold text-lg text-blue-900 mb-2">Step 5: Base Damage Factor Determination</h3>
+                         <div class="text-gray-700">Based on the Severity Index (Step 2) and Inspection History (Step 4):</div>
+                         
+                         <div class="mt-2 p-4 bg-blue-50 border border-blue-200 rounded-md">
+                             <div class="flex items-center justify-between">
+                                 <span class="font-bold text-gray-800">Base Damage Factor (<span class="italic">D</span><sub>fB</sub><sup>caustic</sup>):</span>
+                                 <span id="scc_caustic_base_df_val" class="text-2xl font-extrabold text-blue-900">--</span>
+                             </div>
+                         </div>
+                    </div>
+
+                    <!-- Step 6: Final Damage Factor -->
+                     <div id="div_scc_caustic_step6" class="hidden mt-6 border-t pt-4 animate-fade-in">
+                         <h4 class="text-md font-bold text-blue-900 mb-2">Step 6: Final Damage Factor Calculation</h4>
+                         <p class="text-sm text-gray-600 mb-4">
+                             Calculate the escalation in the DF based on the time in service since the last inspection using the age from Step 3 and Equation (2.C.3).
+                         </p>
+                         
+                         <div class="alert bg-gray-50 border border-gray-200 shadow-sm mb-4">
+                             <div>
+                                 <div class="text-xs text-gray-500 mb-1">Equation 2.C.3:</div>
+                                 <div class="font-mono text-sm text-gray-700">
+                                     D<sub>f</sub><sup>caustic</sup> = min( D<sub>fB</sub><sup>caustic</sup> &times; (max(age, 1.0))<sup>1.1</sup>, 5000 )
+                                 </div>
+                             </div>
+                         </div>
+
+                         <div class="p-6 bg-gradient-to-r from-blue-100 to-blue-50 border border-blue-200 rounded-lg shadow-md text-center">
+                             <div class="text-gray-600 font-semibold mb-1">Final Caustic Cracking Damage Factor</div>
+                             <div class="text-4xl font-extrabold text-blue-900" id="scc_caustic_final_df_val">--</div>
+                             <div class="text-sm text-green-700 mt-2 font-medium hidden" id="scc_caustic_final_msg">Calculation Complete</div>
+                         </div>
+                     </div>
+                    <div id="div_scc_caustic_step6" class="hidden mt-6 space-y-4">
+                        <!-- Future Steps -->
+                    </div>
+
+                </div>

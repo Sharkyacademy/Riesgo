@@ -1,0 +1,37 @@
+{
+    "description": "Table 2.C.6.1 - Data Required for Determination of the DF—HIC/SOHIC-HF",
+    "required_data": [
+        {
+            "parameter": "Susceptibility (Low, Medium, High)",
+            "comment": "The susceptibility is determined by expert advice or using the procedures in this section."
+        },
+        {
+            "parameter": "Presence of HF (Yes or No)",
+            "comment": "Determine whether HF may be present in the component. Consider not only normal operating conditions but also upset conditions that may allow carryover of HF from other components."
+        },
+        {
+            "parameter": "Sulfur content of plate steel",
+            "comment": "Determine the sulfur content of the plate steel used to fabricate the component. This information should be available on the material test report (MTR) in the equipment files. If not available, it can be estimated from the ASTM or ASME specification of the steel listed on the U-1 form in consultation with a materials engineer."
+        },
+        {
+            "parameter": "Steel product form (plate or pipe)",
+            "comment": "Determine what product form of steel was used to fabricate the component. Most components are fabricated from rolled and welded steel plates (e.g. A285, A515, A516, etc.), but some small-diameter components are fabricated from steel pipe and piping components. Most small-diameter piping is fabricated from steel pipe (e.g. A106, A53, API 5L, etc.) and piping components (e.g. A105, A234, etc.), but most large-diameter piping (above approximately NPS 16 diameter) is fabricated from rolled and welded plate steel."
+        },
+        {
+            "parameter": "Age (years)",
+            "comment": "Use inspection history to determine the time since the last SCC inspection."
+        },
+        {
+            "parameter": "Inspection effectiveness category",
+            "comment": "The effectiveness category that has been performed on the component."
+        },
+        {
+            "parameter": "Online monitoring (hydrogen probes, process variables, or combination)",
+            "comment": "The type of proactive corrosion monitoring methods or tools employed such as hydrogen probes and/or process variable monitoring."
+        },
+        {
+            "parameter": "Number of inspections",
+            "comment": "The number of inspections in each effectiveness category that have been performed."
+        }
+    ]
+}

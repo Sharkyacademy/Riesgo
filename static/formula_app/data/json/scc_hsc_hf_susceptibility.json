@@ -1,0 +1,32 @@
+{
+    "description": "Table 2.C.7.2 - HSC-HF Susceptibility based on Brinnell Hardness and PWHT",
+    "note": "Susceptibility determination for Hydrogen Stress Cracking in HF service",
+    "data": [
+        {
+            "hardness_max": 200,
+            "pwht": "Any",
+            "susceptibility": "Low",
+            "description": "Brinnell hardness ≤ 200, any PWHT condition"
+        },
+        {
+            "hardness_min": 201,
+            "hardness_max": 237,
+            "pwht": "PWHT",
+            "susceptibility": "Low",
+            "description": "Brinnell hardness 201-237 with PWHT"
+        },
+        {
+            "hardness_min": 201,
+            "hardness_max": 237,
+            "pwht": "Non-PWHT",
+            "susceptibility": "Medium",
+            "description": "Brinnell hardness 201-237 without PWHT"
+        },
+        {
+            "hardness_min": 238,
+            "pwht": "Any",
+            "susceptibility": "High",
+            "description": "Brinnell hardness ≥ 238, any PWHT condition"
+        }
+    ]
+}

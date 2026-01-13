@@ -1,0 +1,730 @@
+{
+    "sections": [
+        {
+            "id": "2.A.1",
+            "title": "Site Management",
+            "weight": 17,
+            "questions": [
+                {
+                    "id": 1,
+                    "question": "Does site management receive KPIs from the inspection group periodically regarding overdue inspection and recommendations?",
+                    "possible_score": 15,
+                    "guidance": "0 to 15 pts based on interview with leadership staff."
+                },
+                {
+                    "id": 2,
+                    "question": "Is site management required to review and approve deferrals for mechanical integrity program inspections and recommendations, prior to them becoming overdue, and receives sufficient technical information to understand the risk associated with those deferrals?",
+                    "possible_score": 10,
+                    "guidance": "5 pts for having written requirement. + 5 pts for following requirement (no overdue without deferral). + 3 pts for completeness of technical information provided to management on risk associated with deferral."
+                },
+                {
+                    "id": 3,
+                    "question": "Is the site management aware of the requirements of a successful RBI program such as training, MOC involvement, and periodic RBI reassessments, and do they support providing adequate resources for these activities?",
+                    "possible_score": 25,
+                    "guidance": "0 to 25 points based on interview with leadership staff."
+                },
+                {
+                    "id": 4,
+                    "question": "Does site management approve and provide resources for the annual plan for the inspections to maintain equipment at an acceptable risk?",
+                    "possible_score": 15,
+                    "guidance": "5 pts for having an annual plan. +5 for approval. +5 for evidence plan is sufficient to meet inspection requirements."
+                },
+                {
+                    "id": 6,
+                    "question": "Do other departments (e.g. operations, maintenance and capital project group) communicate with RBI assessment group for anything that could change equipment risks such as equipment and piping replacements, modifications, or changes in operations?",
+                    "possible_score": 10,
+                    "guidance": ""
+                },
+                {
+                    "id": "7a",
+                    "question": "The site conducts periodic internal assessments: PSM-based assessment or other overall plant bench marking, which includes fixed equipment mechanical integrity programs;",
+                    "possible_score": 5,
+                    "guidance": "5 pts for every 3 years or more frequent, 2 points for having done it at all."
+                },
+                {
+                    "id": "7b",
+                    "question": "Fixed equipment mechanical integrity program-specific assessment vs site and company requirements OR external assessment such as from API utilizing third-party subject matter experts.",
+                    "possible_score": 10,
+                    "guidance": "10 pts for annual, 8 pts for at least every 3 yr, 3 pts for in last 10 yr."
+                },
+                {
+                    "id": 8,
+                    "question": "Is there evidence of the site continuously improving their practices in accordance with industry best practices?",
+                    "possible_score": 10,
+                    "guidance": "0 to 10 pts depending on strength of examples."
+                }
+            ]
+        },
+        {
+            "id": "2.A.2",
+            "title": "Process Safety",
+            "weight": 5,
+            "questions": [
+                {
+                    "id": 1,
+                    "question": "Is a block flow diagram or simplified process flow diagram available to aid in the understanding of the process?",
+                    "possible_score": 10,
+                    "guidance": "0 to 10 pts based on percentage of process flow diagrams available for RBI units."
+                },
+                {
+                    "id": 2,
+                    "question": "Are as-built/up-to-date piping and instrumentation diagrams (P&IDs) available for all units at the site (in the RBI program)?",
+                    "possible_score": 30,
+                    "guidance": "0 to 30 pts based on the percentage of P&IDs that are currently up to date."
+                },
+                {
+                    "id": 3,
+                    "question": "Does documentation show all equipment and piping in the unit (in the RBI program) is designed and constructed in compliance with all applicable codes, standards, and generally accepted good engineering practices?",
+                    "possible_score": 20,
+                    "guidance": "0 pts if the documentation is lacking or if the site does not have equipment/piping designed and fabricated to recognized standards. 10 pts if some documentation is found missing. 20 pts if documentation is complete and requirements are robust."
+                },
+                {
+                    "id": 4,
+                    "question": "IOW limits are established per API 584 with clear corrective action, communication, and inspection follow-up requirements.",
+                    "possible_score": 40,
+                    "guidance": "15 pts for establishing IOW. +13 pts for having corrective actions documented. +12 pts for having communication plan with inspection."
+                }
+            ]
+        },
+        {
+            "id": "2.A.3",
+            "title": "Management of Change",
+            "weight": 13,
+            "questions": [
+                {
+                    "id": "1a",
+                    "question": "Does the facility have a written MOC procedure that must be followed whenever new facilities are added or changes are made to a process?",
+                    "possible_score": 3,
+                    "guidance": ""
+                },
+                {
+                    "id": "1b",
+                    "question": "Does the MOC process include MI reviewing the change during various stages of the project before the actual installation is complete (i.e. concept, design, issue for construction, and as-built)?",
+                    "possible_score": 3,
+                    "guidance": ""
+                },
+                {
+                    "id": "1c",
+                    "question": "Are authorization procedures clearly stated, approved by an appropriate discipline, and at an appropriate level?",
+                    "possible_score": 3,
+                    "guidance": ""
+                },
+                {
+                    "id": "1d",
+                    "question": "Is there a requirement in the procedure to update RBI information and inspection plans with the changes?",
+                    "possible_score": 10,
+                    "guidance": ""
+                },
+                {
+                    "id": "2a",
+                    "question": "Do the following types of 'changes' invoke the MOC procedure? Physical changes to the facility, other than replacement in kind [expansions, equipment modifications, instrument or alarm system revisions (that are part of an IOW program), etc.].",
+                    "possible_score": 3,
+                    "guidance": ""
+                },
+                {
+                    "id": "2b",
+                    "question": "Changes in process chemicals (feedstocks, catalysts, solvents, etc.).",
+                    "possible_score": 3,
+                    "guidance": ""
+                },
+                {
+                    "id": "2c",
+                    "question": "Changes in process conditions (operating temperatures, pressures, production rates, etc.).",
+                    "possible_score": 3,
+                    "guidance": ""
+                },
+                {
+                    "id": "2d",
+                    "question": "Significant changes in operating procedures (start-up or shutdown sequences, unit staffing level or assignments, etc.).",
+                    "possible_score": 2,
+                    "guidance": ""
+                },
+                {
+                    "id": "3a",
+                    "question": "Is there a clear definition of what constitutes a 'temporary changes'?",
+                    "possible_score": 3,
+                    "guidance": ""
+                },
+                {
+                    "id": "3b",
+                    "question": "Does MOC handle temporary changes as well as permanent changes?",
+                    "possible_score": 2,
+                    "guidance": ""
+                },
+                {
+                    "id": "3c",
+                    "question": "Are items that are installed as 'temporary' tracked to ensure that they are either removed after a defined period of time or reclassified as permanent?",
+                    "possible_score": 3,
+                    "guidance": ""
+                },
+                {
+                    "id": "3d",
+                    "question": "Are items that are installed as 'temporary' have an inspection plan implemented until the permanent repair has been installed or document justification for no inspection require for the life of the repair?",
+                    "possible_score": 3,
+                    "guidance": ""
+                },
+                {
+                    "id": "4a",
+                    "question": "Do the MOC procedures specifically require the following actions whenever a change is made to a process? Update all affected maintenance programs, corrosion management programs (e.g. corrosion control documents, damage mechanism reviews), inspection plans, and inspection schedules.",
+                    "possible_score": 2,
+                    "guidance": ""
+                },
+                {
+                    "id": "4b",
+                    "question": "Modify P&IDs, statement of operating limits, safety data sheets, and any other process safety information affected.",
+                    "possible_score": 2,
+                    "guidance": ""
+                },
+                {
+                    "id": "4c",
+                    "question": "Notify all impacted FEMI and maintenance employees who work in the area of the change, and provide training as required.",
+                    "possible_score": 2,
+                    "guidance": ""
+                },
+                {
+                    "id": "4d",
+                    "question": "Review the effect of the proposed change on all separate but interrelated upstream and downstream facilities.",
+                    "possible_score": 2,
+                    "guidance": ""
+                },
+                {
+                    "id": 5,
+                    "question": "When changes are made in the process or operating procedures, are there written procedures requiring that the impact of these changes on the equipment and materials of construction be reviewed to determine whether they will cause any increased rate of damage or failure, or will result in different failure mechanisms in the process equipment?",
+                    "possible_score": 5,
+                    "guidance": ""
+                },
+                {
+                    "id": 6,
+                    "question": "When the equipment or materials of construction are changed through replacement or maintenance items, is there a system in place to formally review any metallurgical change to ensure that the new material is suitable for the process?",
+                    "possible_score": 10,
+                    "guidance": ""
+                },
+                {
+                    "id": 7,
+                    "question": "Is the MOC program audited periodically to ensure the MOC procedures are being followed and to verify all past MOC updates (including RBI information) are being completed in a timely manner.",
+                    "possible_score": 10,
+                    "guidance": ""
+                },
+                {
+                    "id": 9,
+                    "question": "Is there a robust system to ensure an MOC cannot be closed out without verification that equipment documentation, inspection plans, RBI information is completely updated.",
+                    "possible_score": 20,
+                    "guidance": ""
+                },
+                {
+                    "id": 10,
+                    "question": "Is there an MOC process for changes in personnel or organizations? This could be when you add, reduce replace personnel.",
+                    "possible_score": 4,
+                    "guidance": ""
+                },
+                {
+                    "id": 11,
+                    "question": "Are in-kind replacements appropriately communicated to the FEMI team (i.e. pressure vessels are typically never true in-kind replacements)? Materials of construction, year/version of design code, U1 form. Calculations, fabrication drawings will all be different.",
+                    "possible_score": 2,
+                    "guidance": ""
+                }
+            ]
+        },
+        {
+            "id": "2.A.4",
+            "title": "Operating Procedures",
+            "weight": 5,
+            "questions": [
+                {
+                    "id": 1,
+                    "question": "Are written operating procedures available to operations, maintenance and subject matter expert personnel in all units?",
+                    "possible_score": 10,
+                    "guidance": ""
+                },
+                {
+                    "id": 2,
+                    "question": "Do the operating procedures clearly define the position of the person or persons responsible for operation of each applicable area?",
+                    "possible_score": 10,
+                    "guidance": ""
+                },
+                {
+                    "id": "3a",
+                    "question": "Initial start-up.",
+                    "possible_score": 4,
+                    "guidance": ""
+                },
+                {
+                    "id": "3b",
+                    "question": "Normal (as well as emergency) operation.",
+                    "possible_score": 4,
+                    "guidance": ""
+                },
+                {
+                    "id": "3c",
+                    "question": "Normal shutdown.",
+                    "possible_score": 4,
+                    "guidance": ""
+                },
+                {
+                    "id": "3d",
+                    "question": "Emergency shutdown.",
+                    "possible_score": 4,
+                    "guidance": ""
+                },
+                {
+                    "id": "3e",
+                    "question": "Is the position of the person or persons who may initiate these procedures defined?",
+                    "possible_score": 4,
+                    "guidance": ""
+                },
+                {
+                    "id": "3f",
+                    "question": "Steps required to correct or avoid deviation from operating limits and consequences of the deviation.",
+                    "possible_score": 4,
+                    "guidance": ""
+                },
+                {
+                    "id": "3g",
+                    "question": "Start-up following a turnaround.",
+                    "possible_score": 4,
+                    "guidance": ""
+                },
+                {
+                    "id": "3h",
+                    "question": "Safety systems and their functions.",
+                    "possible_score": 4,
+                    "guidance": ""
+                },
+                {
+                    "id": "3i",
+                    "question": "IOW limits and corrective actions/communication required when those limits are exceeded.",
+                    "possible_score": 15,
+                    "guidance": ""
+                },
+                {
+                    "id": 4,
+                    "question": "Operating training covers the IOW concepts and provide the operators with an understanding of the importance of IOW related to the RBI program and understand their role in the program.",
+                    "possible_score": 10,
+                    "guidance": ""
+                },
+                {
+                    "id": "5a",
+                    "question": "Are key process parameters that may affect equipment integrity (i.e. IOW) identified and monitored to determine whether operations are maintained within established reliability limits?",
+                    "possible_score": 5,
+                    "guidance": ""
+                },
+                {
+                    "id": "5b",
+                    "question": "Are systems in place that alert appropriate personnel when operation exceeds IOW limits?",
+                    "possible_score": 4,
+                    "guidance": ""
+                },
+                {
+                    "id": "5c",
+                    "question": "Are response protocols established and used in a timely manner when IOW limits are exceeded?",
+                    "possible_score": 4,
+                    "guidance": ""
+                },
+                {
+                    "id": 6,
+                    "question": "An unbiased evaluation is made of the level of compliance with written operating procedures on a periodic basis?",
+                    "possible_score": 10,
+                    "guidance": "10 pts for having a periodic evaluation program. +3 pts for performing the reviews once every 2 years or more frequent."
+                }
+            ]
+        },
+        {
+            "id": "2.A.5",
+            "title": "Mechanical Integrity",
+            "weight": 50,
+            "questions": [
+                {
+                    "id": "1a",
+                    "question": "All equipment needing inspection has been identified including at minimum: tanks, pressure vessels, piping and piping components, and PRDs?",
+                    "possible_score": 5,
+                    "guidance": ""
+                },
+                {
+                    "id": "1b",
+                    "question": "The responsibilities to conduct the inspections have been assigned?",
+                    "possible_score": 1,
+                    "guidance": ""
+                },
+                {
+                    "id": "1c",
+                    "question": "The inspection methods and locations have been specified for all equipment in the program?",
+                    "possible_score": 3,
+                    "guidance": ""
+                },
+                {
+                    "id": "1d",
+                    "question": "Inspection interval basis have been established for all equipment in the program (time based, condition based, RBI)?",
+                    "possible_score": 3,
+                    "guidance": ""
+                },
+                {
+                    "id": "1e",
+                    "question": "Inspection reporting requirements have been defined?",
+                    "possible_score": 1,
+                    "guidance": ""
+                },
+                {
+                    "id": 2,
+                    "question": "Is there a complete, up-to-date, central storage location for all inspection program information available to everyone who works with the process?",
+                    "possible_score": 3,
+                    "guidance": "2 pts for central location. + 1 pt for controlled access with appropriate availability."
+                },
+                {
+                    "id": "3a",
+                    "question": "Is there a permanent and progressive record for all equipment in the program that includes: manufacturers’ data reports and other pertinent design data records;",
+                    "possible_score": 1,
+                    "guidance": ""
+                },
+                {
+                    "id": "3b",
+                    "question": "equipment drawings;",
+                    "possible_score": 1,
+                    "guidance": ""
+                },
+                {
+                    "id": "3c",
+                    "question": "results of all inspections, repairs, alterations, or re-ratings that have occurred to date.",
+                    "possible_score": 3,
+                    "guidance": "0 to 3 pts depending on completeness of records."
+                },
+                {
+                    "id": 4,
+                    "question": "Does the written inspection program for the facility require an appropriate level of review and authorization prior to any permanent changes in inspection interval basis or methods and testing procedures?",
+                    "possible_score": 3,
+                    "guidance": ""
+                },
+                {
+                    "id": 5,
+                    "question": "Have adequate inspection checklists been developed, are in use, and are maintained?",
+                    "possible_score": 1,
+                    "guidance": ""
+                },
+                {
+                    "id": 6,
+                    "question": "Are all inspections, tests and repairs performed on the process equipment being documented... a. Date b. Name c. ID d. Description e. Assessment f. Results g. Recommendations h. Maintenance i. RBI effectiveness.",
+                    "possible_score": 3,
+                    "guidance": "+1/3 pt for each item, round up."
+                },
+                {
+                    "id": 7,
+                    "question": "Does the written inspection program for the facility include an established inspection effectiveness table based on API 581?",
+                    "possible_score": 2,
+                    "guidance": ""
+                },
+                {
+                    "id": 8,
+                    "question": "Does the written inspection program for the facility require all deficiencies identified in process equipment pressure boundaries be evaluated to determine if corrective action is required and if continued operation is acceptable?",
+                    "possible_score": 3,
+                    "guidance": ""
+                },
+                {
+                    "id": "8a",
+                    "question": "Are decisions to continue to operate the equipment based on sound engineering assessment such as fitness for service?",
+                    "possible_score": 2,
+                    "guidance": ""
+                },
+                {
+                    "id": "8b",
+                    "question": "If corrective actions are required, is a system used to determine priorities for action and tracking to completion ahead of established due dates?",
+                    "possible_score": 1,
+                    "guidance": ""
+                },
+                {
+                    "id": 9,
+                    "question": "Has all equipment within the process unit(s) been evaluated for inclusion in the RBI program and where excluded, the basis for exclusion is clearly documented?",
+                    "possible_score": 3,
+                    "guidance": ""
+                },
+                {
+                    "id": "10a",
+                    "question": "Does the written inspection program for the facility include a formal, external visual inspection program?",
+                    "possible_score": 2,
+                    "guidance": ""
+                },
+                {
+                    "id": "10b",
+                    "question": "Are all the following factors considered in the external visual inspection program: the condition of the outside of equipment, insulation, painting/coatings, supports etc...?",
+                    "possible_score": 2,
+                    "guidance": ""
+                },
+                {
+                    "id": "10c",
+                    "question": "Based on the inspection program for the facility, does all equipment in the program receive a visual external inspection at the required interval?",
+                    "possible_score": 1,
+                    "guidance": "0 pts if there are a significant number of overdue inspections."
+                },
+                {
+                    "id": 11,
+                    "question": "Based on the inspection program, do all pressure vessels in the unit receive an internal, or detailed external inspection using appropriate NDE procedures?",
+                    "possible_score": 5,
+                    "guidance": "2 pt for having inspections set up. +1 pt for having process to approve NDE in lieu of internal inspection. +2 pts for not having past due inspections."
+                },
+                {
+                    "id": "12a",
+                    "question": "Has each item of process equipment been reviewed by appropriate personnel to identify the probable causes of damage or failure?",
+                    "possible_score": 2,
+                    "guidance": ""
+                },
+                {
+                    "id": "12b",
+                    "question": "Has this information been used to establish the inspection methods, locations, and frequencies and the preventive maintenance programs?",
+                    "possible_score": 3,
+                    "guidance": ""
+                },
+                {
+                    "id": "12c",
+                    "question": "Have defect limits for expected damage mechanisms been established based on sound engineering assessments?",
+                    "possible_score": 2,
+                    "guidance": ""
+                },
+                {
+                    "id": "13a",
+                    "question": "Is a formal program for condition monitoring of stationary equipment been established for the facility?",
+                    "possible_score": 3,
+                    "guidance": ""
+                },
+                {
+                    "id": "13b1",
+                    "question": "When condition monitoring locations are chosen, is the likelihood and consequence of failure considered?",
+                    "possible_score": 1,
+                    "guidance": ""
+                },
+                {
+                    "id": "13b2",
+                    "question": "When condition monitoring locations are chosen, is localized corrosion and erosion considered?",
+                    "possible_score": 1,
+                    "guidance": ""
+                },
+                {
+                    "id": "13c",
+                    "question": "Are condition monitoring locations clearly marked on inspection drawings and on the equipment to allow repetitive measurements at precisely the same locations?",
+                    "possible_score": 2,
+                    "guidance": ""
+                },
+                {
+                    "id": "13d",
+                    "question": "Are condition monitoring surveys up to date?",
+                    "possible_score": 2,
+                    "guidance": ""
+                },
+                {
+                    "id": "13e",
+                    "question": "Are the results used to calculate a representative corrosion rate for RBI assessments?",
+                    "possible_score": 2,
+                    "guidance": ""
+                },
+                {
+                    "id": 14,
+                    "question": "Procedures and processes are in place to ensure thickness and wall loss measurements used for RBI analysis are accurate?",
+                    "possible_score": 4,
+                    "guidance": ""
+                },
+                {
+                    "id": 15,
+                    "question": "Has the maximum allowable working pressure (MAWP) been established for all piping systems and equipment, using applicable codes and current operating conditions?",
+                    "possible_score": 1,
+                    "guidance": ""
+                },
+                {
+                    "id": 16,
+                    "question": "Does the program require formal risk evaluation and approval of date changes for inspection and repair plans (i.e. deferrals) related to operational needs?",
+                    "possible_score": 3,
+                    "guidance": "1 pt for written procedure. 1 pt for detailed risk evaluation guidance. 1 pt for demonstrable full adherence."
+                },
+                {
+                    "id": "17a",
+                    "question": "Have all employees involved in maintaining and inspecting the equipment been trained in all procedures applicable to their job tasks to ensure that they can perform the job tasks effectively?",
+                    "possible_score": 1,
+                    "guidance": ""
+                },
+                {
+                    "id": "17b",
+                    "question": "At completion of the training described above, are formal methods used to verify that the employees understand what they were trained on?",
+                    "possible_score": 1,
+                    "guidance": ""
+                },
+                {
+                    "id": 18,
+                    "question": "Are inspectors certified for performance in accordance with applicable industry codes and standards (e.g. API 510, 570, and/or 653)?",
+                    "possible_score": 2,
+                    "guidance": ""
+                },
+                {
+                    "id": "19a",
+                    "question": "Does the facility have a QA program to ensure proper materials of construction are used?",
+                    "possible_score": 2,
+                    "guidance": ""
+                },
+                {
+                    "id": "19b",
+                    "question": "Does the facility have a QA program to ensure fabrication, welding, and inspection procedures are proper?",
+                    "possible_score": 2,
+                    "guidance": ""
+                },
+                {
+                    "id": "19c",
+                    "question": "Does the facility have a QA program to ensure equipment maintenance and repairs are completed in compliance with codes and standards?",
+                    "possible_score": 1,
+                    "guidance": ""
+                },
+                {
+                    "id": "19d",
+                    "question": "Does the facility have a QA program to ensure flanges are properly assembled and tightened?",
+                    "possible_score": 1,
+                    "guidance": ""
+                },
+                {
+                    "id": "19e",
+                    "question": "Does the facility have a QA program to ensure replacement and maintenance materials are properly specified, inspected, and stored?",
+                    "possible_score": 1,
+                    "guidance": ""
+                },
+                {
+                    "id": 20,
+                    "question": "Are systems in place, such as written requirements with appropriate approval, sufficient to ensure that all design repair and alteration done on equipment types in the program is done in accordance with the code to which the equipment was built, or in-service repair and inspection code?",
+                    "possible_score": 3,
+                    "guidance": "2 pts for meeting some requirements. 3 pts for all of the above."
+                },
+                {
+                    "id": 21,
+                    "question": "Are systems in place, such as written requirements with appropriate approval, sufficient to ensure that new equipment design, for all equipment types in the program, is done in accordance with the applicable codes and standards?",
+                    "possible_score": 3,
+                    "guidance": "2 pts for meeting some requirements. 3 pts for all of the above."
+                },
+                {
+                    "id": 22,
+                    "question": "Are RBI assessments updated and maintained in a timely manner after events that would change the basis of the risk evaluation so that the most recent process, inspection, and maintenance information is included?",
+                    "possible_score": 5,
+                    "guidance": "3 pts for periodic full-unit reassessments before the end of the plan period. +1 pt for evergreening after each inspection event. +1 pt for evergreening after process excursions and applicable MOCs."
+                },
+                {
+                    "id": 23,
+                    "question": "If credit for CP being taken in RBI, is the CP system inspected on a periodic basis and maintained in effective status?",
+                    "possible_score": 3,
+                    "guidance": "If CP is not applicable to facility equipment, full credit may be taken."
+                }
+            ]
+        },
+        {
+            "id": "2.A.6",
+            "title": "Equipment Failure Investigation",
+            "weight": 10,
+            "questions": [
+                {
+                    "id": "1a",
+                    "question": "Is there a written equipment failure investigation procedure that includes both loss of containment and threats to loss of containment?",
+                    "possible_score": 5,
+                    "guidance": ""
+                },
+                {
+                    "id": "1b",
+                    "question": "Does the procedure require that findings and recommendations of investigations be addressed and resolved promptly? Do records demonstrate timely completion?",
+                    "possible_score": 5,
+                    "guidance": ""
+                },
+                {
+                    "id": "2a",
+                    "question": "Does the procedure require that the investigation team include: a member trained in root cause analysis techniques?",
+                    "possible_score": 8,
+                    "guidance": ""
+                },
+                {
+                    "id": "2b",
+                    "question": "Does the procedure require that the investigation team include: cross-functional attendees competent in their area (corrosion, inspection, operations, equipment design, etc.)?",
+                    "possible_score": 5,
+                    "guidance": ""
+                },
+                {
+                    "id": "3a",
+                    "question": "Indicate whether the investigation procedure requires an investigation of the following items with the results recorded on a standard form(s). Loss of primary containment.",
+                    "possible_score": 8,
+                    "guidance": ""
+                },
+                {
+                    "id": "3b",
+                    "question": "Unexpected equipment damage.",
+                    "possible_score": 6,
+                    "guidance": ""
+                },
+                {
+                    "id": "3c",
+                    "question": "Chronic equipment failures.",
+                    "possible_score": 3,
+                    "guidance": ""
+                },
+                {
+                    "id": "4a",
+                    "question": "Is there a standard form(s) for equipment failure investigation that includes... a. Date of failure.",
+                    "possible_score": 1,
+                    "guidance": ""
+                },
+                {
+                    "id": "4b",
+                    "question": "b. Investigation attendees.",
+                    "possible_score": 1,
+                    "guidance": ""
+                },
+                {
+                    "id": "4c",
+                    "question": "c. Description of the incident.",
+                    "possible_score": 1,
+                    "guidance": ""
+                },
+                {
+                    "id": "4d",
+                    "question": "d. Underlying causes of the incident.",
+                    "possible_score": 5,
+                    "guidance": ""
+                },
+                {
+                    "id": "4e",
+                    "question": "e. Evaluation of the potential severity and probable frequency of recurrence.",
+                    "possible_score": 2,
+                    "guidance": ""
+                },
+                {
+                    "id": "4f",
+                    "question": "f. Recommendations are generated to prevent recurrence not just in the exact incident scenario but more globally where a similar occurrence is possible on other equipment or units.",
+                    "possible_score": 10,
+                    "guidance": ""
+                },
+                {
+                    "id": 5,
+                    "question": "Based on a review of plant records (leaks, lost production, etc.), to what degree does it appear that the established equipment failure investigation procedures are being followed?",
+                    "possible_score": 5,
+                    "guidance": "5 pts: > 95 % of the time. 3 pts: Only major impacts."
+                },
+                {
+                    "id": 6,
+                    "question": "Are appropriate inspection or engineering people required to be involved in a failure analysis to identify the conditions or practices that caused the failure?",
+                    "possible_score": 5,
+                    "guidance": ""
+                },
+                {
+                    "id": 7,
+                    "question": "Are incident investigation reports reviewed with all affected personnel whose job tasks are relevant to the incident findings, including contract employees, where applicable?",
+                    "possible_score": 5,
+                    "guidance": ""
+                },
+                {
+                    "id": 8,
+                    "question": "Are incident or accident reports or report conclusions transmitted to other sites that operate similar facilities within the company?",
+                    "possible_score": 5,
+                    "guidance": ""
+                },
+                {
+                    "id": "9a",
+                    "question": "Do the procedures for incident reporting require that the findings related to stationary equipment loss of primary containment include a review of the RBI data, IOW, and corrosion management programs...",
+                    "possible_score": 10,
+                    "guidance": ""
+                },
+                {
+                    "id": "9b",
+                    "question": "RBI data is updated as a result of incident investigations that show the RBI data is not accurate.",
+                    "possible_score": 10,
+                    "guidance": ""
+                }
+            ]
+        }
+    ]
+}

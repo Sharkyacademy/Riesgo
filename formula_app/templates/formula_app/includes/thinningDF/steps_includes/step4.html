@@ -1,0 +1,88 @@
+<div class="flex flex-col h-full w-full">
+    <div class="mb-4">
+        <h2 class="text-2xl font-bold text-primary mb-4 border-b pb-2">Step 4. Determine Minimum Required Thickness
+            (t<sub>min</sub>)</h2>
+        <p class="text-sm text-gray-600 mb-4">
+            Determine the minimum required thickness (t<sub>min</sub>) based on the original construction code or API
+            579-1/ASME FFS-1.
+        </p>
+
+        <!-- Calculation Method Selection -->
+        <div class="form-control w-full max-w-xs mb-4">
+            <label class="label">
+                <span class="label-text font-bold">Calculation Method</span>
+            </label>
+            <!-- Added onchange handler explicitly -->
+            <select id="step4_calc_method" class="select select-bordered w-full"
+                onchange="window.step4_toggle_method()">
+                <option value="calc" selected>Calculate (ASME Code Formula)</option>
+                <option value="struct">Structural Thickness (t<sub>c</sub>)</option>
+                <option value="manual">Manual Input (Asset Management Program)</option>
+            </select>
+        </div>
+
+        <!-- 1. Calculation Method Inputs -->
+        <div id="step4_method_calc_container"
+            class="flex flex-col gap-4 p-4 bg-base-100 rounded-box border border-base-300">
+            <h3 class="font-bold underline">Code Calculation Parameters</h3>
+
+            <!-- Allowable Stress (Missing from Step 1) -->
+            <div class="form-control w-full">
+                <label class="label">
+                    <span class="label-text">Allowable Stress (S) at Design Temp</span>
+                    <span class="label-text-alt text-error font-bold" id="step4_stress_unit">ksi</span>
+                </label>
+                <input type="number" id="step4_allowable_stress" placeholder="Enter Allowable Stress"
+                    class="input input-bordered w-full" step="0.1" required />
+                <label class="label">
+                    <span class="label-text-alt">From ASME II-D or Construction Code</span>
+                </label>
+            </div>
+
+            <!-- Dynamic Geometry Inputs Container -->
+            <div id="step4_geometry_inputs_container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Inputs will be injected here by JS based on Step 1 Component Type -->
+                <p class="text-gray-500 italic">Select a component in Step 1 to load geometry fields.</p>
+            </div>
+        </div>
+
+        <!-- 2. Structural/Manual Inputs -->
+        <div id="step4_method_manual_container"
+            class="hidden flex flex-col gap-4 p-4 bg-base-100 rounded-box border border-base-300">
+            <div class="form-control w-full">
+                <label class="label">
+                    <span class="label-text" id="step4_manual_label">Minimum Structural Thickness (t<sub>c</sub>)</span>
+                    <span class="label-text-alt unit_display">mm</span>
+                </label>
+                <input type="number" id="step4_manual_tmin" placeholder="Enter thickness"
+                    class="input input-bordered w-full" step="0.001" />
+            </div>
+        </div>
+
+        <!-- Error Container -->
+        <div id="step4_error_container" class="alert alert-error hidden mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span id="step4_error_message">Error!</span>
+        </div>
+
+        <button id="step4_calc_btn" class="btn btn-primary mt-4 w-full md:w-auto">Calculate t<sub>min</sub></button>
+    </div>
+
+    <!-- Results -->
+    <div id="step4_result_container" class="hidden mt-6 p-4 bg-base-100 rounded-box border border-base-300">
+        <div class="flex flex-col">
+            <span class="font-bold underline mb-2">Step 4 Result</span>
+            <div class="flex flex-col">
+                <span class="font-bold text-primary">Minimum Required Thickness (t<sub>min</sub>)</span>
+                <span class="text-2xl" id="step4_result_value">0.000</span>
+                <span class="text-sm unit_display">mm</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Load Step 4 Script (INLINE for reliability) -->

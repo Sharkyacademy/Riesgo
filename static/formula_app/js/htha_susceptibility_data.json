@@ -1,0 +1,22 @@
+[
+  {
+    "susceptibility": "High Susceptibility",
+    "description": "Extending from the initial curve and upwards",
+    "color": "Red"
+  },
+  {
+    "susceptibility": "Medium Susceptibility",
+    "description": "Extending from 50°F below the curve up to the curve",
+    "color": "Orange"
+  },
+  {
+    "susceptibility": "Low Susceptibility",
+    "description": "Extending from 100°F below the curve up to the previous susceptibility area",
+    "color": "Yellow"
+  },
+  {
+    "susceptibility": "No Susceptibility",
+    "description": "Extending from 100°F below the curve and farther below the initial curve",
+    "color": "Green"
+  }
+]

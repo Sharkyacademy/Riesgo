@@ -1,0 +1,74 @@
+{
+    "geometry_types": [
+        {
+            "geometry_type": "CYL",
+            "description": "Cylindrical shell",
+            "data_fields": [
+                "Diameter"
+            ]
+        },
+        {
+            "geometry_type": "ELB",
+            "description": "Elbow or pipe bend",
+            "data_fields": [
+                "Diameter",
+                "Bend radius"
+            ]
+        },
+        {
+            "geometry_type": "SPH",
+            "description": "Spherical shell",
+            "data_fields": [
+                "Diameter"
+            ]
+        },
+        {
+            "geometry_type": "HEM",
+            "description": "Hemispherical head",
+            "data_fields": [
+                "Diameter"
+            ]
+        },
+        {
+            "geometry_type": "ELL",
+            "description": "Elliptical head",
+            "data_fields": [
+                "Diameter",
+                "Major-to-minor axis ratio"
+            ]
+        },
+        {
+            "geometry_type": "TOR",
+            "description": "Torispherical head",
+            "data_fields": [
+                "Diameter",
+                "Crown radius (inner radius)",
+                "Knuckle (inner radius)"
+            ]
+        },
+        {
+            "geometry_type": "CON",
+            "description": "Conical shell",
+            "data_fields": [
+                "Diameter",
+                "Cone angle"
+            ]
+        },
+        {
+            "geometry_type": "RECTNOZ",
+            "description": "Rectangular cross section",
+            "data_fields": [
+                "Length",
+                "Width",
+                "Height"
+            ]
+        },
+        {
+            "geometry_type": "NOZ",
+            "description": "Nozzle",
+            "data_fields": [
+                "Diameter"
+            ]
+        }
+    ]
+}

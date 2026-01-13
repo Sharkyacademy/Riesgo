@@ -1,0 +1,229 @@
+<div id="hsc_hf_content" class="p-4">
+    <!-- Required Data Table -->
+    <div class="mb-6 animate-fade-in">
+        <h4 class="font-bold text-md text-blue-900 mb-2">Required Data (Table 2.C.7.1)</h4>
+        <div class="overflow-x-auto bg-base-100 rounded-box border shadow-sm">
+            <table class="table table-sm table-zebra w-full" id="table_scc_hsc_hf_required_data">
+                <thead class="bg-blue-900 text-white">
+                    <tr>
+                        <th>Required Data</th>
+                        <th>Comments</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody_scc_hsc_hf_required_data">
+                    <!-- Loaded via JS -->
+                    <tr><td colspan="2" class="text-center italic text-gray-400">Loading required data...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Step 1: Susceptibility Determination -->
+    <div id="div_scc_hsc_hf_step1" class="mt-6 animate-fade-in">
+        <h4 class="font-bold text-md text-blue-900 mb-2">Step 1: Susceptibility Determination</h4>
+        <div class="text-gray-700 mb-4 text-sm">
+            Determine susceptibility for cracking using the decision flow and Table 2.C.7.2.
+        </div>
+
+        <!-- Decision Flow -->
+        <div class="space-y-4">
+            <!-- Question 1: Cracks Present? -->
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text font-semibold">Are cracks present?</span>
+                </label>
+                <select id="sel_hsc_hf_cracks_present" class="select select-bordered select-sm w-full max-w-xs">
+                    <option value="" disabled selected>Select...</option>
+                    <option value="No">No</option>
+                    <option value="Yes">Yes</option>
+                </select>
+            </div>
+
+            <!-- Conditional: Cracks Removed? (if Cracks = Yes) -->
+            <div id="div_hsc_hf_cracks_removed" class="hidden form-control">
+                <label class="label">
+                    <span class="label-text font-semibold">Have cracks been removed?</span>
+                </label>
+                <select id="sel_hsc_hf_cracks_removed" class="select select-bordered select-sm w-full max-w-xs">
+                    <option value="" disabled selected>Select...</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+
+            <!-- Conditional: HF Present? (if Cracks = No) -->
+            <div id="div_hsc_hf_hf_present" class="hidden form-control">
+                <label class="label">
+                    <span class="label-text font-semibold">Is HF present in the component?</span>
+                </label>
+                <select id="sel_hsc_hf_hf_present" class="select select-bordered select-sm w-full max-w-xs">
+                    <option value="" disabled selected>Select...</option>
+                    <option value="No">No</option>
+                    <option value="Yes">Yes</option>
+                </select>
+            </div>
+
+            <!-- Conditional: Carbon Steel? (if HF = Yes) -->
+            <div id="div_hsc_hf_carbon_steel" class="hidden form-control">
+                <label class="label">
+                    <span class="label-text font-semibold">Is the material Carbon Steel?</span>
+                </label>
+                <select id="sel_hsc_hf_carbon_steel" class="select select-bordered select-sm w-full max-w-xs">
+                    <option value="" disabled selected>Select...</option>
+                    <option value="No">No</option>
+                    <option value="Yes">Yes</option>
+                </select>
+            </div>
+
+            <!-- Conditional: Table 2.C.7.2 Lookup (if Carbon Steel = Yes) -->
+            <div id="div_hsc_hf_table_lookup" class="hidden bg-gray-50 p-4 rounded-md">
+                <h5 class="font-bold text-sm text-gray-700 mb-3">Table 2.C.7.2 - Susceptibility Criteria</h5>
+                
+                <!-- Brinnell Hardness -->
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text font-semibold">Maximum Brinnell Hardness of Weldments</span>
+                    </label>
+                    <input type="number" id="inp_hsc_hf_hardness" class="input input-bordered input-sm w-full max-w-xs" 
+                           placeholder="e.g. 220" step="1" min="0" />
+                </div>
+
+                <!-- PWHT -->
+                <div class="form-control mt-3">
+                    <label class="label">
+                        <span class="label-text font-semibold">Post-Weld Heat Treatment (PWHT)?</span>
+                    </label>
+                    <select id="sel_hsc_hf_pwht" class="select select-bordered select-sm w-full max-w-xs">
+                        <option value="" disabled selected>Select...</option>
+                        <option value="Non-PWHT">No (Non-PWHT)</option>
+                        <option value="PWHT">Yes (PWHT)</option>
+                    </select>
+                </div>
+
+                <!-- Calculate Button -->
+                <div class="mt-4">
+                    <button id="btn_hsc_hf_calc_susceptibility" class="btn btn-primary btn-sm">
+                        <i class="fas fa-calculator mr-2"></i> Calculate Susceptibility
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    <!-- Error Message -->
+        <div id="err_hsc_hf_step1" class="hidden text-red-600 text-sm mt-4 font-semibold"></div>
+
+        <!-- Result Display -->
+        <div id="div_hsc_hf_step1_result" class="hidden mt-6 p-4 bg-blue-50 border border-blue-200 rounded-md">
+            <div class="flex items-center justify-between">
+                <span class="font-bold text-gray-800">Susceptibility:</span>
+                <span id="val_hsc_hf_susceptibility" class="text-2xl font-extrabold text-blue-900">--</span>
+            </div>
+            <div id="msg_hsc_hf_susceptibility_note" class="text-sm text-gray-600 mt-2 italic"></div>
+        </div>
+    </div>
+
+    <!-- Step 2: Severity Index (SVI) -->
+    <div id="div_scc_hsc_hf_step2" class="hidden mt-8 mb-6">
+        <h4 class="font-bold text-md text-blue-900 mb-2">Step 2: Severity Index (SVI)</h4>
+        <div class="text-gray-700 mb-4 text-sm">
+            Determine the Severity Index from Table 2.C.1.2 based on the susceptibility from Step 1.
+        </div>
+
+        <div class="flex items-center justify-between p-4 bg-blue-50 border border-blue-200 rounded-md">
+            <span class="font-bold text-gray-800">Severity Index:</span>
+            <span id="val_hsc_hf_svi" class="text-2xl font-extrabold text-blue-900">--</span>
+        </div>
+    </div>
+
+    <!-- Step 3: Time in Service -->
+    <div id="div_scc_hsc_hf_step3" class="hidden mt-8 mb-6">
+        <h4 class="font-bold text-md text-blue-900 mb-2">Step 3: Time in Service</h4>
+        <div class="text-gray-700 mb-4 text-sm">
+            Determine the time in service (age) since the last Level A, B, or C inspection was performed with no cracking detected or cracking was repaired.
+        </div>
+
+        <div class="form-control w-full max-w-xs">
+            <label class="label">
+                <span class="label-text font-semibold">Date of Installation (or last effective inspection)</span>
+            </label>
+            <input type="date" id="inp_hsc_hf_inspection_date" class="input input-bordered input-sm w-full max-w-xs" />
+            <div id="err_hsc_hf_step3" class="hidden text-red-600 text-sm mt-1"></div>
+        </div>
+
+        <div id="div_scc_hsc_hf_step3_result" class="hidden mt-2">
+            <span class="text-gray-600">Calculated Age: </span>
+            <span id="val_hsc_hf_age" class="font-bold text-gray-800">--</span>
+        </div>
+    </div>
+
+    <!-- Step 4: Inspection History -->
+    <div id="div_scc_hsc_hf_step4" class="hidden mt-8 mb-6">
+        <h4 class="font-bold text-md text-blue-900 mb-2">Step 4: Inspection History</h4>
+        <div class="text-gray-700 mb-4 text-sm">
+            Determine the number of inspections and corresponding inspection effectiveness category for all past inspections. Combine inspections to the highest effectiveness using Part 2, Section 3.4.3.
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 max-w-lg">
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">Category A (Highly Effective)</span></label>
+                <input type="number" id="inp_hsc_hf_insp_A" class="input input-bordered input-sm w-full" value="0" min="0" />
+            </div>
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">Category B (Usually Effective)</span></label>
+                <input type="number" id="inp_hsc_hf_insp_B" class="input input-bordered input-sm w-full" value="0" min="0" />
+            </div>
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">Category C (Fairly Effective)</span></label>
+                <input type="number" id="inp_hsc_hf_insp_C" class="input input-bordered input-sm w-full" value="0" min="0" />
+            </div>
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">Category D (Poorly Effective)</span></label>
+                <input type="number" id="inp_hsc_hf_insp_D" class="input input-bordered input-sm w-full" value="0" min="0" />
+            </div>
+        </div>
+
+        <div id="div_scc_hsc_hf_step4_result" class="hidden mt-4 p-3 bg-white border border-gray-300 rounded-md">
+            <div class="font-bold text-gray-800">Final Effective Inspection (after equivalency):</div>
+            <div class="text-blue-800 text-lg mt-1">
+                <span id="val_hsc_hf_final_eff_cat" class="font-bold">--</span> 
+                <span class="text-sm text-gray-600">(Count: <span id="val_hsc_hf_final_eff_count">--</span>)</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 5: Base Damage Factor -->
+    <div id="div_scc_hsc_hf_step5" class="hidden mt-8 mb-6">
+        <h4 class="font-bold text-md text-blue-900 mb-2">Step 5: Base Damage Factor</h4>
+        <div class="text-gray-700 mb-4 text-sm">
+            Determine the base damage factor for HSC-HF using Table 2.C.1.3 based on the Severity Index (Step 2) and Inspection History (Step 4).
+        </div>
+
+        <div class="mt-2 p-4 bg-blue-50 border border-blue-200 rounded-md">
+            <div class="flex items-center justify-between">
+                <span class="font-bold text-gray-800">Base Damage Factor (D<sub>fB</sub><sup>HSC-HF</sup>):</span>
+                <span id="val_hsc_hf_base_df" class="text-2xl font-extrabold text-blue-900">--</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 6: Final Damage Factor -->
+    <div id="div_scc_hsc_hf_step6" class="hidden mt-8 mb-6">
+        <h4 class="font-bold text-md text-blue-900 mb-2">Step 6: Final Damage Factor</h4>
+        <div class="text-gray-700 mb-4 text-sm">
+            Calculate the escalation in the Damage Factor based on the time in service since the last inspection using Equation (2.C.6). The probability for cracking increases with time since the last inspection.
+        </div>
+
+        <div class="mb-4 p-3 bg-gray-100 border border-gray-300 rounded-md text-sm">
+            <div class="text-gray-600 text-xs mb-1">Equation 2.C.6:</div>
+            <div class="text-center">
+                D<sub>f</sub><sup>HSC-HF</sup> = min(D<sub>fB</sub><sup>HSC-HF</sup> × (max(age, 1.0))<sup>1.1</sup>, 5000)
+            </div>
+        </div>
+
+        <div id="div_hsc_hf_step6_result" class="p-6 bg-blue-50 border border-blue-200 rounded-md text-center">
+            <div class="text-gray-700 font-semibold mb-2">Final HSC-HF Damage Factor</div>
+            <div id="val_hsc_hf_final_df" class="text-5xl font-extrabold text-blue-900 mb-2">--</div>
+            <div id="msg_hsc_hf_final_df_note" class="text-sm text-green-600 font-semibold">Calculation Complete</div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,86 @@
+<div class="p-4 bg-gray-100 rounded">
+
+    <h3 class="text-lg font-bold">Alkaline Sour Water Corrosion</h3>
+    <p class="m-5">Answer the following questions in order to continue with the calculation of the corrosion rate.</p>
+
+    <div class="overflow-x-auto">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Basic Data</th>
+                    <th>Comments</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>NH4HS concentration (wt %)</td>
+                    <td>
+                        Determine the NH4HS concentration of the condensed water. It is suggested to determine this
+                        value with ionic process models. However, approximate values may be calculated from analyses of
+                        H2S and NH3 as follows.
+                        <br>
+                        — If wt % H2S < 2 × (wt % NH3), wt % NH4HS=1.5 × (wt % H2S) <br>
+                            — If wt % H2S > 2 × (wt % NH3), wt % NH4HS =3.0 × (wt % NH3)
+                    </td>
+                </tr>
+                <tr>
+                    <td>Stream velocity</td>
+                    <td>
+                        The vapor phase velocity should be used in a two-phase system. The liquid phase velocity should
+                        be used in a liquid full system.
+                    </td>
+                </tr>
+                <tr>
+                    <td>H2S partial pressure, psia (kPa)</td>
+                    <td>
+                        Determine the partial pressure of H2S by multiplying the mole % of H2S in the gas phase by the
+                        total system pressure.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="flex flex-col gap-3">
+
+        <label for="nh2sh_concentration">NH2SH concentration (wt %)</label>
+        <select required name="nh2sh_concentration" id="nh2sh_concentration"
+            class="select select-bordered w-full max-w-xs">
+            <option value="" disabled selected>Select one</option>
+            <option value="2">2</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+        </select>
+
+        <label for="velocity">Velocity</label>
+        <select required id="velocity" class="select select-bordered w-full max-w-xs">
+            <option value="" disabled selected>Select</option>
+        </select>
+
+    </div>
+
+    <button class="btn btn-primary m-3 hidden" id="calculate_corrosion_rate">Calculate corrosion rate</button>
+
+    <div id="error-container" class="gap-3 m-3"></div>
+
+    <p class="hidden alert alert-info alert-soft m-3" id="corrosion_rate"></p>
+    <p class="hidden alert alert-warning alert-soft m-3" id="velocity_message"></p>
+
+    <div id="h2s_container" class="hidden flex flex-col gap-3 border-t pt-4 mt-4">
+        <h4 class="font-bold">H2S Partial Pressure Adjustment</h4>
+
+        <label for="h2s_pressure_value">H2S Partial Pressure Value</label>
+        <input type="number" step="any" id="h2s_pressure_value" class="input input-bordered w-full max-w-xs"
+            placeholder="Enter value">
+
+
+
+        <button class="btn btn-primary w-full max-w-xs mt-2" id="calculate_adjusted_rate">Calculate Adjusted
+            Rate</button>
+
+        <p class="hidden alert alert-success alert-soft mt-3" id="adjusted_corrosion_rate_display"></p>
+    </div>
+</div>

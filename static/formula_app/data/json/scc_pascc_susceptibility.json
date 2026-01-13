@@ -1,0 +1,76 @@
+{
+    "description": "Table 2.C.8.2 - Susceptibility to Cracking—PASCC",
+    "note": "If the process operating temperature is less than 800 °F (427 °C), then sensitization is present in the as-welded condition only. If the process operating temperature is greater than or equal to 800 °F (427 °C), then sensitization can occur during operation.",
+    "temperature_ranges": {
+        "below_800F": {
+            "description": "Operating Temperature < 800 °F (427 °C)",
+            "materials": [
+                {
+                    "material": "All regular 300 series SS and Alloys 600 and 800",
+                    "solution_annealed": "Medium",
+                    "stabilized_before_welding": null,
+                    "stabilized_after_welding": null
+                },
+                {
+                    "material": "H Grade 300 series SS",
+                    "solution_annealed": "High",
+                    "stabilized_before_welding": null,
+                    "stabilized_after_welding": null
+                },
+                {
+                    "material": "L Grade 300 series SS",
+                    "solution_annealed": "Low",
+                    "stabilized_before_welding": null,
+                    "stabilized_after_welding": null
+                },
+                {
+                    "material": "321 SS",
+                    "solution_annealed": "Medium",
+                    "stabilized_before_welding": "Medium",
+                    "stabilized_after_welding": "Low"
+                },
+                {
+                    "material": "347 SS, Alloy 20, Alloy 625, all austenitic weld overlay",
+                    "solution_annealed": "Low",
+                    "stabilized_before_welding": "Low",
+                    "stabilized_after_welding": "Low"
+                }
+            ]
+        },
+        "above_800F": {
+            "description": "Operating Temperature ≥ 800 °F (427 °C)",
+            "materials": [
+                {
+                    "material": "All regular 300 series SS and Alloys 600 and 800",
+                    "solution_annealed": "High",
+                    "stabilized_before_welding": null,
+                    "stabilized_after_welding": null
+                },
+                {
+                    "material": "H Grade 300 series SS",
+                    "solution_annealed": "High",
+                    "stabilized_before_welding": null,
+                    "stabilized_after_welding": null
+                },
+                {
+                    "material": "L Grade 300 series SS",
+                    "solution_annealed": "Medium",
+                    "stabilized_before_welding": null,
+                    "stabilized_after_welding": null
+                },
+                {
+                    "material": "321 SS",
+                    "solution_annealed": "High",
+                    "stabilized_before_welding": "High",
+                    "stabilized_after_welding": "Low"
+                },
+                {
+                    "material": "347 SS, Alloy 20, Alloy 625, all austenitic weld overlay",
+                    "solution_annealed": "Medium",
+                    "stabilized_before_welding": "Low",
+                    "stabilized_after_welding": "Low"
+                }
+            ]
+        }
+    }
+}

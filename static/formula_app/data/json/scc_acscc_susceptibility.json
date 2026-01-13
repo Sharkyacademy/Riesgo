@@ -1,0 +1,66 @@
+{
+    "title": "Table 2.C.2.2 — Susceptibility to Cracking — ACSCC",
+    "effective_pwht_limit_ppm": 10000,
+    "susceptibility_map": {
+        "effective_pwht": "None",
+        "ineffective_pwht": [
+            {
+                "ph_min": 0,
+                "ph_max": 7.5,
+                "co3_ranges": [
+                    { "max": 999999, "susc": "None" }
+                ]
+            },
+            {
+                "ph_min": 7.5,
+                "ph_max": 8.0,
+                "co3_ranges": [
+                    { "max": 10, "susc": "None" },
+                    { "max": 100, "susc": "None" },
+                    { "max": 1000, "susc": "Low" },
+                    { "max": 999999, "susc": "Low" }
+                ]
+            },
+            {
+                "ph_min": 8.0,
+                "ph_max": 8.5,
+                "co3_ranges": [
+                    { "max": 10, "susc": "None" },
+                    { "max": 100, "susc": "Low" },
+                    { "max": 1000, "susc": "Medium" },
+                    { "max": 999999, "susc": "High" }
+                ]
+            },
+            {
+                "ph_min": 8.5,
+                "ph_max": 9.0,
+                "co3_ranges": [
+                    { "max": 10, "susc": "Low" },
+                    { "max": 100, "susc": "Medium" },
+                    { "max": 1000, "susc": "High" },
+                    { "max": 999999, "susc": "High" }
+                ]
+            },
+            {
+                "ph_min": 9.0,
+                "ph_max": 9.5,
+                "co3_ranges": [
+                    { "max": 10, "susc": "Medium" },
+                    { "max": 100, "susc": "High" },
+                    { "max": 1000, "susc": "High" },
+                    { "max": 999999, "susc": "High" }
+                ]
+            },
+            {
+                "ph_min": 9.5,
+                "ph_max": 14,
+                "co3_ranges": [
+                    { "max": 10, "susc": "High" },
+                    { "max": 100, "susc": "High" },
+                    { "max": 1000, "susc": "High" },
+                    { "max": 999999, "susc": "High" }
+                ]
+            }
+        ]
+    }
+}

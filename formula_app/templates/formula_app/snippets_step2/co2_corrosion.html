@@ -1,0 +1,256 @@
+<div class="p-4 bg-gray-100 rounded">
+
+    <h3 class="text-lg font-bold">CO2 Corrosion</h3>
+    <p class="m-5">Answer the following questions in order to continue with the calculation of the corrosion rate.</p>
+
+    <div class="overflow-x-auto">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Basic Data</th>
+                    <th>Comments</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Temperature—required</td>
+                    <td>
+                        The corrosion phenomenon is highly temperature dependent. The
+                        maximum temperature of the process is required. Temperatures above
+                        284 °F (140 °C) are not considered.
+                    </td>
+                </tr>
+                <tr>
+                    <td>Pressure—required</td>
+                    <td>
+                        Total pressure of the system. The total pressure of the gas is a big
+                        contributor in the corrosion rate up to about 250 psig.
+                    </td>
+                </tr>
+                <tr>
+                    <td>CO2 concentration (mole %)—required</td>
+                    <td>
+                        Determine the CO2 partial pressure (pCO2) = (mol fraction of CO2 × total pressure), a maximum
+                        580 psi (4 MPa) partial CO2 pressure is considered.
+                    </td>
+                </tr>
+                <tr>
+                    <td>PCO2—required, if CO2 concentration is not given</td>
+                    <td>
+                        CO2 partial pressure, which is converted to CO2 fugacity to account for nonideal behavior.
+                    </td>
+                </tr>
+                <tr>
+                    <td>Material of construction—required</td>
+                    <td>
+                        Determine the material of construction of equipment/piping. Stainless steels and copper alloys
+                        are assumed to be resistant to CO2 corrosion.
+                    </td>
+                </tr>
+                <tr>
+                    <td>pH—required</td>
+                    <td>
+                        If known explicitly, the pH of the stream should be used; otherwise, Equations (2.B.27),
+                        (2.B.28), and (2.B.29) can be used to estimate the pH based on the CO2 partial pressure, whether
+                        the water in the stream is Fe++ saturated or water with salinity slightly larger than seawater.
+                    </td>
+                </tr>
+                <tr>
+                    <td>Stream properties: bulk density, ρm, viscosity, µm, gas-to-liquid ratios—required</td>
+                    <td>
+                        Guidance with respect to typical values properties expected in natural gas-oil mixtures (i.e.
+                        reservoir fluids) is provided. Estimation of densities can be made on the basis of the oil
+                        density (°API), gas-oil ratio (GOR), pressure, P, and temperature, T. For other streams, a
+                        process engineer should assess these parameters.
+                    </td>
+                </tr>
+                <tr>
+                    <td>For systems with liquids: water cut—optional</td>
+                    <td>
+                        Determine the percentage of water in the system. The default for this field is 30 %.
+                    </td>
+                </tr>
+                <tr>
+                    <td>For gas systems: relative humidity, RH or the dew point temperature, Td—optional</td>
+                    <td>
+                        Determine the dew point temperature, Td, based on the water content. Equation (2.B.25) is
+                        provided for guidance, but should not be assumed to be accurate within ±10 °F. If not provided,
+                        the gas stream temperature is assumed to below the dew point.
+                    </td>
+                </tr>
+                <tr>
+                    <td>Glycol/water mix—Optional</td>
+                    <td>
+                        Water content of glycol/water mix in %weight (%water in the total glycol/water mix). The default
+                        value would assume no glycol added in the system.
+                    </td>
+                </tr>
+                <tr>
+                    <td>Inhibition efficiency—Optional</td>
+                    <td>
+                        Requires %efficiency of the inhibitor. No inhibitor injected as a default value.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Decision Tree Inputs -->
+    <div class="flex flex-col gap-4 mt-5 transition-all">
+
+        <!-- Q1: Material -->
+        <div id="q1_container" class="form-control w-full max-w-md">
+            <label class="label font-semibold" for="q1_material">
+                <span class="label-text">Is the material Carbon Steel or < 13% Cr?</span>
+            </label>
+            <select required name="q1_material" id="q1_material" class="select select-bordered">
+                <option value="" disabled selected>Select one</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+        </div>
+
+        <!-- Q2: Liquid HCs -->
+        <div id="q2_container" class="form-control w-full max-w-md hidden">
+            <label class="label font-semibold" for="q2_liquid_hcs">
+                <span class="label-text">Are liquid HCs present?</span>
+            </label>
+            <select required name="q2_liquid_hcs" id="q2_liquid_hcs" class="select select-bordered">
+                <option value="" disabled selected>Select one</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+        </div>
+
+        <!-- Q3: Water Content -->
+        <div id="q3_container" class="form-control w-full max-w-md hidden">
+            <label class="label font-semibold" for="q3_water_content">
+                <span class="label-text">Is Water Content < 20%?</span>
+            </label>
+            <select required name="q3_water_content" id="q3_water_content" class="select select-bordered">
+                <option value="" disabled selected>Select one</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+        </div>
+
+        <!-- Q4: Fluid Velocity -->
+        <div id="q4_container" class="form-control w-full max-w-md hidden">
+            <label class="label font-semibold" for="q4_velocity">
+                <span class="label-text">Is Fluid Velocity > 1 m/s?</span>
+            </label>
+            <select required name="q4_velocity" id="q4_velocity" class="select select-bordered">
+                <option value="" disabled selected>Select one</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+        </div>
+
+        <!-- Flow Result Message (for Stop conditions) -->
+        <div id="flow_result" class="alert hidden mt-4">
+            <!-- Content injected by JS -->
+        </div>
+
+        <!-- Dew Point Calculation Inputs (Branch Logic) -->
+        <div id="dew_point_inputs_container" class="border-t pt-4 mt-4 hidden">
+            <h4 class="font-bold mb-2">Dew Point Calculation Data</h4>
+            <div class="flex flex-col gap-4">
+                <div class="form-control w-full max-w-md">
+                    <label class="label" for="percent_water">
+                        <span class="label-text">Percent water by weight (%w)</span>
+                    </label>
+                    <input type="number" step="any" id="percent_water" class="input input-bordered w-full"
+                        placeholder="Enter %w">
+                </div>
+                <div class="form-control w-full max-w-md">
+                    <label class="label" for="pressure_psia">
+                        <span class="label-text">Pressure (P) [psia]</span>
+                    </label>
+                    <input type="number" step="any" id="pressure_psia" class="input input-bordered w-full"
+                        placeholder="Enter Pressure (psia)">
+                </div>
+                <button class="btn btn-primary w-full max-w-md mt-2" id="btn_calc_dew_point">Calculate & Compare Dew
+                    Point</button>
+                <div id="dew_point_result" class="hidden mt-2"></div>
+            </div>
+        </div>
+
+        <!-- Base Corrosion Rate Inputs (Target Logic) -->
+        <div id="base_corrosion_inputs_container" class="border-t pt-4 mt-4 hidden">
+            <h4 class="font-bold mb-2">Base Corrosion Rate Inputs</h4>
+            <div id="condition_met_msg" class="alert alert-success mb-2 text-sm hidden">
+                <!-- Dynamic Message injected by JS -->
+            </div>
+            <div class="flex flex-col gap-4">
+                <!-- Pressure/Temp are known or asked above -->
+                <div class="form-control w-full max-w-md">
+                    <label class="label" for="co2_concentration_input">
+                        <span class="label-text">CO2 Concentration (mole %)</span>
+                    </label>
+                    <input type="number" step="any" id="co2_concentration_input" class="input input-bordered w-full"
+                        placeholder="Enter CO2 Concentration">
+                </div>
+                <div class="form-control w-full max-w-md">
+                    <label class="label" for="ph_input">
+                        <span class="label-text">pH</span>
+                    </label>
+                    <input type="number" step="any" id="ph_input" class="input input-bordered w-full"
+                        placeholder="Enter pH">
+                </div>
+                <div class="form-control w-full max-w-md">
+                    <label class="label" for="shear_stress_input">
+                        <span class="label-text">Shear Stress (Pa)</span>
+                    </label>
+                    <input type="number" step="any" id="shear_stress_input" class="input input-bordered w-full"
+                        placeholder="Enter Shear Stress">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Placeholder for Calculation Button (initially hidden) -->
+    <button class="btn btn-primary m-3 hidden" id="calculate_corrosion_rate">Calculate corrosion rate</button>
+
+    <div id="error-container" class="gap-3 m-3"></div>
+
+    <p class="hidden alert alert-info alert-soft m-3" id="corrosion_rate"></p>
+
+    <!-- Q: Glycol/Inhibitor (Moved here) -->
+    <div id="glycol_inhibitor_container" class="form-control w-full max-w-md m-3 hidden">
+        <label class="label font-semibold" for="q_glycol_inhibitor">
+            <span class="label-text">Is there glycol or inhibitor?</span>
+        </label>
+        <select required name="q_glycol_inhibitor" id="q_glycol_inhibitor" class="select select-bordered">
+            <option value="" disabled selected>Select one</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+    </div>
+
+    <!-- Glycol/Inhibitor Inputs -->
+    <div id="glycol_details_container" class="m-3 hidden">
+        <h4 class="font-bold mb-2">Adjustment Factors Data</h4>
+        <div class="flex flex-col gap-4">
+            <div class="form-control w-full max-w-md">
+                <label class="label" for="percent_glycol">
+                    <span class="label-text">% weight glycol</span>
+                </label>
+                <input type="number" step="any" id="percent_glycol" class="input input-bordered w-full"
+                    placeholder="Enter % weight glycol">
+            </div>
+            <!-- Assuming efficiency input based on standard inhibitor logic -->
+            <div class="form-control w-full max-w-md">
+                <label class="label" for="inhibitor_efficiency">
+                    <span class="label-text">Inhibitor Efficiency (%)</span>
+                </label>
+                <input type="number" step="any" id="inhibitor_efficiency" class="input input-bordered w-full"
+                    placeholder="Enter Efficiency (e.g. 90)">
+            </div>
+        </div>
+    </div>
+
+    <!-- Final Calculation Elements -->
+    <button class="btn btn-primary m-3 hidden" id="calculate_final_corrosion_rate">Calculate Final Corrosion
+        Rate</button>
+    <p class="hidden m-3 font-bold text-lg" id="final_corrosion_rate"></p>
+</div>

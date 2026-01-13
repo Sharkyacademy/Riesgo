@@ -1,0 +1,13 @@
+[
+  { "temp_diff_f": 100, "df": 2 },
+  { "temp_diff_f": 80, "df": 8 },
+  { "temp_diff_f": 60, "df": 30 },
+  { "temp_diff_f": 40, "df": 87 },
+  { "temp_diff_f": 20, "df": 200 },
+  { "temp_diff_f": 0, "df": 371 },
+  { "temp_diff_f": -20, "df": 581 },
+  { "temp_diff_f": -40, "df": 806 },
+  { "temp_diff_f": -60, "df": 1022 },
+  { "temp_diff_f": -80, "df": 1216 },
+  { "temp_diff_f": -100, "df": 1381 }
+]

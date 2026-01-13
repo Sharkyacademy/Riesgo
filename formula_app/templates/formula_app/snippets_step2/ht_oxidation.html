@@ -1,0 +1,83 @@
+<div class="p-4 bg-gray-100 rounded">
+
+    <h3 class="text-lg font-bold">High-temperature Oxidation Corrosion</h3>
+    <p class="m-5">Answer the following questions in order to continue with the calculation of the corrosion rate.</p>
+
+    <div class="overflow-x-auto">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Basic Data</th>
+                    <th>Comments</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Material of construction</td>
+                    <td>
+                        Determine the material of construction of the equipment/piping.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Maximum metal temperature
+                    </td>
+                    <td>
+                        Determine the maximum metal temperature. The tube metal temperature for
+                        furnace tubes is the controlling factor
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="flex flex-col gap-3">
+        <label for="material">Material of construction</label>
+        <select class="select select-bordered w-full max-w-xs" required name="material" id="material">
+            <option value="">Select material</option>
+            <option value="carbon steel">Carbon steel</option>
+            <option value="1 1/4cr">1 1/4Cr</option>
+            <option value="2 1/4cr">2 1/4Cr</option>
+            <option value="5cr">5Cr</option>
+            <option value="7cr">7Cr</option>
+            <option value="9cr">9Cr</option>
+            <option value="12cr">12Cr</option>
+            <option value="304 ss">304 SS</option>
+            <option value="309 ss">309 SS</option>
+            <option value="310 ss/hk">310 SS/HK</option>
+            <option value="800 h/hp">800 H/HP</option>
+        </select>
+
+        <div id="cladding_type_container" class="hidden flex flex-col gap-3">
+            <label for="cladding_material_type">Cladding Material Type</label>
+            <select required name="cladding_material_type" id="cladding_material_type"
+                class="select select-bordered w-full max-w-xs">
+                <option value="" disabled selected>Select one</option>
+                <option value="carbon steel">Carbon steel</option>
+                <option value="1 1/4cr">1 1/4Cr</option>
+                <option value="2 1/4cr">2 1/4Cr</option>
+                <option value="5cr">5Cr</option>
+                <option value="7cr">7Cr</option>
+                <option value="9cr">9Cr</option>
+                <option value="12cr">12Cr</option>
+                <option value="304 ss">304 SS</option>
+                <option value="309 ss">309 SS</option>
+                <option value="310 ss/hk">310 SS/HK</option>
+                <option value="800 h/hp">800 H/HP</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+        <label for="maximum_metal_temperature">Maximum Metal Temperature</label>
+        <input type="number" step="any" class="input input-bordered w-full max-w-xs" required
+            name="maximum_metal_temperature" id="maximum_metal_temperature" placeholder="Enter temperature">
+    </div>
+
+    <button class="btn btn-primary m-3" id="calculate_corrosion_rate">Calculate corrosion rate</button>
+
+    <div id="error-container" class="gap-3 m-3"></div>
+
+    <p class="hidden alert alert-info alert-soft m-3" id="corrosion_rate"></p>
+
+</div>

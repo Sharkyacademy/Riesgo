@@ -1,0 +1,70 @@
+{
+    "data": [
+        {
+            "mechanism": "Hydrochloric acid (HCl) corrosion",
+            "kpv": 10,
+            "er_probes": 10,
+            "coupons": 2
+        },
+        {
+            "mechanism": "High-temperature sulfidic/naphthenic acid corrosion",
+            "kpv": 10,
+            "er_probes": 10,
+            "coupons": 2
+        },
+        {
+            "mechanism": "High-temperature H2S/H2 corrosion",
+            "kpv": 1,
+            "er_probes": 10,
+            "coupons": 1
+        },
+        {
+            "mechanism": "Sulfuric acid (H2S/H2) corrosion - Low Velocity",
+            "kpv": 20,
+            "er_probes": 10,
+            "coupons": 2
+        },
+        {
+            "mechanism": "Sulfuric acid (H2S/H2) corrosion - High Velocity",
+            "kpv": 10,
+            "er_probes": 10,
+            "coupons": 1
+        },
+        {
+            "mechanism": "HF corrosion",
+            "kpv": 10,
+            "er_probes": 1,
+            "coupons": 1
+        },
+        {
+            "mechanism": "Sour water corrosion - Low Velocity",
+            "kpv": 20,
+            "er_probes": 10,
+            "coupons": 2
+        },
+        {
+            "mechanism": "Sour water corrosion - High Velocity",
+            "kpv": 10,
+            "er_probes": 2,
+            "coupons": 2
+        },
+        {
+            "mechanism": "Amine - Low Velocity",
+            "kpv": 20,
+            "er_probes": 10,
+            "coupons": 2
+        },
+        {
+            "mechanism": "Amine - High Velocity",
+            "kpv": 10,
+            "er_probes": 10,
+            "coupons": 1
+        },
+        {
+            "mechanism": "Other corrosion mechanism",
+            "kpv": 1,
+            "er_probes": 1,
+            "coupons": 1
+        }
+    ]
+}

@@ -1,0 +1,108 @@
+<div id="external_damage_module" class="hidden animate-fade-in space-y-6">
+    
+    <!-- HEADER -->
+    <h2 class="text-2xl font-bold text-gray-900 mb-2">External Damage & CUI</h2>
+
+    <!-- MAIN CONTAINER -->
+    <div class="bg-white p-6 rounded-b-lg shadow-xl border border-gray-200">
+        
+        <!-- INTRO -->
+        <div class="mb-6">
+            <p class="text-gray-700">
+                Determine external damage susceptibilities based on Table 2.D.1.1 Screening Questions. 
+                Answer the questions below to automatically reveal the applicable assessment sections.
+            </p>
+        </div>
+
+        <!-- UNIFIED SCREENING CARD -->
+        <div class="card bg-gray-50 border border-gray-200 p-6 shadow-sm mb-8">
+            <h3 class="font-bold text-blue-900 border-b pb-2 mb-4">Step 1: Applicability Screening</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Material -->
+                <div class="form-control w-full">
+                    <label class="label"><span class="label-text font-bold">Component Material</span></label>
+                    <select id="sel_ext_unified_material" class="select select-bordered w-full">
+                        <option value="" disabled selected>Select Material...</option>
+                        <option value="Ferritic">Carbon or Low-Alloy Steel (Ferritic)</option>
+                        <option value="Austenitic">Austenitic Stainless Steel</option>
+                    </select>
+                </div>
+
+                <!-- Insulation -->
+                <div class="form-control w-full">
+                    <label class="label"><span class="label-text font-bold">Is Component Insulated?</span></label>
+                    <select id="sel_ext_unified_insulation" class="select select-bordered w-full">
+                        <option value="" disabled selected>Select...</option>
+                        <option value="Yes">Yes (Insulated)</option>
+                        <option value="No">No (Uninsulated)</option>
+                    </select>
+                </div>
+
+                <!-- Temperature -->
+                <div class="form-control w-full">
+                    <label class="label"><span class="label-text font-bold">Operating Temperature</span></label>
+                    <div class="flex">
+                        <input type="number" id="inp_ext_unified_temp" placeholder="Enter Temp" class="input input-bordered w-full rounded-r-none" />
+                        <select id="sel_ext_unified_temp_unit" class="select select-bordered rounded-l-none bg-gray-100">
+                            <option value="F">°F</option>
+                            <option value="C">°C</option>
+                        </select>
+                        <button id="btn_unlock_temp" class="btn btn-square btn-ghost btn-sm ml-2 text-gray-400 hover:text-blue-500 tooltip tooltip-left" data-tip="Unlock to edit manually">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                        </button>
+                    </div>  
+                </div>
+            </div>
+
+            <!-- Manual Trigger Button -->
+            <div class="mt-6 flex justify-end">
+                <button id="btn_check_ext_applicability" class="btn btn-primary text-white font-bold px-8">
+                    Determine Applicability
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                </button>
+            </div>
+
+            <!-- Screening Result Status -->
+            <div class="mt-6 p-4 bg-white border border-gray-200 rounded-lg flex justify-between items-center">
+                <span class="font-semibold text-gray-700">Active Mechanism:</span>
+                <span id="ext_unified_status" class="badge badge-lg p-4 badge-ghost">Pending Inputs...</span>
+            </div>
+        </div>
+
+        <!-- MODULE SECTIONS (Dynamically Revealed) -->
+        
+        <!-- Section 2.D.2: External Corrosion - Ferritic -->
+        <div id="sec_ext_corr_ferritic" class="mt-8 border-t-2 border-dashed border-gray-300 pt-6 hidden animate-fade-in">
+            <h3 class="text-lg font-bold text-blue-800 mb-4">Section 2.D.2: External Corrosion - Ferritic Component</h3>
+
+            {% include 'formula_app/includes/modules/external_corrosion_ferritic.html' %}
+        </div>
+
+        <!-- Section 2.D.3: CUI - Ferritic -->
+        <!-- Section 2.D.3: CUI - Ferritic -->
+        <div id="sec_cui_ferritic_target" class="mt-8 border-t-2 border-dashed border-gray-300 pt-6 hidden" style="border: 2px solid red;">
+
+            <h3 class="text-lg font-bold text-blue-800 mb-4">CUI - Ferritic</h3>
+            {% include 'formula_app/includes/modules/cui_ferritic.html' %}
+        </div>
+
+
+
+        <!-- Section 2.D.4: Ext-ClSCC - Austenitic -->
+        <div id="sec_ext_clscc_austenitic" class="mt-8 border-t-2 border-dashed border-gray-300 pt-6 hidden animate-fade-in">
+            <h3 class="text-lg font-bold text-blue-800 mb-4">Section 2.D.4: External Chloride SCC - Austenitic</h3>
+            {% include 'formula_app/includes/modules/external_clscc_austenitic.html' %}
+        </div>
+
+        <!-- Section 2.D.5: CUI-ClSCC - Austenitic -->
+        <div id="sec_cui_clscc_austenitic" class="mt-8 border-t-2 border-dashed border-gray-300 pt-6 hidden animate-fade-in">
+             <h3 class="text-lg font-bold text-blue-800 mb-4">Section 2.D.5: CUI Chloride SCC - Austenitic</h3>
+             <div class="alert alert-info shadow-sm">
+                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                 <span>Applicable! Please complete the assessment for this mechanism. (Module Content Pending)</span>
+             </div>
+        </div>
+
+    </div>
+</div>

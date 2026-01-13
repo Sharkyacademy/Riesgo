@@ -1,0 +1,1 @@
+{"data":[{"temperature":{"celsius":"< 49","fahrenheit":"< 120"},"multiplyingFactor":1.0},{"temperature":{"celsius":"49 to 104","fahrenheit":"120 to 220"},"multiplyingFactor":2.0},{"temperature":{"celsius":"> 104","fahrenheit":"> 220"},"multiplyingFactor":1.0}]}

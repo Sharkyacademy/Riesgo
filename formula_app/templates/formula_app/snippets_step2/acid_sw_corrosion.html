@@ -1,0 +1,174 @@
+<div class="p-4 bg-gray-100 rounded">
+
+    <h3 class="text-lg font-bold">Acid Sour Water Corrosion</h3>
+    <p class="m-5">Answer the following questions in order to continue with the calculation of the corrosion rate.</p>
+
+    <div class="overflow-x-auto">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Basic Data</th>
+                    <th>Comments</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Material of construction</td>
+                    <td>
+                        Determine the material of construction of the equipment/piping. Carbon
+                        and low-alloy steel (containing maximum 6 % alloys) assumed as default.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        pH
+                    </td>
+                    <td>
+                        Determine the lowest pH for the equipment/piping. The pH that is used
+                        should be of the separated acid phase within this equipment or nearest
+                        equipment downstream, e.g. the overhead accumulator boot water
+                        downstream of the overhead condenser.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Water temperature
+                    </td>
+                    <td>
+                        Determine the maximum temperature present in the equipment/piping.
+                        This may be the maximum process temperature, but local heating
+                        condition such as effect of the sun or heat tracing should be considered.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Air or oxidants present (Yes or No)
+                    </td>
+                    <td>
+                        Presence of oxygen may increase the corrosion rates. Normal oxygen
+                        concentration is ≤ 50 ppb, and high is maximum > 50 ppb.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Chlorides present (Yes or No)
+                    </td>
+                    <td>
+                        The present of chlorides in combination with a pH below 4.5 significantly
+                        affect the corrosion rate.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Flow velocity
+                    </td>
+                    <td>
+                        Determine the maximum expected flow velocity.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="flex flex-col gap-3">
+        <div id="container_h2o_present" class="flex flex-col gap-3">
+            <label for="h2o_present">Is H2O present?</label>
+            <select required class="select select-bordered w-full max-w-xs" name="h2o_present" id="h2o_present">
+                <option value="" selected disabled>Select one</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+        </div>
+
+        <div id="container_ph_7" class="hidden flex flex-col gap-3">
+            <label for="ph_7">Is pH > 7?</label>
+            <select required class="select select-bordered w-full max-w-xs" name="ph_7" id="ph_7">
+                <option value="" selected disabled>Select one</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+        </div>
+
+        <div id="container_ph_4_5" class="hidden flex flex-col gap-3">
+            <label for="ph_4_5">Is pH < 4.5?</label>
+                    <select required class="select select-bordered w-full max-w-xs" name="ph_4_5" id="ph_4_5">
+                        <option value="" selected disabled>Select one</option>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                    </select>
+        </div>
+
+
+
+        <div id="container_chlorides" class="hidden flex flex-col gap-3">
+            <label for="chlorides">Are chlorides present?</label>
+            <select required class="select select-bordered w-full max-w-xs" name="chlorides" id="chlorides">
+                <option value="" selected disabled>Select one</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+        </div>
+
+        <div id="container_material" class="hidden flex flex-col gap-3">
+            <label for="material">Material of construction is carbon or low alloy?</label>
+            <select required class="select select-bordered w-full max-w-xs" name="material" id="material">
+                <option value="" selected disabled>Select one</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+        </div>
+
+        <div id="container_cladding_material" class="hidden flex flex-col gap-3">
+            <label for="cladding_material">Cladding Material is carbon or low alloy?</label>
+            <select class="select select-bordered w-full max-w-xs" name="cladding_material" id="cladding_material">
+                <option value="" selected disabled>Select one</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+        </div>
+
+        <div id="container_final_inputs" class="hidden flex flex-col gap-3">
+
+            <div id="container_step_1" class="flex flex-col gap-3">
+                <label for="ph_value">pH</label>
+                <input type="number" step="any" class="input input-bordered w-full max-w-xs" required name="ph_value"
+                    id="ph_value" placeholder="Enter pH">
+
+                <label for="temperature">Temperature</label>
+                <input type="number" step="any" class="input input-bordered w-full max-w-xs" required name="temperature"
+                    id="temperature" placeholder="Enter temperature">
+
+                <button class="btn btn-primary m-3 w-full max-w-xs" id="calculate_corrosion_rate">Calculate corrosion
+                    rate</button>
+                <p class="hidden alert alert-info alert-soft m-3" id="corrosion_rate_result_1"></p>
+            </div>
+
+            <div id="container_step_2" class="hidden flex flex-col gap-3">
+                <label for="oxygen">Oxygen (ppb)</label>
+                <input type="number" required class="input input-bordered w-full max-w-xs" name="oxygen" id="oxygen">
+            </div>
+
+            <div id="container_step_3" class="hidden flex flex-col gap-3">
+                <label for="velocity">Velocity (fps)</label>
+                <input type="number" required class="input input-bordered w-full max-w-xs" name="velocity"
+                    id="velocity">
+
+                <button class="btn btn-primary m-3 w-full max-w-xs" id="calculate_final_corrosion_rate">Calculate final
+                    corrosion rate</button>
+            </div>
+
+        </div>
+
+
+        <div id="container_coming_soon" class="hidden">
+            <p class="text-warning">Próximamente</p>
+        </div>
+    </div>
+
+    <div id="error-container" class="gap-3 m-3"></div>
+
+    <p class="hidden alert alert-info alert-soft m-3" id="corrosion_rate"></p>
+
+</div>

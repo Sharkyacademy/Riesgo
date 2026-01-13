@@ -1,0 +1,254 @@
+{% extends 'theme/base.html' %}
+{% load static %}
+
+{% block title %}Probability of Failure (POF) Results{% endblock %}
+
+{% block content %}
+<div class="drawer h-full overflow-hidden">
+    <input id="my-drawer" type="checkbox" class="drawer-toggle" />
+
+    <div class="drawer-content flex flex-col h-full overflow-hidden">
+        <main class="flex flex-1 h-full overflow-hidden">
+
+            <!-- SIDEBAR -->
+            <aside
+                class="hidden lg:block w-64 bg-white p-6 shadow-xl border-r border-gray-200 flex-shrink-0 overflow-y-auto">
+                {% include 'formula_app/includes/sidebar.html' %}
+            </aside>
+
+            <!-- MAIN CONTENT -->
+            <section class="flex flex-1 flex-col bg-gray-50 h-full overflow-hidden p-6 lg:p-10 relative">
+
+                <!-- HEADER -->
+                <div class="mb-10 text-center lg:text-left">
+                    <h1 class="text-4xl font-extrabold text-blue-900 mb-2">Probability of Failure (POF)</h1>
+                    <p class="text-gray-500">Summary Dashboard & Final Calculation</p>
+                </div>
+
+                <div class="w-full max-w-6xl mx-auto flex-1 overflow-y-auto space-y-12 pb-20">
+
+                    <!-- STATUS CARDS GRID -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                        <!-- CARD 1: GFF -->
+                        <div class="card bg-white shadow-lg border border-gray-100 group hover:shadow-xl transition-all duration-300"
+                            id="card-gff">
+                            <div class="card-body items-center text-center">
+                                <h2 class="card-title text-gray-500 text-sm uppercase tracking-wider mb-4">Generic
+                                    Failure Frequency</h2>
+
+                                <div class="w-16 h-16 rounded-full flex items-center justify-center mb-4 transition-colors duration-300"
+                                    id="icon-bg-gff">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor" id="icon-gff">
+                                        <!-- JS will inject Icon -->
+                                    </svg>
+                                </div>
+
+                                <div class="text-3xl font-bold text-gray-800 font-mono mb-2" id="val-gff">--</div>
+                                <p class="text-xs text-gray-400">Failures / Year</p>
+
+                                <div class="card-actions mt-4" id="action-gff">
+                                    <!-- JS will inject Button -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CARD 2: FMS -->
+                        <div class="card bg-white shadow-lg border border-gray-100 group hover:shadow-xl transition-all duration-300"
+                            id="card-fms">
+                            <div class="card-body items-center text-center">
+                                <h2 class="card-title text-gray-500 text-sm uppercase tracking-wider mb-4">Management
+                                    Systems Factor</h2>
+
+                                <div class="w-16 h-16 rounded-full flex items-center justify-center mb-4 transition-colors duration-300"
+                                    id="icon-bg-fms">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor" id="icon-fms">
+                                    </svg>
+                                </div>
+
+                                <div class="text-3xl font-bold text-gray-800 font-mono mb-2" id="val-fms">--</div>
+                                <p class="text-xs text-gray-400">Factor Unit</p>
+
+                                <div class="card-actions mt-4" id="action-fms">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CARD 3: Df(t) -->
+                        <div class="card bg-white shadow-lg border border-gray-100 group hover:shadow-xl transition-all duration-300"
+                            id="card-df">
+                            <div class="card-body items-center text-center">
+                                <h2 class="card-title text-gray-500 text-sm uppercase tracking-wider mb-4">Thinning
+                                    Damage Factor</h2>
+
+                                <div class="w-16 h-16 rounded-full flex items-center justify-center mb-4 transition-colors duration-300"
+                                    id="icon-bg-df">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor" id="icon-df">
+                                    </svg>
+                                </div>
+
+                                <div class="text-3xl font-bold text-gray-800 font-mono mb-2" id="val-df">--</div>
+                                <p class="text-xs text-gray-400">Factor Unit</p>
+
+                                <div class="card-actions mt-4" id="action-df">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- FINAL CALCULATION SECTION -->
+                    <div class="card bg-blue-950 text-white shadow-2xl border border-blue-900 overflow-hidden relative">
+                        <!-- Background decoration -->
+                        <div
+                            class="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 rounded-full bg-blue-900 opacity-20 blur-3xl">
+                        </div>
+
+                        <div class="card-body text-center py-16">
+
+                            <h2 class="text-blue-300 font-bold uppercase tracking-widest text-sm mb-6">Final POF
+                                Calculation</h2>
+
+                            <!-- FORMULA DISPLAY -->
+                            <div class="text-2xl md:text-4xl font-mono text-gray-400 mb-8 opacity-50 select-none">
+                                P<span class="text-sm">f</span>(t) =
+                                <span id="formula-gff" class="transition-colors duration-300">gff</span> ×
+                                <span id="formula-fms" class="transition-colors duration-300">Fms</span> ×
+                                <span id="formula-df" class="transition-colors duration-300">Df(t)</span>
+                            </div>
+
+                            <!-- RESULT CONTAINER -->
+                            <div id="final-result-container"
+                                class="transition-all duration-700 opacity-0 transform translate-y-4">
+                                <div class="inline-flex flex-col items-center">
+                                    <div class="text-7xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-white tracking-tighter mb-2"
+                                        id="final-pof-value">
+                                        0.000
+                                    </div>
+                                    <div
+                                        class="badge badge-warning badge-lg text-xs font-bold uppercase tracking-wider">
+                                        Failures / Year</div>
+                                </div>
+                            </div>
+
+                            <!-- MISSING DATA MESSAGE -->
+                            <div id="missing-data-msg" class="text-gray-400 mt-4 animate-pulse">
+                                Complete all factors above to calculate the final probability.
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+        </main>
+    </div>
+
+    <!-- MOBILE SIDEBAR -->
+    <div class="drawer-side z-40">
+        <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+        <aside class="w-64 bg-white p-4 shadow-2xl flex-shrink-0">
+            {% include 'formula_app/includes/sidebar.html' %}
+        </aside>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- 1. RETRIEVE DATA ---
+
+        // GFF (From JSON state)
+        let gffVal = null;
+        try {
+            const rawGff = sessionStorage.getItem('gff_module_state');
+            if (rawGff) {
+                const parsed = JSON.parse(rawGff);
+                if (parsed.results && parsed.results.gff_total) {
+                    gffVal = parseFloat(parsed.results.gff_total);
+                }
+            }
+        } catch (e) { console.error("GFF Parse Error", e); }
+
+        // FMS
+        let fmsVal = null;
+        const rawFms = sessionStorage.getItem('fms_result');
+        if (rawFms) fmsVal = parseFloat(rawFms);
+
+        // Df
+        let dfVal = null;
+        const rawDf = sessionStorage.getItem('thinning_final_df');
+        if (rawDf) dfVal = parseFloat(rawDf);
+
+
+        // --- 2. UPDATE UI ---
+
+        const updateCard = (type, val, urlName) => {
+            const bg = document.getElementById(`icon-bg-${type}`);
+            const icon = document.getElementById(`icon-${type}`);
+            const valEl = document.getElementById(`val-${type}`);
+            const actionEl = document.getElementById(`action-${type}`);
+            const formulaPart = document.getElementById(`formula-${type}`);
+
+            if (val !== null && !isNaN(val)) {
+                // SUCCESS STATE
+                bg.classList.remove('bg-gray-200');
+                bg.classList.add('bg-green-500', 'shadow-lg', 'shadow-green-200');
+
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />`; // Checkmark
+
+                // Format Value
+                if (type === 'gff') valEl.textContent = val.toExponential(2);
+                else valEl.textContent = val.toFixed(3);
+
+                valEl.classList.add('text-green-700');
+                formulaPart.classList.add('text-blue-300', 'font-bold');
+                formulaPart.classList.remove('text-gray-400');
+
+                actionEl.innerHTML = `<button class="btn btn-xs btn-ghost text-green-600 cursor-default">Ready</button>`;
+
+                return true;
+            } else {
+                // MISSING STATE
+                bg.classList.add('bg-gray-100');
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />`; // X
+                icon.classList.add('text-gray-300');
+
+                actionEl.innerHTML = `<a href="${urlName}" class="btn btn-sm btn-outline btn-error">Calculate</a>`;
+
+                return false;
+            }
+        };
+
+        const hasGff = updateCard('gff', gffVal, "{% url 'gff_calculation' %}");
+        const hasFms = updateCard('fms', fmsVal, "{% url 'fms_calculation' %}");
+        const hasDf = updateCard('df', dfVal, "{% url 'calculation_thinning_df' %}");
+
+
+        // --- 3. FINAL CALCULATION ---
+
+        if (hasGff && hasFms && hasDf) {
+            // HIDE MISSING MSG
+            document.getElementById('missing-data-msg').classList.add('hidden');
+
+            // SHOW RESULT
+            const finalPOF = gffVal * fmsVal * dfVal;
+
+            const resContainer = document.getElementById('final-result-container');
+            const resValue = document.getElementById('final-pof-value');
+
+            resValue.textContent = finalPOF.toExponential(3);
+
+            resContainer.classList.remove('opacity-0', 'translate-y-4'); // Fade In
+            resContainer.classList.add('opacity-100', 'translate-y-0');
+
+        }
+
+    });
+</script>
+{% endblock %}

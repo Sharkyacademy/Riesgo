@@ -1,0 +1,53 @@
+[
+  {
+    "range": "< 3.5",
+    "ph_min": 0,
+    "ph_max": 3.49,
+    "severity": ["None", "Low", "Low", "Moderate", "High"]
+  },
+  {
+    "range": "3.5 to 4.5",
+    "ph_min": 3.5,
+    "ph_max": 4.49,
+    "severity": ["None", "Low", "Low", "Moderate", "High"]
+  },
+  {
+    "range": "4.5 to 5.5",
+    "ph_min": 4.5,
+    "ph_max": 5.49,
+    "severity": ["None", "None", "Low", "Low", "Moderate"]
+  },
+  {
+    "range": "5.5 to 6.5",
+    "ph_min": 5.5,
+    "ph_max": 6.49,
+    "severity": ["None", "None", "Low", "Low", "Moderate"]
+  },
+  {
+    "range": "6.5 to 7.6",
+    "ph_min": 6.5,
+    "ph_max": 7.6,
+    "severity": ["None", "None", "Low", "Low", "Moderate"]
+  },
+  {
+    "range": "7.6 to 8.3",
+    "ph_min": 7.61,
+    "ph_max": 8.3,
+    "severity": ["None", "None", "Moderate", "Moderate", "Moderate"],
+    "note_applies": true
+  },
+  {
+    "range": "8.4 to 8.9",
+    "ph_min": 8.31,
+    "ph_max": 8.9,
+    "severity": ["None", "None", "Moderate", "Moderate", "High"],
+    "note_applies": true
+  },
+  {
+    "range": "> 9.0",
+    "ph_min": 8.91,
+    "ph_max": 14,
+    "severity": ["None", "None", "Moderate", "Moderate", "High"],
+    "note_applies": true
+  }
+]

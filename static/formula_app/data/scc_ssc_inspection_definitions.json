@@ -1,0 +1,32 @@
+[
+  {
+    "category": "A",
+    "effectiveness": "Highly Effective",
+    "intrusive": "For the total weld area: 100% WFMT/ACFM with UT follow-up of relevant indications",
+    "non_intrusive": "For the total weld area: 100% automated or manual ultrasonic scanning"
+  },
+  {
+    "category": "B",
+    "effectiveness": "Usually Effective",
+    "intrusive": "For selected welds/weld area: > 75% WFMT/ACFM with UT follow-up of all relevant indications",
+    "non_intrusive": "For selected welds/weld area: > 75% automated or manual ultrasonic scanning OR AE testing with 100% follow-up of relevant indications"
+  },
+  {
+    "category": "C",
+    "effectiveness": "Fairly Effective",
+    "intrusive": "For selected welds/weld area: > 35% WFMT/ACFM with UT follow-up of all relevant indications",
+    "non_intrusive": "For selected welds/weld area: > 35% automated or manual ultrasonic scanning OR > 35% RT"
+  },
+  {
+    "category": "D",
+    "effectiveness": "Poorly Effective",
+    "intrusive": "For selected welds/weld area: > 10% WFMT/ACFM with UT follow-up of all relevant indications",
+    "non_intrusive": "For selected welds/weld area: > 10% automated or manual ultrasonic scanning OR > 10% RT"
+  },
+  {
+    "category": "E",
+    "effectiveness": "Ineffective",
+    "intrusive": "Ineffective inspection technique/plan was utilized",
+    "non_intrusive": "Ineffective inspection technique/plan was utilized"
+  }
+]

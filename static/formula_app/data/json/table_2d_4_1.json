@@ -1,0 +1,38 @@
+{
+    "title": "Table 2.D.4.1 — Data Required for Determination of the DF — External ClSCC",
+    "columns": ["Required Data", "Comments"],
+    "rows": [
+        {
+            "data": "Driver",
+            "comment": "The drivers for ExtClSCC. See 2.D.2.6.2 for driver descriptions and selection."
+        },
+        {
+            "data": "Crack severity",
+            "comment": "Crack severity based on susceptibility (temperature and weather; see below)."
+        },
+        {
+            "data": "Date",
+            "comment": "The date the component was installed or the date the last inspection where no damage was found."
+        },
+        {
+            "data": "Coating quality",
+            "comment": "Relates to the type of coating applied, for example: None—no coating or primer only; Medium—single coat epoxy; High—multi-coat epoxy or filled epoxy."
+        },
+        {
+            "data": "Coating date",
+            "comment": "Determine the age of the coating."
+        },
+        {
+            "data": "Inspection effectiveness category",
+            "comment": "The effectiveness category that has been performed on the component."
+        },
+        {
+            "data": "Number of inspections",
+            "comment": "The number of inspections in each effectiveness category that have been performed."
+        },
+        {
+            "data": "Operating temperature, °F (°C)",
+            "comment": "Determine the expected operating temperature (consider normal and non-normal operating conditions)."
+        }
+    ]
+}

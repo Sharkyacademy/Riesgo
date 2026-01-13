@@ -1,0 +1,147 @@
+<div class="p-4 bg-gray-100 rounded">
+
+    <h3 class="text-lg font-bold">Soil side corrosion</h3>
+    <p class="m-5">Answer the following questions in order to continue with the calculation of the corrosion rate.</p>
+
+    <div class="overflow-x-auto">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Basic Data</th>
+                    <th>Comments</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Base corrosion rate</td>
+                    <td>
+                        The expected or observed corrosion rate for the buried structure, or a
+                        "similar" structure under "similar" service and conditions.
+                    </td>
+                </tr>
+                <tr>
+                    <td>Equipment temperature</td>
+                    <td>
+                        Equipment temperature (operating temperature for piping and pipelines).
+                    </td>
+                </tr>
+                <tr>
+                    <td>Soil resistivity, Ω-cm</td>
+                    <td>
+                        Soil characteristics in the vicinity of the buried structure.
+                    </td>
+                </tr>
+                <tr>
+                    <td>CP</td>
+                    <td>
+                        Specify whether or not a CP system is installed and how effective it is
+                    </td>
+                </tr>
+                <tr>
+                    <td>Coating</td>
+                    <td>
+                        Type of coating, age, temperature abuse, and inspection and maintenance
+                        history, if a coating is installed
+                    </td>
+                </tr>
+                <tr>
+                    <td>Equipment age, years</td>
+                    <td>
+                        The time since installation of the buried equipment—used to determine
+                        accumulated corrosion over time since buried.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="flex flex-col gap-3">
+
+        <label for="soil_type">Primary Soil Type</label>
+        <select required name="soil_type" id="soil_type" class="select select-bordered w-full max-w-xs">
+            <option value="" disabled selected>Select one</option>
+            <option value="Sand">Sand</option>
+            <option value="Silt">Silt</option>
+            <option value="Clay">Clay</option>
+        </select>
+
+        <p class="hidden m-3" id="base_corrosion_rate_message"></p>
+
+        <label for="soil_resistivity">Soil Resistivity considered for Base Corrosion Rate?</label>
+        <select name="soil_resistivity" id="soil_resistivity" class="select select-bordered w-full max-w-xs">
+            <option value="" disabled selected>Select one</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+    </div>
+
+    <!-- Soil Resistivity Input Section (shown if "No" is selected) -->
+    <div id="soil_resistivity_input_section" class="hidden flex flex-col gap-3">
+        <label for="soil_resistivity_value">Soil Resistivity (Ω-cm)</label>
+        <input type="number" step="any" id="soil_resistivity_value" class="input input-bordered w-full max-w-xs"
+            placeholder="Enter resistivity value">
+
+        <p class="hidden m-3" id="soil_resistivity_factor_message"></p>
+    </div>
+
+    <p class="hidden m-3" id="temperature_factor_message"></p>
+
+    <!-- CP (Cathodic Protection) Section (shown after temperature flow) -->
+    <div id="cp_section" class="hidden flex flex-col gap-3">
+        <label for="cp_practice">CP Measurement Practices</label>
+        <select required name="cp_practice" id="cp_practice" class="select select-bordered w-full max-w-xl">
+            <option value="" disabled selected>Select practice</option>
+            <!-- Options populated dynamically from table_2b125.JSON -->
+        </select>
+        <p class="hidden m-3" id="cp_factor_message"></p>
+    </div>
+
+    <!-- Coating Section (shown after CP flow) -->
+    <div id="coating_question_section" class="hidden flex flex-col gap-3">
+        <label for="coating_question">Is there a coating?</label>
+        <select required name="coating_question" id="coating_question" class="select select-bordered w-full max-w-xs">
+            <option value="" disabled selected>Select one</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+        <p class="hidden m-3" id="coating_factor_message"></p>
+    </div>
+
+    <!-- Coating Details Section (shown if "Yes" is selected) -->
+    <div id="coating_input_section" class="hidden flex flex-col gap-3 ml-5 border-l-2 pl-3">
+        <label for="coating_type">Coating Type</label>
+        <select name="coating_type" id="coating_type" class="select select-bordered w-full max-w-xs">
+            <option value="" disabled selected>Select coating type</option>
+            <!-- Options populated dynamically from table_2b126.JSON -->
+        </select>
+
+        <div class="form-control">
+            <label class="label cursor-pointer justify-start gap-3">
+                <input type="checkbox" id="coating_age" class="checkbox">
+                <span class="label-text">Age > 20 years</span>
+            </label>
+        </div>
+        <div class="form-control">
+            <label class="label cursor-pointer justify-start gap-3">
+                <input type="checkbox" id="coating_temp" class="checkbox">
+                <span class="label-text">Max rated temperature occasionally exceeded</span>
+            </label>
+        </div>
+        <div class="form-control">
+            <label class="label cursor-pointer justify-start gap-3">
+                <input type="checkbox" id="coating_maintenance" class="checkbox">
+                <span class="label-text">Coating maintenance rare or none</span>
+            </label>
+        </div>
+    </div>
+
+    <button class="btn btn-primary m-3 hidden" id="calculate_corrosion_rate">Calculate corrosion rate</button>
+
+    <div id="error-container" class="gap-3 m-3"></div>
+
+    <p class="hidden alert alert-info alert-soft m-3" id="corrosion_rate"></p>
+    <p class="hidden alert alert-warning alert-soft m-3" id="velocity_message"></p>
+
+</div>

@@ -1,0 +1,38 @@
+[
+  {
+    "parameter": "Susceptibility (Low, Medium, High)",
+    "comment": "The susceptibility is determined by expert advice or using the procedures in this section."
+  },
+  {
+    "parameter": "Presence of water (Yes or No)",
+    "comment": "Determine whether free water is present in the component. Consider not only normal operating conditions but also start-up, shutdown, process upsets, etc."
+  },
+  {
+    "parameter": "H2S content of water",
+    "comment": "Determine the H2S content of the water phase. If analytical results are not readily available, it can be estimated using the approach of Petrie & Moore [30]."
+  },
+  {
+    "parameter": "pH of water",
+    "comment": "Determine the pH of the water phase. If analytical results are not readily available, it should be estimated by a knowledgeable process engineer."
+  },
+  {
+    "parameter": "Presence of cyanides (Yes or No)",
+    "comment": "Determine the presence of cyanide through sampling and/or field analysis. Consider primarily normal and upset operations but also start-up and shutdown conditions."
+  },
+  {
+    "parameter": "Max Brinnell hardness",
+    "comment": "Determine the maximum Brinnell hardness actually measured at the weldments of the steel components. Report readings actually taken as Brinnell, not converted from finer techniques (e.g. Vickers, Knoop, etc.). If actual readings are not available, use the maximum allowable hardness permitted by the fabrication specification."
+  },
+  {
+    "parameter": "Age (years)",
+    "comment": "Use inspection history to determine the time since the last SCC inspection."
+  },
+  {
+    "parameter": "Inspection effectiveness category",
+    "comment": "The effectiveness category that has been performed on the component."
+  },
+  {
+    "parameter": "Number of inspections",
+    "comment": "The number of inspections in each effectiveness category that have been performed."
+  }
+]

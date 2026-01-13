@@ -1,0 +1,49 @@
+{% load static tailwind_tags %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{%block title%}{%endblock%}</title>
+    <!-- Carga de MathJax para renderizar fórmulas LaTeX -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/logo.png' %}">
+    <link rel="stylesheet" href="{% static 'formula_app/styles.css' %}">
+    <script type="module" src="https://unpkg.com/cally"></script>
+    {% tailwind_css %}
+</head>
+
+<body class="h-screen flex flex-col bg-base-200 text-black font-sans leading-normal tracking-normal overflow-hidden">
+
+  <!-- Navbar: Usamos 'justify-between' para separar el logo a la izquierda y los botones a la derecha -->
+  <nav class="navbar bg-blue-950 h-10 sm:h-12 shadow-md flex-shrink-0 px-4 justify-between">
+      <div class="flex items-center space-x-2">
+          
+          <div class="w-10 h-10 sm:w-12 sm:h-12">
+              <img src="{% static 'images/logo.png' %}" alt="Logo" class="w-full h-full object-contain"/>
+          </div>
+          
+          <h1 class="text-sm sm:text-lg font-semibold text-white truncate">
+              Storage Tanks International Institute (STII)
+          </h1>
+      </div>
+      
+      <!-- Este div ahora contendrá el 'nav_content' que se alinea a la derecha -->
+      <div class="flex items-center h-full">
+        {%block nav_content%}{%endblock%}
+      </div>
+
+  </nav>
+
+  <div class="flex-1 relative overflow-hidden">
+  
+    {%block content%}{%endblock%}
+      
+  </div>
+
+  {% block scripts %}{% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,73 @@
+<div class="flex flex-col h-full w-full">
+    <div class="mb-4">
+        <h2 class="text-2xl font-bold text-primary mb-4 border-b pb-2">Step 12. Base Thinning Damage Factor</h2>
+        <p class="text-sm text-gray-600 mb-4">
+            Calculate the Base Thinning Damage Factor (D<sup>Thin</sup><sub>fB</sub>) using Equation 2.19. This combines
+            the Posterior Probabilities and Reliability Parameters.
+        </p>
+
+        <!-- Review Inputs -->
+        <div class="p-4 bg-gray-50 rounded-box border border-gray-200 mb-6">
+            <h3 class="font-bold text-gray-700 mb-2">Calculation Components</h3>
+            <div class="overflow-x-auto">
+                <table class="table table-xs w-full">
+                    <thead>
+                        <tr>
+                            <th>Damage State</th>
+                            <th>Posterior Prob (Po)</th>
+                            <th>Reliability (&beta;)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>State 1</td>
+                            <td id="step12_po1" class="text-info font-bold">-</td>
+                            <td id="step12_beta1" class="text-info font-bold">-</td>
+                        </tr>
+                        <tr>
+                            <td>State 2</td>
+                            <td id="step12_po2" class="text-info font-bold">-</td>
+                            <td id="step12_beta2" class="text-info font-bold">-</td>
+                        </tr>
+                        <tr>
+                            <td>State 3</td>
+                            <td id="step12_po3" class="text-info font-bold">-</td>
+                            <td id="step12_beta3" class="text-info font-bold">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Calculation Action -->
+        <div class="flex justify-end">
+            <button id="step12_calc_btn" class="btn btn-primary">Calculate Base DF</button>
+        </div>
+
+        <!-- Error Container -->
+        <div id="step12_error_container" class="alert alert-error hidden mb-4 mt-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span id="step12_error_message">Error!</span>
+        </div>
+
+        <!-- Final Result Container -->
+        <div id="step12_result_container" class="hidden mt-6 flex justify-center">
+
+            <div class="stats shadow border border-info bg-blue-50 w-full md:w-2/3">
+                <div class="stat place-items-center">
+                    <div class="stat-title text-info font-bold opacity-100">Base Thinning DF
+                        (D<sup>Thin</sup><sub>fB</sub>)</div>
+                    <div class="stat-value text-info text-4xl"><span id="step12_result">0.00</span> <span
+                            class="text-lg font-normal text-gray-400">(Dimensionless)</span></div>
+                    <div class="stat-desc text-info opacity-100">Based on Eq 2.19</div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>

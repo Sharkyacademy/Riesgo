@@ -1,0 +1,62 @@
+{
+    "title": "Table 2.D.3.1 — Data Required for Determination of the DF — CUI",
+    "columns": ["Required Data", "Comments"],
+    "rows": [
+        {
+            "data": "Insulation type",
+            "comment": "Type of insulation per Table 2.D.3.3."
+        },
+        {
+            "data": "Driver",
+            "comment": "The drivers for external CUI corrosion. See 2.D.2.6.2 for driver descriptions and selection."
+        },
+        {
+            "data": "Corrosion rate, mpy (mm/y)",
+            "comment": "Corrosion rate for external CUI corrosion. Based on temperature, and driver (see below), or user input."
+        },
+        {
+            "data": "Coating installation date",
+            "comment": "The date the coating was installed."
+        },
+        {
+            "data": "Coating quality",
+            "comment": "Relates to the type of coating applied under the insulation, for example: None—no coating or primer only; Medium—single coat epoxy; High—multi-coat epoxy or filled epoxy."
+        },
+        {
+            "data": "Equipment design/fabrication penalty (Yes/No)",
+            "comment": "If the equipment has a design or fabrication detail that allows water to pool and increase metal loss rates..."
+        },
+        {
+            "data": "Complexity",
+            "comment": "The number of protrusions such as branch connections, nozzles, pipe supports... defined as Below Average, Average, Above Average."
+        },
+        {
+            "data": "Insulation condition? (Above Average, Average, or Below Average)",
+            "comment": "Determine the insulation condition based on external visual inspection of jacketing condition..."
+        },
+        {
+            "data": "Pipe support penalty? (Yes/No)",
+            "comment": "If piping is supported directly on beams or other such configuration that does not allow for proper coating maintenance..."
+        },
+        {
+            "data": "Interface penalty? (Yes/No)",
+            "comment": "If the piping has an interface where it enters either soil or water, this area is subject to increased corrosion."
+        },
+        {
+            "data": "Inspection effectiveness category",
+            "comment": "The effectiveness category that has been performed on the component."
+        },
+         {
+            "data": "Number of inspections",
+            "comment": "The number of inspections in each effectiveness category that have been performed."
+        },
+        {
+            "data": "Thickness reading",
+            "comment": "The thickness used for the DF calculation is either the furnished thickness or the measured thickness."
+        },
+        {
+            "data": "Thickness reading date",
+            "comment": "The date at which the thickness measurement used in the calculation was obtained."
+        }
+    ]
+}

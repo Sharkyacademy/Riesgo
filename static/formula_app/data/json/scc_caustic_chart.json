@@ -1,0 +1,19 @@
+{
+    "area_a_curve_f": [
+        { "c": 0, "t": 180 },
+        { "c": 10, "t": 172 },
+        { "c": 20, "t": 160 },
+        { "c": 30, "t": 140 },
+        { "c": 40, "t": 125 },
+        { "c": 50, "t": 115 }
+    ],
+    "area_a_curve_c": [
+        { "c": 0, "t": 82.2 },
+        { "c": 10, "t": 77.8 },
+        { "c": 20, "t": 71.1 },
+        { "c": 30, "t": 60.0 },
+        { "c": 40, "t": 51.7 },
+        { "c": 50, "t": 46.1 }
+    ],
+    "description": "Upper temperature limit for Area A (Safe Zone) in NACE Caustic Soda Service Graph. _f for Fahrenheit (Fig 2.C.4.1), _c for Celsius (Fig 2.C.4.1M)."
+}

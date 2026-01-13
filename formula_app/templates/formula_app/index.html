@@ -1,0 +1,177 @@
+{%extends 'theme/base.html'%}
+{% load static %}
+
+{%block title%}Cálculo de Espesores Mínimos{%endblock%}
+
+{% block nav_content %}
+<div class="flex justify-end items-center h-full">
+    <ul class="menu menu-horizontal p-0 hidden lg:flex text-white space-x-2">
+        <li><a id="logout_btn" href="{% url 'logout' %}"
+                class="btn btn-ghost text-white hover:bg-blue-800 transition duration-200">Log out</a></li>
+        <li><a href="#" class="btn btn-ghost text-white hover:bg-blue-800 transition duration-200">Account</a></li>
+    </ul>
+
+    <label for="my-drawer" class="btn btn-square btn-ghost text-white lg:hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            class="inline-block w-6 h-6 stroke-current">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+    </label>
+</div>
+{% endblock %}
+
+{%block content%}
+
+<div class="drawer h-full overflow-hidden">
+    <input id="my-drawer" type="checkbox" class="drawer-toggle" />
+
+    <div class="drawer-content flex flex-col h-full overflow-hidden">
+
+        <main class="flex flex-1 h-full overflow-hidden">
+
+            <!-- SIDEBAR -->
+            <aside
+                class="hidden lg:block w-64 bg-white p-6 shadow-xl border-r border-gray-200 flex-shrink-0 overflow-y-auto">
+                {% include 'formula_app/includes/sidebar.html' %}
+            </aside>
+
+            <!-- END SIDEBAR -->
+
+
+            <section id="main-content-section"
+                class="flex flex-1 flex-col bg-gray-50 h-full overflow-hidden p-6 lg:p-10">
+
+                <!-- SELECT BAR FOR MOBILE -->
+                <div class="flex lg:hidden w-full mb-6 flex-shrink-0 animate-fade-in">
+                    <div class="dropdown dropdown-bottom w-full">
+                        <div tabindex="0" role="button" <div tabindex="0" role="button"
+                            class="btn btn-block justify-between bg-blue-950 text-white hover:bg-blue-800 hover-lift text-lg">
+                            Probability of Failure
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="m6 9 6 6 6-6" />
+                            </svg>
+                        </div>
+
+
+                        <ul tabindex="0"
+                            class="dropdown-content z-[1] menu p-2 shadow-xl bg-white rounded-box w-full space-y-2 mt-2">
+                            <li>
+                                <a href="{% url 'calculation_thinning_df' %}"
+                                    class="btn btn-block bg-blue-50 text-blue-950 hover:bg-blue-100 hover-lift text-wrap h-auto min-h-0 py-3 text-sm border-none justify-start">
+                                    Damage Factor (DF)
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'gff_calculation' %}"
+                                    class="btn btn-block bg-white text-blue-950 hover:bg-blue-100 hover-lift text-wrap h-auto min-h-0 py-3 text-sm border-none justify-start">
+                                    Generic Failure Frequency
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#"
+                                    class="btn btn-block bg-white text-blue-950 hover:bg-blue-100 hover-lift text-wrap h-auto min-h-0 py-3 text-sm border-none justify-start">
+                                    Fórmula (Espesores)
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#"
+                                    class="btn btn-block bg-white text-blue-950 hover:bg-blue-100 hover-lift text-wrap h-auto min-h-0 py-3 text-sm border-none justify-start">
+                                    Fórmula (Presiones)
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-blue-800 mb-6 animate-fade-in flex-shrink-0">
+                    Damage Factor (DF)
+                </h1>
+
+
+                <div id="content-scroller" class="w-full flex-1 overflow-y-auto rounded-box bg-gray-50 space-y-8 p-2">
+
+                    <!-- SECTION: Global Component Data (Table 4.1) -->
+                    {% include 'formula_app/includes/component_basic_data.html' %}
+
+                    <!-- SECTION: Damage Mechanism Selection (Step 0) -->
+                    {% include 'formula_app/includes/modules/damage_mech_selection.html' %}
+                    
+                    <!-- SECTION: Dynamic Navigation Bar (Hidden initially) -->
+                    <div id="module_nav_container" class="hidden mb-6 animate-fade-in">
+                        <div class="tabs tabs-boxed bg-gray-200 p-1 rounded-lg">
+                            <ul id="module_nav_list" class="flex w-full justify-start gap-2">
+                                <!-- Tabs injected by JS -->
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- MODULES CONTAINER -->
+                    <!-- 1. Thinning Module -->
+                    {% include 'formula_app/includes/modules/thinning_module.html' %}
+
+                    <!-- 2. SCC Module -->
+                    {% include 'formula_app/includes/modules/scc_module.html' %}
+
+                    <!-- 3. External Damage Module -->
+                    <!-- 3. External Damage Module -->
+                    {% include 'formula_app/includes/modules/external_damage_module.html' %}
+
+                    <!-- 4. HTHA Module -->
+                    {% include 'formula_app/includes/modules/htha.html' %}
+
+                    <!-- 5. Brittle Fracture Module -->
+                    {% include 'formula_app/includes/modules/brittle_fracture/brittle_fracture.html' %}
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <div class="drawer-side z-40">
+        <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+        <aside class="w-64 bg-white p-4 shadow-2xl flex-shrink-0">
+            {% include 'formula_app/includes/sidebar.html' %}
+        </aside>
+    </div>
+</div>
+{%endblock%}
+
+{% block scripts %}
+<script>
+    window.djangoUrls = {
+        loadStep: "{% url 'load_step_content' 0 %}".replace('0/', ''), // Base path for steps
+        loadSnippet: "{% url 'load_cr_snippets' 'PLACEHOLDER' %}".replace('PLACEHOLDER/', ''), // Base path for snippets
+        getComponents: "{% url 'api_get_components' %}"
+    };
+</script>
+<script src="{% static 'formula_app/components/step1_geom_loader.js' %}"></script>
+<script src="{% static 'formula_app/components/table4-1.js' %}"></script>
+<script src="{% static 'formula_app/data/get-elements.js' %}"></script>
+<script src="{% static 'formula_app/components/step1_calcs.js' %}"></script>
+<script type="module" src="{% static 'formula_app/components/step2_calcs.js' %}"></script>
+<script src="{% static 'formula_app/components/step3_calcs.js' %}"></script>
+<script src="{% static 'formula_app/components/step4_calcs.js' %}"></script>
+<script src="{% static 'formula_app/components/step5_calcs.js' %}"></script>
+<script src="{% static 'formula_app/components/step6_calcs.js' %}"></script>
+<script src="{% static 'formula_app/components/step7_calcs.js' %}"></script>
+<script src="{% static 'formula_app/components/step8_calcs.js' %}"></script>
+<script src="{% static 'formula_app/components/step9_calcs.js' %}"></script>
+<script src="{% static 'formula_app/components/step10_calcs.js' %}"></script>
+<script src="{% static 'formula_app/components/step11_calcs.js' %}"></script>
+<script src="{% static 'formula_app/components/step12_calcs.js' %}"></script>
+<script src="{% static 'formula_app/components/step13_calcs.js' %}"></script>
+<script src="{% static 'formula_app/data/app_main_loader.js' %}"></script>
+<script src="{% static 'formula_app/components/steps_handler.js' %}"></script>
+<script src="{% static 'formula_app/js/module_navigator.js' %}"></script>
+<script type="module" src="{% static 'formula_app/js/scc_interactions.js' %}?v=37"></script>
+<script src="{% static 'formula_app/js/external_damage_interactions.js' %}?v=5"></script>
+<script type="module" src="{% static 'formula_app/js/htha_interactions.js' %}"></script>
+<script type="module" src="{% static 'formula_app/components/external_corrosion_ferritic.js' %}"></script>
+<script src="{% static 'formula_app/components/cui_ferritic.js' %}?v=5"></script>
+<script type="module" src="{% static 'formula_app/components/external_clscc_austenitic.js' %}"></script>
+<script type="module" src="{% static 'formula_app/js/modules/brittle_fracture/interactions.js' %}"></script>
+<script type="module" src="{% static 'formula_app/js/temper_embrittlement_interactions.js' %}"></script>
+{% endblock %}

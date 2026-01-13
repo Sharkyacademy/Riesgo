@@ -1,0 +1,139 @@
+{% extends 'theme/base.html' %}
+{% load static %}
+
+{% block title %}Generic Failure Frequency Calculation{% endblock %}
+
+{% block nav_content %}
+<div class="flex justify-end items-center h-full">
+    <ul class="menu menu-horizontal p-0 hidden lg:flex text-white space-x-2">
+        <li><a id="logout_btn" href="{% url 'logout' %}"
+                class="btn btn-ghost text-white hover:bg-blue-800 transition duration-200">Log out</a></li>
+        <li><a href="#" class="btn btn-ghost text-white hover:bg-blue-800 transition duration-200">Account</a></li>
+    </ul>
+
+    <label for="my-drawer" class="btn btn-square btn-ghost text-white lg:hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            class="inline-block w-6 h-6 stroke-current">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+    </label>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="drawer h-full overflow-hidden">
+    <input id="my-drawer" type="checkbox" class="drawer-toggle" />
+
+    <div class="drawer-content flex flex-col h-full overflow-hidden">
+
+        <main class="flex flex-1 h-full overflow-hidden">
+
+            <!-- SIDEBAR DESKTOP -->
+            <aside
+                class="hidden lg:block w-64 bg-white p-6 shadow-xl border-r border-gray-200 flex-shrink-0 overflow-y-auto">
+                {% include 'formula_app/includes/sidebar.html' %}
+            </aside>
+
+            <!-- MAIN CONTENT SECTION -->
+            <section id="main-content-section"
+                class="flex flex-1 flex-col bg-gray-50 h-full overflow-hidden p-6 lg:p-10">
+
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-blue-800 mb-6 animate-fade-in flex-shrink-0">
+                    Generic Failure Frequency (GFF) Calculation
+                </h1>
+
+                <div class="w-full flex-1 overflow-y-auto rounded-box bg-gray-50 space-y-8 p-2">
+
+                    <!-- INPUTS CARD -->
+                    <div class="card bg-white shadow-xl border border-gray-100 p-6">
+                        <h2 class="text-xl font-semibold text-blue-950 mb-4 border-b pb-2">Equipment Configuration</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                            <!-- EQUIPMENT SELECTION -->
+                            <div class="form-control w-full">
+                                <label class="label">
+                                    <span class="label-text font-semibold">Equipment Type</span>
+                                </label>
+                                <select id="gff_equipment_select"
+                                    class="select select-bordered w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="" disabled selected>Select equipment</option>
+                                    {% for equipment in equipments %}
+                                    <option value="{{equipment.id}}">{{equipment.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!-- COMPONENT SELECTION -->
+                            <div class="form-control w-full">
+                                <label class="label">
+                                    <span class="label-text font-semibold">Component Type</span>
+                                </label>
+                                <select id="gff_component_select"
+                                    class="select select-bordered w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    disabled>
+                                    <option value="" disabled selected>Select equipment first</option>
+                                </select>
+                            </div>
+
+                            <!-- Removed Hole Size Selection as per request -->
+                            <!-- OLD Code removed here -->
+                        </div>
+
+                        <div class="mt-8 flex justify-end">
+                            <button id="btn_calculate_gff"
+                                class="btn btn-primary text-white hover-lift disabled:bg-gray-300" disabled>
+                                Get GFF Value
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- RESULTS CARD -->
+                    <div id="gff_results_container"
+                        class="card bg-white shadow-xl border border-gray-100 p-6 hidden animate-fade-in">
+                        <h2 class="text-xl font-semibold text-blue-950 mb-4 border-b pb-2 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Result Configuration
+                        </h2>
+
+                        <div class="stats shadow w-full">
+                            <!-- Removed GFF Selected display -->
+
+                            <div class="stat place-items-center bg-blue-50">
+                                <div class="stat-title uppercase font-bold text-blue-950">GFF Total</div>
+                                <div class="stat-value text-blue-950 font-mono" id="res_value_total">--</div>
+                                <div class="stat-desc text-blue-900">Failures/Year</div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- SIDEBAR MOBILE/DRAWER -->
+    <div class="drawer-side z-40">
+        <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+        <aside class="w-64 bg-white p-4 shadow-2xl flex-shrink-0">
+            {% include 'formula_app/includes/sidebar.html' %}
+        </aside>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    window.djangoUrls = {
+        getComponents: "{% url 'api_get_components' %}",
+        getGff: "{% url 'api_get_gff' %}"
+    };
+</script>
+<script src="{% static 'formula_app/js/gff_calcs.js' %}"></script>
+{% endblock %}

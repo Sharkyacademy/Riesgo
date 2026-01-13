@@ -1,0 +1,112 @@
+<div class="card bg-base-100 shadow-xl mb-4 text-left">
+    <div class="card-body">
+        <h2 class="text-2xl font-bold text-primary mb-4 border-b pb-2">Step 8. Inspection Effectiveness</h2>
+        <p class="mb-4">Determine the number of inspections for each of the corresponding inspection effectiveness
+            categories (A, B, C, and D) performed during the in-service time.</p>
+
+        <!-- Confidence Level Selection -->
+        <div class="form-control w-full mb-6">
+            <label class="label">
+                <span class="label-text font-bold">Corrosion Rate Confidence Level</span>
+                <div class="tooltip" data-tip="Quality of data used to establish the corrosion rate.">
+                    <i class="fas fa-info-circle text-info cursor-pointer"></i>
+                </div>
+            </label>
+            <select id="step8_confidence" class="select select-bordered w-full">
+                <option value="Low" selected>Low Confidence</option>
+                <option value="Medium">Medium Confidence</option>
+                <option value="High">High Confidence</option>
+            </select>
+        </div>
+
+        <div id="step8_form_container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <!-- Category A -->
+            <div class="form-control w-full">
+                <label class="label">
+                    <span class="label-text font-bold">Category A (Highly Effective)</span>
+                    <div class="tooltip" data-tip="Inspections with >90% probability of detecting damage.">
+                        <i class="fas fa-info-circle text-info cursor-pointer"></i>
+                    </div>
+                </label>
+                <input type="number" id="step8_insp_A" class="input input-bordered w-full" placeholder="0" min="0"
+                    value="0">
+                <label class="label">
+                    <span class="label-text-alt">Number of inspections</span>
+                </label>
+            </div>
+
+            <!-- Category B -->
+            <div class="form-control w-full">
+                <label class="label">
+                    <span class="label-text font-bold">Category B (Usually Effective)</span>
+                    <div class="tooltip" data-tip="Inspections with fair detection probability (approx 50-90%).">
+                        <i class="fas fa-info-circle text-info cursor-pointer"></i>
+                    </div>
+                </label>
+                <input type="number" id="step8_insp_B" class="input input-bordered w-full" placeholder="0" min="0"
+                    value="0">
+                <label class="label">
+                    <span class="label-text-alt">Number of inspections</span>
+                </label>
+            </div>
+
+            <!-- Category C -->
+            <div class="form-control w-full">
+                <label class="label">
+                    <span class="label-text font-bold">Category C (Fairly Effective)</span>
+                    <div class="tooltip" data-tip="Inspections with lower detection stats.">
+                        <i class="fas fa-info-circle text-info cursor-pointer"></i>
+                    </div>
+                </label>
+                <input type="number" id="step8_insp_C" class="input input-bordered w-full" placeholder="0" min="0"
+                    value="0">
+                <label class="label">
+                    <span class="label-text-alt">Number of inspections</span>
+                </label>
+            </div>
+
+            <!-- Category D -->
+            <div class="form-control w-full">
+                <label class="label">
+                    <span class="label-text font-bold">Category D (Poorly Effective)</span>
+                    <div class="tooltip" data-tip="Minimal effectiveness (visual, low coverage).">
+                        <i class="fas fa-info-circle text-info cursor-pointer"></i>
+                    </div>
+                </label>
+                <input type="number" id="step8_insp_D" class="input input-bordered w-full" placeholder="0" min="0"
+                    value="0">
+                <label class="label">
+                    <span class="label-text-alt">Number of inspections</span>
+                </label>
+            </div>
+
+        </div>
+
+        <!-- Error Container -->
+        <div id="step8_error_container" class="alert alert-error hidden mb-4 mt-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span id="step8_error_message">Error!</span>
+        </div>
+
+        <!-- Result / Confirmation -->
+        <div id="step8_result_container" class="hidden mt-4 alert alert-info alert-soft">
+            <div class="flex flex-col">
+                <span class="font-bold text-lg">Result</span>
+                <div class="flex items-center gap-2 mt-2">
+                    <span class="font-bold">Thinning Damage Factor (DF) = </span>
+                    <span id="step8_result" class="text-2xl font-bold">1.00</span>
+                </div>
+                <span class="text-xs mt-1 text-gray-500">(Based on Table 4.6 and Bayes Theorem)</span>
+            </div>
+        </div>
+
+        <div class="card-actions justify-end mt-6">
+            <button class="btn btn-primary" id="step8_save_btn">Save & Continue</button>
+        </div>
+    </div>
+</div>

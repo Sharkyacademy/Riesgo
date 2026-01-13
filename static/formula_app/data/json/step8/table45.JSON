@@ -1,0 +1,22 @@
+{
+    "data": [
+        {
+            "damage_state": "Pr_p1_Thin",
+            "low_confidence": 0.5,
+            "medium_confidence": 0.7,
+            "high_confidence": 0.8
+        },
+        {
+            "damage_state": "Pr_p2_Thin",
+            "low_confidence": 0.3,
+            "medium_confidence": 0.2,
+            "high_confidence": 0.15
+        },
+        {
+            "damage_state": "Pr_p3_Thin",
+            "low_confidence": 0.2,
+            "medium_confidence": 0.1,
+            "high_confidence": 0.05
+        }
+    ]
+}

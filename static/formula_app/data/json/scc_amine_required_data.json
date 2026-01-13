@@ -1,0 +1,33 @@
+{
+    "description": "Table 2.C.3.1 - Data Required for Determination of the DF—Amine Cracking",
+    "required_data": [
+        {
+            "parameter": "Susceptibility (Low, Medium, High)",
+            "comment": "The susceptibility is determined by expert advice or using the procedures in this section."
+        },
+        {
+            "parameter": "Amine solution composition",
+            "comment": "Determine what amine solution composition is being handled in this component. Fresh amine has not been exposed to H₂S or CO₂. Lean amine contains low levels of H₂S or CO₂. Rich amine contains high levels of H₂S or CO₂. For components exposed to both lean and rich amine solutions (i.e. amine contactors and regenerators), indicate lean."
+        },
+        {
+            "parameter": "Maximum process temperature, °F (°C)",
+            "comment": "Determine the maximum process temperature in this component."
+        },
+        {
+            "parameter": "Steam out? (Yes or No)",
+            "comment": "Determine whether the component has been steamed out prior to water flushing to remove residual amine."
+        },
+        {
+            "parameter": "Age (years)",
+            "comment": "Use inspection history to determine the time since the last SCC inspection."
+        },
+        {
+            "parameter": "Inspection effectiveness category",
+            "comment": "The effectiveness category that has been performed on the component."
+        },
+        {
+            "parameter": "Number of inspections",
+            "comment": "The number of inspections in each effectiveness category that have been performed."
+        }
+    ]
+}

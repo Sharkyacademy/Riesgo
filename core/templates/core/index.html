@@ -1,0 +1,53 @@
+{% extends 'theme/base.html' %}
+
+{% load static tailwind_tags %}
+{% load static %}
+
+{%block content%}
+
+    <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{% static 'hero-industrial.png' %}');">
+        
+        <div class="absolute inset-0 bg-black/50"></div>
+
+        <div class="relative flex flex-col items-center justify-center min-h-full p-4 sm:p-8">
+            
+            <div class="w-full max-w-xs sm:max-w-sm md:w-96 bg-transparent text-center">
+                
+                <p class="mb-6 font-extrabold text-xl sm:text-2xl md:text-xl text-white drop-shadow-lg">
+                    AMERICAN STRENGTH, PROVIDING CONVENIENCE, TECHNOLOGY AND GLOBAL INFLUENCE
+                </p>
+                
+                <form action="#" method="post" autocomplete="off" class="space-y-4">
+                    {%csrf_token%}
+                    
+                    <div class="flex flex-col items-center w-full">
+                        <label for="email" class="text-white text-lg font-medium mb-1">EMAIL</label>
+                        <input name="email" id="email" type="email" autocomplete="off" autocorrect="off" 
+                               class="input input-bordered w-full text-white bg-gray-800 border-gray-700 placeholder-gray-500" placeholder="Email"/>
+                    </div>
+                    
+                    <div class="flex flex-col items-center w-full">
+                        <label for="password" class="text-white text-lg font-medium mb-1">PASSWORD</label>
+                        <input name="password" id="password" type="password" autocorrect="off" autocomplete="off" 
+                               class="input input-bordered w-full text-white bg-gray-800 border-gray-700 placeholder-gray-500" placeholder="Password"/>
+                    </div>
+                    
+                    <div class="flex flex-col items-center mt-6 space-y-3">
+                        
+                        <a href="#" class="text-white text-sm hover:underline hover:text-gray-300">Forgot Password?</a>
+                        
+                        <button type="submit" class="btn bg-blue-600 hover:bg-blue-700 border-none text-white w-full transition duration-300 ease-in-out">
+                            Sign in
+                        </button>
+                        
+                        <div class="pt-2 text-white">
+                            Are you new? 
+                            <a class="font-bold hover:underline" href="register/">Create an account</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{%endblock%}

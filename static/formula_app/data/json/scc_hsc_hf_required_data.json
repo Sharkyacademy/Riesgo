@@ -1,0 +1,29 @@
+{
+    "description": "Table 2.C.7.1 - Data Required for Determination of the DF—HSC-HF",
+    "required_data": [
+        {
+            "parameter": "Susceptibility (Low, Medium, High)",
+            "comment": "The susceptibility is determined by expert advice or using the procedures in this section."
+        },
+        {
+            "parameter": "Presence of HF (Yes or No)",
+            "comment": "Determine whether HF may be present in the component. Consider not only normal operating conditions but also upset conditions that may allow carryover of HF from other components."
+        },
+        {
+            "parameter": "Brinnell hardness of steel weldments",
+            "comment": "Determine the maximum Brinnell hardness actually measured at the weldments of the steel component. Readings should be made and reported using Brinnell scale, not converted from micro-hardness techniques (e.g. Vicker, Knoop, etc.). If actual readings are not available, use the maximum allowable hardness permitted by the fabrication specification."
+        },
+        {
+            "parameter": "Age (years)",
+            "comment": "Use inspection history to determine the time since the last SCC inspection."
+        },
+        {
+            "parameter": "Inspection effectiveness category",
+            "comment": "The effectiveness category that has been performed on the component."
+        },
+        {
+            "parameter": "Number of inspections",
+            "comment": "The number of inspections in each effectiveness category that have been performed."
+        }
+    ]
+}

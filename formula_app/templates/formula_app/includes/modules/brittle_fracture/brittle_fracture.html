@@ -1,0 +1,1457 @@
+<div id="brittle_fracture_module" class="module-container hidden space-y-8 animate-fade-in">
+    <!-- Header -->
+    <h2 class="text-2xl font-bold text-gray-900 mb-2">Brittle Fracture Damage Factor</h2>
+    
+    <!-- MAIN CONTAINER -->
+    <div class="card bg-white shadow-xl border border-gray-200 p-6">
+        
+        <div class="prose max-w-none">
+            <p class="text-gray-600 mb-4">
+                This module calculates the Brittle Fracture Damage Factor (D<sub>f</sub><sup>brit</sup>) based on the governing brittle fracture mechanism.
+            </p>
+        </div>
+
+        <!-- Checkbox Selection Section -->
+        <div class="flex justify-between items-center mb-2">
+            <h4 class="font-bold text-md text-blue-900">Select Brittle Fracture Mechanism</h4>
+        </div>
+
+        <!-- Governing DF Result Container -->
+        <div id="brittle_governing_df_container" class="mb-6 card bg-blue-50 border-l-4 border-blue-600 p-4 shadow-sm hidden animate-fade-in">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h3 class="font-bold text-blue-900 text-lg">Governing Brittle Fracture Method</h3>
+                    <p class="text-sm text-gray-600 pt-1">
+                        D<sub>f-gov</sub><sup>brit</sup> = max[(D<sub>f</sub><sup>brit</sup> + D<sub>f</sub><sup>tempe</sup>), D<sub>f</sub><sup>885F</sup>, D<sub>f</sub><sup>sigma</sup>]
+                    </p>
+                </div>
+                <div class="text-right">
+                    <span class="block text-xs font-bold text-gray-500 uppercase">Total Damage Factor</span>
+                    <span class="font-extrabold text-4xl text-blue-900" id="brittle_governing_df_val">--</span>
+                </div>
+            </div>
+            
+            <!-- Breakdown (details) -->
+            <div class="mt-3 pt-3 border-t border-blue-200 text-xs text-gray-500 grid grid-cols-1 md:grid-cols-3 gap-2">
+                <div>
+                     <span class="font-semibold">General + Temper:</span> <span id="gov_debug_general">--</span>
+                </div>
+                <div>
+                     <span class="font-semibold">885°F:</span> <span id="gov_debug_885">--</span>
+                </div>
+                <div>
+                     <span class="font-semibold">Sigma:</span> <span id="gov_debug_sigma">--</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-base-100 rounded-box mb-8 p-6">
+            <div class="form-control">
+                <label class="label cursor-pointer justify-start gap-4">
+                    <input type="checkbox" id="check_brit_carbon" class="checkbox checkbox-primary brittle-mech-check" />
+                    <span class="label-text text-base font-semibold">Brittle Fracture - D<sub>f</sub><sup>brit</sup></span>
+                </label>
+            </div>
+            <div class="form-control">
+                <label class="label cursor-pointer justify-start gap-4">
+                    <input type="checkbox" id="check_brit_tempe" class="checkbox checkbox-primary brittle-mech-check" />
+                     <span class="label-text text-base font-semibold">Temper Embrittlement - D<sub>f</sub><sup>tempe</sup></span>
+                </label>
+            </div>
+            <div class="form-control">
+                <label class="label cursor-pointer justify-start gap-4">
+                    <input type="checkbox" id="check_brit_885" class="checkbox checkbox-primary brittle-mech-check" />
+                    <span class="label-text text-base font-semibold">885 °F Embrittlement - D<sub>f</sub><sup>885F</sup></span>
+                </label>
+            </div>
+            <div class="form-control">
+                <label class="label cursor-pointer justify-start gap-4">
+                    <input type="checkbox" id="check_brit_sigma" class="checkbox checkbox-primary brittle-mech-check" />
+                    <span class="label-text text-base font-semibold">Sigma Phase Embrittlement - D<sub>f</sub><sup>sigma</sup></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- DYNAMIC TABS -->
+        <div id="brittle_tabs_container" class="hidden mb-6 animate-fade-in">
+            <div class="tabs tabs-boxed bg-gray-100 p-1 rounded-lg overflow-x-auto flex-nowrap" id="brittle_tabs_list">
+                <!-- Tabs injected by JS -->
+            </div>
+        </div>
+
+        <!-- CONTENT AREAS -->
+        <div id="brittle_inputs_area" class="min-h-[100px]">
+            
+            <div id="brittle_inputs_placeholder" class="text-center text-gray-500 py-10 italic">
+                Select a mechanism above to see details.
+            </div>
+
+            <!-- 1. Carbon Steel (D_f^brit) -->
+            <div id="cont_brit_carbon" class="brittle-input-group hidden animate-fade-in">
+                <div class="card bg-base-100 border border-gray-200 p-6">
+                    <h3 class="font-bold text-xl text-blue-950 mb-4 border-b pb-2">Governing Brittle Fracture Damage Factor</h3>
+                    
+                    <div id="brittle_carbon_data_table_container" class="bg-base-100 rounded-box border shadow-sm mb-8 transition-all duration-300">
+                        <div class="overflow-x-auto">
+                            <table class="table w-full flex lg:table">
+                                <thead class="bg-blue-50 hidden lg:table-header-group">
+                                    <tr>
+                                        <th class="font-bold text-blue-900 text-base w-1/4">Required Data</th>
+                                        <th class="font-bold text-blue-900 text-base w-1/2">Comments</th>
+                                        <th class="font-bold text-blue-900 text-base w-1/4">Input Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="w-full flex flex-col lg:table-row-group">
+                                    <tr class="flex flex-col lg:table-row mb-4 border border-gray-200 rounded-lg p-4 lg:p-0 lg:border-none lg:mb-0 bg-white">
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 font-medium">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Required Data</span>
+                                            Administrative controls for upset management (Yes/No)
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 text-gray-600">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Comments</span>
+                                            Are there controls and or awareness training to prevent the coincident occurrence of low temperatures (upset) at or near design pressures?
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Input Value</span>
+                                             <div class="form-control w-full">
+                                                <select id="brittle_admin_controls" class="select select-bordered select-sm w-full">
+                                                    <option value="" disabled selected>Select Option</option>
+                                                    <option value="Yes">Yes</option>
+                                                    <option value="No">No</option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="flex flex-col lg:table-row mb-4 border border-gray-200 rounded-lg p-4 lg:p-0 lg:border-none lg:mb-0 bg-white">
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 font-medium">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Required Data</span>
+                                            Minimum operating temperature under normal or upset conditions, °F (°C)
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 text-gray-600">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Comments</span>
+                                            Can be entered by the user. The temperature may be set to the atmospheric boiling point of the fluid in the component if the fluid is a liquid.
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Input Value</span>
+                                             <div class="flex gap-2">
+                                                 <input type="number" id="brittle_min_temp" class="input input-bordered input-sm w-full" placeholder="Enter Temp" step="0.1" />
+                                                 <select id="brittle_temp_unit" class="select select-bordered select-sm w-24" disabled>
+                                                     <option value="C">°C</option>
+                                                     <option value="F">°F</option>
+                                                 </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="flex flex-col lg:table-row mb-4 border border-gray-200 rounded-lg p-4 lg:p-0 lg:border-none lg:mb-0 bg-white">
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 font-medium">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Required Data</span>
+                                            Service life of equipment (years)
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 text-gray-600">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Comments</span>
+                                            How long has the equipment been in the specified service?
+                                        </td>
+                                         <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Input Value</span>
+                                             <div class="form-control w-full">
+                                                <input type="number" id="brittle_service_life" class="input input-bordered input-sm w-full" placeholder="Enter Years" step="1" />
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="flex flex-col lg:table-row mb-4 border border-gray-200 rounded-lg p-4 lg:p-0 lg:border-none lg:mb-0 bg-white">
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 font-medium">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Required Data</span>
+                                            Inspection and testing history accuracy factor
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 text-gray-600">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Comments</span>
+                                            Accuracy and attainability of previous inspection history. Frequency of inspections, data points available. Previous metallurgical analysis and mechanical testing (impact test).
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Input Value</span>
+                                             <div class="form-control w-full">
+                                                <select id="brittle_inspection_factor" class="select select-bordered select-sm w-full">
+                                                    <option value="" disabled selected>Select Factor</option>
+                                                    <option value="High">High</option>
+                                                    <option value="Medium">Medium</option>
+                                                    <option value="Low">Low</option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Action Bar -->
+                    <div class="flex justify-end mt-4 text-right">
+                        <button id="btn_brittle_carbon_confirm" class="btn btn-sm btn-primary gap-2">
+                            Confirm & Next
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- STEP 1 RESULT CONTAINER -->
+                    <div id="brittle_step_1_container" class="hidden mt-8 animate-fade-in">
+                        <div class="flex items-start gap-4">
+                            <div class="mt-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-blue-900">Step 1: Administrative Controls Check</h3>
+                                <div id="brittle_step_1_msg" class="text-sm text-blue-800 mt-1">
+                                    <!-- Dynamic Message injected by JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 2 CONTAINER -->
+                     <div id="brittle_step_2_container" class="hidden mt-8 animate-fade-in space-y-6">
+                        <h3 class="font-bold text-lg text-blue-900 mb-4 pb-2">Step 2: Determine CET (API 579)</h3>
+                        
+                        <div class="prose max-w-none mb-6 text-sm text-gray-600">
+                            <p>
+                                Since administrative controls do not prevent pressurization below the critical temperature, you must determine the 
+                                <strong>Critical Exposure Temperature (CET)</strong> in accordance with API 579-1/ASME FFS-1 Part 3.
+                            </p>
+                            <ul class="list-disc pl-5 mt-2">
+                                <li><strong>General:</strong> Lowest metal temperature at which pressure exceeds 30% of MAWP.</li>
+                                <li><strong>Tanks:</strong> Hydrotest temperature or One-day mean ambient temp + 15°F.</li>
+                            </ul>
+                        </div>
+
+                        <div class="form-control w-full max-w-md">
+                            <label class="label">
+                                <span class="label-text font-semibold text-gray-700">Enter Determined CET</span>
+                            </label>
+                            <div class="flex items-center gap-2">
+                                <input type="number" id="brittle_step2_cet_input" class="input input-bordered w-full" placeholder="Enter CET Value" step="0.1" />
+                                <select id="brittle_step2_cet_unit" class="select select-bordered w-24 bg-gray-100" disabled>
+                                    <option value="F">°F</option>
+                                    <option value="C">°C</option>
+                                </select>
+                            </div>
+                        </div>
+
+                         <div class="flex justify-end mt-6">
+                            <button id="btn_brittle_step2_confirm" class="btn btn-sm btn-primary gap-2">
+                                Confirm CET & Next
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3 CONTAINER -->
+                    <div id="brittle_step_3_container" class="hidden mt-8 animate-fade-in space-y-6">
+                        
+                        <!-- 3.1: CET Result (Carried over) -->
+                        <!-- 3.1: CET Result (Carried over) -->
+                        <div>
+                            <h3 class="font-bold text-lg text-blue-900 mb-4 pb-2">Step 3</h3>
+                            <div class="form-control w-full max-w-sm">
+                                <label class="label">
+                                    <span class="label-text font-semibold">Determined CET</span>
+                                </label>
+                                <div class="flex items-center gap-2">
+                                    <input type="number" id="brittle_cet_value" class="input input-bordered w-full font-bold text-blue-900" readonly />
+                                    <span id="brittle_cet_unit" class="font-bold text-gray-600">°F</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3.2: Tref Determination -->
+                        <div class="space-y-6">
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                
+                                <!-- Material Type -->
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text font-semibold">Material Type</span></label>
+                                    <select id="brittle_material_type" class="select select-bordered w-full">
+                                        <option value="Carbon Steel" selected>Carbon Steel</option>
+                                        <option value="Low-Alloy Steel">Low-Alloy Steel</option>
+                                    </select>
+                                </div>
+
+                                <!-- Yield Strength -->
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text font-semibold">Minimum Yield Strength</span></label>
+                                    <div class="flex items-center gap-2">
+                                        <input type="number" id="brittle_yield_strength" class="input input-bordered w-full" placeholder="e.g. 50" min="0" step="0.1" />
+                                        <span id="brittle_ys_unit" class="text-sm font-bold text-gray-500">ksi</span>
+                                    </div>
+                                </div>
+
+                                <!-- Exemption Curve Selection -->
+                                <div class="form-control md:col-span-2">
+                                    <label class="label"><span class="label-text font-semibold">Exemption Curve (API 579 Table 2.E.3.1)</span></label>
+                                    <select id="brittle_curve_select" class="select select-bordered w-full">
+                                        <option value="" disabled selected>Select Curve...</option>
+                                        <option value="Curve A">Curve A (Low Toughness)</option>
+                                        <option value="Curve B">Curve B</option>
+                                        <option value="Curve C">Curve C</option>
+                                        <option value="Curve D">Curve D (High Toughness)</option>
+                                    </select>
+                                    <label class="label">
+                                        <a href="#" class="label-text-alt link link-primary hover:text-blue-800" onclick="document.getElementById('modal_curve_info').showModal()">Help me select the curve (View Table 2.E.3.1)</a>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Calculate Tref Button -->
+                            <div class="flex justify-end mt-4">
+                                <button id="btn_calc_tref" class="btn btn-sm btn-primary">
+                                    Calculate T<sub>ref</sub>
+                                </button>
+                            </div>
+                            
+                            <!-- Tref Result -->
+                            <div id="brittle_tref_result_area" class="mt-4 hidden text-left">
+                                <div class="flex items-center gap-2">
+                                    <span class="font-bold text-gray-700">Reference Temperature (T<sub>ref</sub>):</span>
+                                    <span class="text-xl font-bold text-blue-900">
+                                        <span id="brittle_tref_val">--</span> <span id="brittle_tref_unit">°F</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <!-- Modal for Curve Info -->
+                    <dialog id="modal_curve_info" class="modal">
+                        <div class="modal-box w-11/12 max-w-5xl">
+                            <h3 class="font-bold text-lg mb-4">Exemption Curve Assignments (Table 2.E.3.1)</h3>
+                            <div class="overflow-x-auto max-h-96">
+                                <table class="table table-xs table-zebra w-full" id="table_curve_details">
+                                    <thead class="bg-gray-100">
+                                        <tr>
+                                            <th class="w-24">Curve</th>
+                                            <th>Material Assignment</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Populated by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                             <div class="mt-4 text-xs text-gray-500" id="table_curve_notes">
+                                <!-- Notes populated here -->
+                            </div>
+                            <div class="modal-action">
+                                <form method="dialog">
+                                    <button class="btn">Close</button>
+                                </form>
+                            </div>
+                        </div>
+                    </dialog>
+
+                    <!-- STEP 4 CONTAINER (OLD/UNUSED - RENAMED TO AVOID CONFLICT) -->
+                    <div id="brittle_step_4_container_old" class="hidden mt-8 animate-fade-in">
+                        <h3 class="font-bold text-lg text-blue-900 mb-2">Step 4: Calculate CET - T<sub>ref</sub></h3>
+                        <div class="text-lg text-gray-800 font-medium ml-1">
+                            <span id="step4_cet_display">--</span> 
+                            - 
+                            <span id="step4_tref_display">--</span> 
+                            = 
+                            <span class="font-bold text-blue-900">
+                                <span id="brittle_step4_result">--</span> <span id="brittle_step4_unit">°F</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- STEP 5 CONTAINER -->
+                    <!-- STEP 5 Placeholder for structure alignment -->
+                    <!-- Correct Step 5 is at the end of the file -->
+
+                    <!-- STEP 6 CONTAINER -->
+                    <div id="brittle_step_6_container" class="hidden mt-8 animate-fade-in">
+                        <h3 class="font-bold text-lg text-blue-900 mb-4">Step 6: Determine Final Damage Factor</h3>
+
+                        <div class="form-control max-w-md">
+                            <label class="label"><span class="label-text font-semibold">Service Experience Factor (F<sub>SE</sub>)</span></label>
+                            <select id="brittle_fse_select" class="select select-bordered w-full">
+                                <option value="1.0">None (1.0)</option>
+                                <option value="0.01">Service Experience (0.01)</option>
+                            </select>
+                            <label class="label">
+                                <span class="label-text-alt text-gray-500">Select if the component has proven service experience.</span>
+                            </label>
+                        </div>
+
+                        <div class="flex justify-end mt-4">
+                            <button id="btn_calc_final_df" class="btn btn-sm btn-primary">Calculate Final DF</button>
+                        </div>
+
+                        <!-- Final Result -->
+                        <div id="brittle_final_result_area" class="mt-6 p-4 bg-blue-50 border border-blue-100 rounded-lg hidden">
+                             <div class="flex flex-col gap-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-bold text-gray-700">Brittle Fracture Damage Factor (D<sub>f</sub><sup>brit</sup>):</span>
+                                    <span class="font-bold text-2xl text-blue-900" id="brittle_final_df_val">--</span>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-2">
+                                    Calculation: D<sub>fB</sub><sup>brit</sup> × F<sub>SE</sub>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                </div>
+
+            <!-- 2. Temper Embrittlement (D_f^tempe) -->
+            <div id="cont_brit_tempe" class="brittle-input-group hidden animate-fade-in">
+                 <div class="card bg-base-100 border border-gray-200 p-6">
+                    <h3 class="font-bold text-xl text-blue-950 mb-4 border-b pb-2">Temper Embrittlement</h3>
+                    
+                <!-- Table 2.E.3.1 -->
+                    <div class="bg-base-100 rounded-box border shadow-sm mb-8 transition-all duration-300">
+                        <div class="overflow-x-auto">
+                            <table class="table w-full flex lg:table">
+                                <thead class="bg-blue-50 hidden lg:table-header-group">
+                                    <tr>
+                                        <th class="font-bold text-blue-900 text-base w-1/4">Required Data</th>
+                                        <th class="font-bold text-blue-900 text-base w-1/2">Comments</th>
+                                        <th class="font-bold text-blue-900 text-base w-1/4">Input Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="w-full flex flex-col lg:table-row-group">
+                                    <!-- Row 1: Impact Test Temperature -->
+                                    <tr class="flex flex-col lg:table-row mb-4 border border-gray-200 rounded-lg p-4 lg:p-0 lg:border-none lg:mb-0 bg-white">
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 font-medium">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Required Data</span>
+                                            Impact test temperature, °F (°C)
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 text-gray-600">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Comments</span>
+                                            If impact tested. If unknown, assume not done.
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Input Value</span>
+                                            <div class="flex gap-2">
+                                                 <input type="number" step="any" class="input input-bordered input-sm w-full" name="temper_impact_temp" id="temper_impact_temp" placeholder="Enter Temp">
+                                                 <select class="select select-bordered select-sm w-24 bg-gray-100 temper-unit-selector" disabled>
+                                                     <option value="F" selected>°F</option>
+                                                     <option value="C">°C</option>
+                                                 </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Row 2: Admin Controls -->
+                                    <tr class="flex flex-col lg:table-row mb-4 border border-gray-200 rounded-lg p-4 lg:p-0 lg:border-none lg:mb-0 bg-white">
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 font-medium">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Required Data</span>
+                                            Administrative controls for upset management (Yes/No)
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 text-gray-600">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Comments</span>
+                                            Controls to prevent coincident low temp (upset) at/near design pressures?
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Input Value</span>
+                                            <div class="form-control w-full">
+                                                <select class="select select-bordered select-sm w-full" id="temper_admin_controls">
+                                                    <option value="No">No</option>
+                                                    <option value="Yes">Yes</option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    
+                                    <!-- Row 3: Min Operating Temp -->
+                                    <tr class="flex flex-col lg:table-row mb-4 border border-gray-200 rounded-lg p-4 lg:p-0 lg:border-none lg:mb-0 bg-white">
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 font-medium">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Required Data</span>
+                                            Minimum operating temperature, °F (°C)
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 text-gray-600">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Comments</span>
+                                            Temp below which pressure is reduced. If unknown, use atmospheric boiling point.
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Input Value</span>
+                                            <div class="flex gap-2">
+                                                 <input type="number" step="any" class="input input-bordered input-sm w-full" name="temper_min_op_temp" id="temper_min_op_temp" placeholder="Enter Temp">
+                                                 <select class="select select-bordered select-sm w-24 bg-gray-100 temper-unit-selector" disabled>
+                                                     <option value="F" selected>°F</option>
+                                                     <option value="C">°C</option>
+                                                 </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Row 4: Time in Service -->
+                                    <tr class="flex flex-col lg:table-row mb-4 border border-gray-200 rounded-lg p-4 lg:p-0 lg:border-none lg:mb-0 bg-white">
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 font-medium">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Required Data</span>
+                                            Time in service, years
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 text-gray-600">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Comments</span>
+                                            Number of years within temperature range.
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Input Value</span>
+                                            <div class="form-control w-full">
+                                                <input type="number" step="any" class="input input-bordered input-sm w-full" name="temper_service_years" id="temper_service_years" placeholder="Years">
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Row 5: Delta FATT -->
+                                    <tr class="flex flex-col lg:table-row mb-4 border border-gray-200 rounded-lg p-4 lg:p-0 lg:border-none lg:mb-0 bg-white">
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 font-medium">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Required Data</span>
+                                            ΔFATT, °F (°C)
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 text-gray-600">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Comments</span>
+                                            Change in fracture appearance transition temperature.
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Input Value</span>
+                                            <div class="flex gap-2">
+                                                 <input type="number" step="any" class="input input-bordered input-sm w-full" name="temper_delta_fatt" id="temper_delta_fatt" placeholder="ΔFATT">
+                                                 <select class="select select-bordered select-sm w-24 bg-gray-100 temper-unit-selector" disabled>
+                                                     <option value="F" selected>°F</option>
+                                                     <option value="C">°C</option>
+                                                 </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Row 6: Chemical Composition -->
+                                    <tr class="flex flex-col lg:table-row mb-4 border border-gray-200 rounded-lg p-4 lg:p-0 lg:border-none lg:mb-0 bg-white">
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 font-medium">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Required Data</span>
+                                            Chemical composition of steel (optional)
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 text-gray-600">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Comments</span>
+                                            %Si, %Mn, %P, %Sn, etc. If not known, transition shift will be assumed.
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Input Value</span>
+                                            <div class="form-control w-full">
+                                                <input type="text" class="input input-bordered input-sm w-full" name="temper_chem_comp" id="temper_chem_comp" placeholder="Unknown">
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                     <!-- Row 7: Screening of materials -->
+                                    <tr class="flex flex-col lg:table-row mb-4 border border-gray-200 rounded-lg p-4 lg:p-0 lg:border-none lg:mb-0 bg-white">
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 font-medium">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Required Data</span>
+                                            Screening of materials (Y/N)
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 text-gray-600">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Comments</span>
+                                            Was material screened for susceptibility (e.g. SCE test)?
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Input Value</span>
+                                            <div class="form-control w-full">
+                                                <select class="select select-bordered select-sm w-full" id="temper_material_screening">
+                                                    <option value="No">No</option>
+                                                    <option value="Yes">Yes</option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Row 8: SCE Specified Delta Temp -->
+                                    <tr class="flex flex-col lg:table-row mb-4 border border-gray-200 rounded-lg p-4 lg:p-0 lg:border-none lg:mb-0 bg-white">
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 font-medium">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Required Data</span>
+                                            SCE specified delta temperature, °F (°C)
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 text-gray-600">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Comments</span>
+                                            Specified delta temp for step cooling embrittlement (SCE) tests.
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Input Value</span>
+                                            <div class="flex gap-2">
+                                                 <input type="number" step="any" class="input input-bordered input-sm w-full" name="temper_sce_temp" id="temper_sce_temp" placeholder="Enter Temp">
+                                                 <select class="select select-bordered select-sm w-24 bg-gray-100 temper-unit-selector" disabled>
+                                                     <option value="F" selected>°F</option>
+                                                     <option value="C">°C</option>
+                                                 </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    </div>
+                    
+                    <div class="flex justify-end mt-4">
+                        <button id="btn_temper_confirm" class="btn btn-sm btn-primary gap-2">
+                            Confirm & Next
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Temper Step 1 Result -->
+                    <div id="temper_step_1_container" class="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg hidden animate-fade-in">
+                        <div class="flex items-start gap-3">
+                             <div class="bg-blue-100 p-2 rounded-full text-blue-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">Step 1 Result</h4>
+                                <p id="temper_step_1_msg" class="text-sm text-gray-600 mt-1"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Temper Step 2 (Determine CET/MPT) -->
+                    <div id="temper_step_2_container" class="mt-6 hidden animate-fade-in">
+                         <div class="card bg-base-100 border border-gray-200 p-6">
+                            <h4 class="font-bold text-blue-950 border-b pb-2 mb-4">Step 2: Determine Minimum Pressurization Temperature (T<sub>MPT</sub>)</h4>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Input 1: Min Design Temp -->
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text font-medium">Minimum Design Temperature (T<sub>MDT</sub>)</span>
+                                    </label>
+                                    <div class="flex gap-2">
+                                        <input type="number" step="any" id="temper_tmdt" class="input input-bordered w-full" placeholder="Enter T_MDT">
+                                        <select class="select select-bordered w-24 bg-gray-100 temper-unit-selector" disabled>
+                                            <option value="F" selected>°F</option>
+                                            <option value="C">°C</option>
+                                        </select>
+                                    </div>
+                                    <label class="label">
+                                        <span class="label-text-alt text-gray-500">Min Design Temp at full pressurization.</span>
+                                    </label>
+                                </div>
+
+                                <!-- Input 2: Process Engineer MPT -->
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text font-medium">MPT by Process Engineer</span>
+                                    </label>
+                                    <div class="flex gap-2">
+                                        <input type="number" step="any" id="temper_mpt_process" class="input input-bordered w-full" placeholder="Enter MPT">
+                                        <select class="select select-bordered w-24 bg-gray-100 temper-unit-selector" disabled>
+                                            <option value="F" selected>°F</option>
+                                            <option value="C">°C</option>
+                                        </select>
+                                    </div>
+                                    <label class="label">
+                                        <span class="label-text-alt text-gray-500">Estimated including upsets.</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-end mt-4">
+                                <button id="btn_temper_calc_step2" class="btn btn-sm btn-primary">
+                                    Calculate T<sub>MPT</sub>
+                                </button>
+                            </div>
+
+                            <!-- Step 2 Result -->
+                            <div id="temper_step_2_result" class="mt-4 p-4 bg-blue-50 border border-blue-100 rounded-lg hidden">
+                                <p class="text-sm text-gray-700">
+                                    <strong>Calculated T<sub>MPT</sub>:</strong> <span id="temper_mpt_val" class="font-bold text-lg text-blue-900">--</span> <span class="temper-unit-display">°F</span>
+                                    <br>
+                                    <span class="text-xs text-gray-500">(Minimum of input values)</span>
+                                </p>
+                            </div>
+                         </div>
+                    </div>
+
+
+
+                    <!-- Temper Step 3 (Calculations) -->
+                    <div id="temper_step_3_container" class="mt-6 hidden animate-fade-in">
+                         <div class="card bg-base-100 border border-gray-200 p-6">
+                             <h4 class="font-bold text-blue-950 border-b pb-2 mb-4">Step 3: Determine Reference Temperature (T<sub>ref</sub>)</h4>
+                            
+                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Read-only: Determined CET (T_MPT) -->
+                                <div class="form-control md:col-span-2">
+                                    <label class="label">
+                                        <span class="label-text font-medium">Determined CET (T<sub>MPT</sub>)</span>
+                                    </label>
+                                    <div class="flex gap-2">
+                                        <input type="number" id="temper_step3_cet" class="input input-bordered w-full bg-gray-100" readonly>
+                                        <span class="temper-unit-display btn btn-disabled bg-gray-100 text-gray-500 border-gray-300">°F</span>
+                                    </div>
+                                </div>
+
+                                <!-- Input 1: Material Type -->
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text font-medium">Material Type</span>
+                                    </label>
+                                    <select id="temper_mat_type" class="select select-bordered w-full">
+                                        <option value="Carbon Steel" selected>Carbon Steel</option>
+                                        <option value="Low-Alloy Steel">Low-Alloy Steel</option>
+                                    </select>
+                                </div>
+
+                                <!-- Input 2: Yield Strength -->
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text font-medium">Minimum Yield Strength</span>
+                                    </label>
+                                    <div class="flex gap-2">
+                                        <input type="number" id="temper_yield_strength" class="input input-bordered w-full" placeholder="Enter Yield Strength">
+                                        <span id="temper_ys_unit" class="btn btn-disabled bg-gray-100 text-gray-500 border-gray-300">ksi</span>
+                                    </div>
+                                </div>
+
+                                <!-- Input 3: Exemption Curve -->
+                                <div class="form-control md:col-span-2">
+                                    <label class="label">
+                                        <span class="label-text font-medium">Exemption Curve (API 579 Table 2.E.3.1)</span>
+                                    </label>
+                                    <select id="temper_curve_select" class="select select-bordered w-full">
+                                        <option value="" disabled selected>Select Curve...</option>
+                                        <option value="Curve A">Curve A</option>
+                                        <option value="Curve B">Curve B</option>
+                                        <option value="Curve C">Curve C</option>
+                                        <option value="Curve D">Curve D</option>
+                                    </select>
+                                    <label class="label">
+                                        <a href="#" class="label-text-alt link link-primary underline js-trigger-curve-info">
+                                            Help me select the curve (View Table 2.E.3.1)
+                                        </a>
+                                    </label>
+                                </div>
+                             </div>
+
+                             <div class="flex justify-between items-end mt-4">
+                                <a href="#" class="text-sm link link-primary underline" id="btn_view_table_2e33">
+                                    View Reference Temperature Table (Table 2.E.3.3)
+                                </a>
+                                <button id="btn_temper_calc_step3" class="btn btn-sm btn-primary">
+                                    Calculate T<sub>ref</sub>
+                                </button>
+                            </div>
+                            
+                            <!-- Step 3 Result -->
+                             <div id="temper_step_3_result" class="mt-4 card bg-base-100 border border-gray-200 p-6 hidden animate-fade-in shadow-sm">
+                                <h3 class="font-bold text-lg text-gray-800 border-b pb-2 mb-2">Step 3 Result: Reference Temperature</h3>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-600">Reference Temperature (T<sub>ref</sub>):</span>
+                                    <span class="font-bold text-xl text-blue-700"><span id="temper_tref_val">--</span> <span class="temper-unit-display">°F</span></span>
+                                </div>
+                            </div>
+
+                            <!-- Step 4: Delta FATT -->
+                            <div id="temper_step_4_container" class="mt-6 hidden animate-fade-in">
+                                <h3 class="font-bold text-lg text-blue-900 mb-2">Step 4: Determine Change in FATT (&Delta;FATT)</h3>
+                                <div class="card bg-base-100 border border-gray-200 p-6 shadow-sm">
+                                    
+                                    <!-- Auto-Found Alert -->
+                                    <div id="temper_step4_alert_auto" class="alert alert-info shadow-sm mb-4 hidden">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        <span>&Delta;FATT found in Basic Data. Proceeding with calculation.</span>
+                                    </div>
+
+                                    <!-- Method Selector -->
+                                    <div id="temper_step4_method_section" class="form-control w-full">
+                                        <label class="label">
+                                            <span class="label-text font-medium">Select Method to Determine &Delta;FATT:</span>
+                                        </label>
+                                        <select id="temper_step4_method_select" class="select select-bordered w-full">
+                                            <option value="" disabled selected>Select a method...</option>
+                                            <option value="method1">Method 1: Engineering Analysis / Impact Testing (Most Accurate)</option>
+                                            <option value="method2">Method 2: Step Cooling Embrittlement Test (SCE)</option>
+                                            <option value="method3">Method 3: Chemical Composition Correlation (J-factor / X-bar)</option>
+                                            <option value="method4">Method 4: Service Temperature & Year of Fabrication (Least Accurate)</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Method 1: Manual Input -->
+                                    <div id="temper_step4_inputs_method1" class="mt-4 hidden">
+                                        <div class="form-control">
+                                            <label class="label"><span class="label-text">Enter &Delta;FATT Value:</span></label>
+                                            <div class="flex gap-2">
+                                                <input type="number" id="temper_step4_input_manual_fatt" class="input input-bordered w-full" placeholder="e.g. 50">
+                                                <span class="btn btn-disabled temper-unit-display">°F</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Method 2: SCE -->
+                                    <div id="temper_step4_inputs_method2" class="mt-4 hidden space-y-3">
+                                        <div class="alert alert-warning text-xs shadow-sm">
+                                            <span>Requires 'Service Life' from Basic Data.</span>
+                                        </div>
+                                        <div class="form-control">
+                                            <label class="label"><span class="label-text">Step Cooling Embrittlement (SCE):</span></label>
+                                            <div class="flex gap-2">
+                                                <input type="number" id="temper_step4_input_sce" class="input input-bordered w-full" placeholder="Enter SCE value">
+                                                <span class="btn btn-disabled temper-unit-display">°F</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Method 3: Composition -->
+                                    <div id="temper_step4_inputs_method3" class="mt-4 hidden space-y-3">
+                                        <div class="form-control">
+                                            <label class="label cursor-pointer justify-start gap-4">
+                                                <span class="label-text font-medium">Correlation Factor:</span>
+                                                <label class="cursor-pointer label gap-2">
+                                                    <input type="radio" name="temper_step4_comp_type" value="j_factor" class="radio radio-primary" checked>
+                                                    <span class="label-text">J-factor (Base Metal/Forgings)</span>
+                                                </label>
+                                                <label class="cursor-pointer label gap-2">
+                                                    <input type="radio" name="temper_step4_comp_type" value="x_bar" class="radio radio-primary">
+                                                    <span class="label-text">X-bar (Weld Metal)</span>
+                                                </label>
+                                            </label>
+                                        </div>
+                                        
+                                        <!-- J-Factor Input Group -->
+                                        <div id="temper_group_j_factor" class="mt-2 text-sm">
+                                            <div class="alert alert-warning shadow-sm mb-2 text-xs">
+                                                <span>Enter Chemical Composition in Weight %</span>
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div class="form-control">
+                                                    <label class="label"><span class="label-text">Silicon (Si):</span></label>
+                                                    <div class="flex gap-1">
+                                                        <input type="number" id="temper_step4_chem_si" class="input input-bordered w-full input-sm" placeholder="e.g. 0.5" step="0.01">
+                                                        <span class="btn btn-sm btn-disabled">%</span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-control">
+                                                    <label class="label"><span class="label-text">Manganese (Mn):</span></label>
+                                                    <div class="flex gap-1">
+                                                        <input type="number" id="temper_step4_chem_mn" class="input input-bordered w-full input-sm" placeholder="e.g. 0.5" step="0.01">
+                                                        <span class="btn btn-sm btn-disabled">%</span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-control">
+                                                    <label class="label"><span class="label-text">Phosphorus (P):</span></label>
+                                                    <div class="flex gap-1">
+                                                        <input type="number" id="temper_step4_chem_p" class="input input-bordered w-full input-sm" placeholder="e.g. 0.01" step="0.001">
+                                                        <span class="btn btn-sm btn-disabled">%</span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-control">
+                                                    <label class="label"><span class="label-text">Tin (Sn):</span></label>
+                                                    <div class="flex gap-1">
+                                                        <input type="number" id="temper_step4_chem_sn" class="input input-bordered w-full input-sm" placeholder="e.g. 0.01" step="0.001">
+                                                        <span class="btn btn-sm btn-disabled">%</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mt-2 text-xs text-gray-500">
+                                                J-Factor = (%Si + %Mn) &times; (%P + %Sn) &times; 10<sup>4</sup>
+                                            </div>
+                                        </div>
+
+                                        <!-- X-Bar Input Group -->
+                                        <div id="temper_group_x_bar" class="mt-2 text-sm hidden">
+                                            <div class="alert alert-warning shadow-sm mb-2 text-xs">
+                                                <span>Enter Chemical Composition in Weight % (or ppm as required)</span>
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div class="form-control">
+                                                    <label class="label"><span class="label-text">Phosphorus (P):</span></label>
+                                                    <div class="flex gap-1">
+                                                        <input type="number" id="temper_step4_xb_p" class="input input-bordered w-full input-sm" placeholder="P content" step="0.001">
+                                                        <span class="btn btn-sm btn-disabled">%</span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-control">
+                                                    <label class="label"><span class="label-text">Antimony (Sb):</span></label>
+                                                    <div class="flex gap-1">
+                                                        <input type="number" id="temper_step4_xb_sb" class="input input-bordered w-full input-sm" placeholder="Sb content" step="0.001">
+                                                        <span class="btn btn-sm btn-disabled">%</span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-control">
+                                                    <label class="label"><span class="label-text">Tin (Sn):</span></label>
+                                                    <div class="flex gap-1">
+                                                        <input type="number" id="temper_step4_xb_sn" class="input input-bordered w-full input-sm" placeholder="Sn content" step="0.001">
+                                                        <span class="btn btn-sm btn-disabled">%</span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-control">
+                                                    <label class="label"><span class="label-text">Arsenic (As):</span></label>
+                                                    <div class="flex gap-1">
+                                                        <input type="number" id="temper_step4_xb_as" class="input input-bordered w-full input-sm" placeholder="As content" step="0.001">
+                                                        <span class="btn btn-sm btn-disabled">%</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mt-2 text-xs text-gray-500">
+                                                X-bar = (10P + 5Sb + 4Sn + As) &times; 100
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Method 4: Year Lookup -->
+                                    <div id="temper_step4_inputs_method4" class="mt-4 hidden">
+                                        <div class="alert alert-warning text-xs shadow-sm">
+                                            <span>Estimates &Delta;FATT based on Year of Fabrication (API 579 Table 2.3).</span>
+                                        </div>
+                                        <div class="form-control mt-2">
+                                            <label class="label"><span class="label-text">Confirm Fabrication Year:</span></label>
+                                            <input type="number" id="temper_step4_input_year_confirm" class="input input-bordered w-full" readonly>
+                                        </div>
+                                    </div>
+
+                                    <!-- Calculate Button -->
+                                    <div class="form-control mt-6">
+                                        <button id="btn_temper_calc_step4" class="btn btn-primary w-full">Calculate MPT (T<sub>ref</sub> + &Delta;FATT)</button>
+                                    </div>
+
+                                    <!-- Result Area -->
+                                    <div id="temper_step4_result_area" class="mt-4 p-4 bg-gray-50 border border-gray-200 rounded hidden">
+                                        <div class="grid grid-cols-2 gap-4 text-sm">
+                                            <div>
+                                                <span class="text-gray-500 block">&Delta;FATT:</span>
+                                                <span class="font-bold text-gray-900"><span id="temper_res_delta_fatt">--</span> <span class="temper-unit-display">°F</span></span>
+                                            </div>
+                                            <div>
+                                                <span class="text-gray-500 block">T<sub>ref</sub>:</span>
+                                                <span class="font-bold text-gray-900"><span id="temper_res_step4_tref">--</span> <span class="temper-unit-display">°F</span></span>
+                                            </div>
+                                            <div class="col-span-2 border-t pt-2 mt-2">
+                                                <span class="text-gray-700 font-bold block">Minimum Permissible Temperature (MPT):</span>
+                                                <span class="font-extrabold text-2xl text-blue-700"><span id="temper_res_mpt">--</span> <span class="temper-unit-display">°F</span></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            
+                            <!-- Step 5: Base Damage Factor Calculation -->
+                            <!-- Step 5: Base Damage Factor Calculation -->
+                            <div id="temper_step_5_container" class="mt-8 hidden animate-fade-in">
+                                    <div class="card bg-base-100 border border-gray-200 p-6">
+                                    <h3 class="font-bold text-xl text-blue-950 mb-4 border-b pb-2">Step 5: Determine Base Damage Factor</h3>
+                                    
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <!-- PWHT Selection -->
+                                        <div class="form-control">
+                                            <label class="label"><span class="label-text font-bold">Post-Weld Heat Treatment (PWHT)?</span></label>
+                                            <select id="temper_pwht_select" class="select select-bordered w-full">
+                                                <option value="No">No (Not Subject to PWHT)</option>
+                                                <option value="Yes">Yes (Subject to PWHT)</option>
+                                            </select>
+                                            <label class="label"><span id="temper_pwht_table_msg" class="label-text-alt text-gray-500">Using Table 2.E.3.4</span></label>
+                                        </div>
+
+                                        <!-- Thickness Input -->
+                                        <div class="form-control">
+                                            <label class="label"><span class="label-text font-bold">Component Thickness (from Table 4.1):</span></label>
+                                            <div class="flex gap-2">
+                                                <input type="number" id="temper_thickness" class="input input-bordered w-full bg-gray-100 text-gray-700 cursor-not-allowed" placeholder="" step="0.001" readonly>
+                                                <span class="btn btn-disabled">in</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-control mt-4">
+                                        <button id="btn_temper_calc_base_df" class="btn btn-primary w-full">Calculate Base Damage Factor</button>
+                                    </div>
+
+                                    <!-- Step 5 Result -->
+                                    <div id="temper_step5_result_area" class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded hidden">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-gray-700 font-bold">Base Damage Factor (D<sub>f</sub><sup>base</sup>):</span>
+                                            <span class="font-extrabold text-2xl text-blue-800" id="temper_base_df_val">--</span>
+                                        </div>
+                                    </div>
+                                    </div>
+                            </div>
+                            
+                            <!-- Step 6: Final Damage Factor Calculation -->
+                            <div id="temper_step_6_container" class="mt-8 hidden animate-fade-in">
+                                <div class="card bg-base-100 border border-gray-200 p-6">
+                                    <h3 class="font-bold text-xl text-blue-950 mb-4 border-b pb-2">Step 6: Determine Final Damage Factor (Equation 2.E.1)</h3>
+                                    
+                                    <div class="form-control">
+                                         <label class="label"><span class="label-text font-bold">Adjustment Factor for Service Experience (F<sub>SE</sub>):</span></label>
+                                         <div class="flex gap-2 items-center">
+                                            <select id="temper_fse_select" class="select select-bordered w-full md:w-1/2">
+                                                <option value="1.0" selected>1.0 (None)</option>
+                                                <option value="0.01">0.01 (Documented Service Experience)</option>
+                                            </select>
+                                            <div class="tooltip" data-tip="Typically 1.0 unless otherwise specified by risk assessment.">
+                                                <button class="btn btn-circle btn-ghost btn-xs">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-4 h-4 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                                </button>
+                                            </div>
+                                         </div>
+                                    </div>
+
+                                    <div class="form-control mt-6">
+                                        <button id="btn_temper_calc_final_df" class="btn btn-primary w-full">Calculate Final Damage Factor</button>
+                                    </div>
+
+                                    <!-- Step 6 Result -->
+                                    <div id="temper_step6_result_area" class="mt-4 p-4 bg-blue-100 border border-blue-300 rounded hidden">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-blue-900 font-bold text-lg">Final Temper Embrittlement DF (D<sub>f</sub><sup>tempe</sup>):</span>
+                                            <span class="font-extrabold text-3xl text-blue-900" id="temper_final_df_val">--</span>
+                                        </div>
+                                        <p class="text-xs text-right text-gray-500 mt-1">D<sub>f</sub><sup>tempe</sup> = D<sub>f</sub><sup>base</sup> &times; F<sub>SE</sub></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <!-- 3. 885 F (D_f^885F) -->
+            <div id="cont_brit_885" class="brittle-input-group hidden animate-fade-in">
+                 <div class="card bg-base-100 border border-gray-200 p-6">
+                    <h3 class="font-bold text-xl text-blue-950 mb-4 border-b pb-2">885 °F Embrittlement</h3>
+                    
+                    <!-- Table 2.E.5.1 -->
+                    <div class="bg-base-100 rounded-box border shadow-sm mb-8 transition-all duration-300">
+                        <div class="overflow-x-auto">
+                            <table class="table w-full flex lg:table">
+                                <thead class="bg-blue-50 hidden lg:table-header-group">
+                                    <tr>
+                                        <th class="font-bold text-blue-900 text-base w-1/4">Required Data</th>
+                                        <th class="font-bold text-blue-900 text-base w-1/2">Comments</th>
+                                        <th class="font-bold text-blue-900 text-base w-1/4">Input Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="w-full flex flex-col lg:table-row-group">
+                                    
+                                    <!-- Row 1: Admin Controls -->
+                                    <tr class="flex flex-col lg:table-row mb-4 border border-gray-200 rounded-lg p-4 lg:p-0 lg:border-none lg:mb-0 bg-white">
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 font-medium">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Required Data</span>
+                                            Administrative controls for upset management (Yes/No)
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 text-gray-600">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Comments</span>
+                                            Controls to prevent coincident low temp (upset) at/near design pressures?
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Input Value</span>
+                                            <div class="form-control w-full">
+                                                <select class="select select-bordered select-sm w-full" id="brit885_admin_controls">
+                                                    <option value="No">No</option>
+                                                    <option value="Yes">Yes</option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    
+                                    <!-- Row 2: Min Operating Temp -->
+                                    <tr class="flex flex-col lg:table-row mb-4 border border-gray-200 rounded-lg p-4 lg:p-0 lg:border-none lg:mb-0 bg-white">
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 font-medium">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Required Data</span>
+                                            Minimum operating temperature, °F (°C)
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 text-gray-600">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Comments</span>
+                                            Temp below which pressure is reduced. If unknown, use atmospheric boiling point.
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Input Value</span>
+                                            <div class="flex gap-2">
+                                                 <input type="number" step="any" class="input input-bordered input-sm w-full" id="brit885_min_op_temp" placeholder="Enter Temp">
+                                                 <select class="select select-bordered select-sm w-24 bg-gray-100 temper-unit-selector" disabled>
+                                                     <option value="F" selected>°F</option>
+                                                     <option value="C">°C</option>
+                                                 </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Row 3: T_ref -->
+                                    <tr class="flex flex-col lg:table-row mb-4 border border-gray-200 rounded-lg p-4 lg:p-0 lg:border-none lg:mb-0 bg-white">
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 font-medium">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Required Data</span>
+                                            Reference Temperature T<sub>ref</sub>, °F (°C)
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 text-gray-600">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Comments</span>
+                                            The original transition temperature.
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Input Value</span>
+                                            <div class="flex gap-2">
+                                                 <input type="number" step="any" class="input input-bordered input-sm w-full" id="brit885_tref" placeholder="Enter Tref">
+                                                 <select class="select select-bordered select-sm w-24 bg-gray-100 temper-unit-selector" disabled>
+                                                     <option value="F" selected>°F</option>
+                                                     <option value="C">°C</option>
+                                                 </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end mt-4">
+                        <button id="btn_brit885_confirm" class="btn btn-sm btn-primary gap-2">
+                            Confirm & Next
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Step 1 Result -->
+                    <div id="brit885_step1_result" class="hidden mt-6 animate-fade-in card bg-base-100 border-l-4 border-blue-500 shadow-sm p-4">
+                        <div class="flex items-start gap-4">
+                            <div class="mt-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-blue-900">Step 1 Result</h3>
+                                <div id="brit885_step1_msg" class="text-sm text-blue-800 mt-1"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 Container -->
+                    <div id="brit885_step2_container" class="hidden mt-8 animate-fade-in">
+                        <h3 class="font-bold text-lg text-blue-900 mb-4 pb-2">Step 2: Determine Minimum Operating Temperature</h3>
+                        <p class="text-gray-600 text-sm mb-4">
+                            Since valid administrative controls are not available, determine the Minimum Operating Temperature including upset conditions.
+                        </p>
+                        <div class="form-control w-full max-w-md">
+                             <label class="label"><span class="label-text font-semibold">Design Temperature</span></label>
+                             <div class="flex gap-2">
+                                <input type="number" id="brit885_design_temp" class="input input-bordered w-full" placeholder="Enter Temp">
+                                <span class="btn btn-square btn-disabled bg-gray-100 border-gray-300 text-gray-500 temper-unit-span">°F</span>
+                             </div>
+                        </div>
+                        <div class="form-control w-full max-w-md mt-4">
+                             <label class="label"><span class="label-text font-semibold">Upset Temperature</span></label>
+                             <div class="flex gap-2">
+                                <input type="number" id="brit885_upset_temp" class="input input-bordered w-full" placeholder="Enter Temp">
+                                <span class="btn btn-square btn-disabled bg-gray-100 border-gray-300 text-gray-500 temper-unit-span">°F</span>
+                             </div>
+                        </div>
+                        <button id="btn_brit885_step2_confirm" class="btn btn-sm btn-primary mt-6">Confirm Minimum Operating Temperature</button>
+
+                        <!-- Step 2 Result -->
+                        <div id="brit885_step2_result" class="hidden mt-6 card bg-base-100 border-l-4 border-blue-500 shadow-sm p-4 animate-fade-in">
+                             <div class="flex justify-between items-center">
+                                <span class="text-blue-900 font-bold">Calculated T<sub>min</sub>:</span>
+                                <span class="font-extrabold text-2xl text-blue-900"><span id="brit885_tmin_val">--</span> <span class="text-sm font-normal text-gray-500">°F</span></span>
+                            </div>
+                            <p class="text-xs text-right text-gray-500 mt-1">Min(Design Temp, Upset Temp)</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 Container -->
+                    <div id="brit885_step3_container" class="hidden mt-8 animate-fade-in">
+                        <div class="card bg-base-100 border border-gray-200 p-6">
+                            <h3 class="font-bold text-xl text-blue-950 mb-4 border-b pb-2">Step 3: Determine Reference Temperature (T<sub>ref</sub>)</h3>
+                            
+                            <div class="alert alert-info shadow-sm mb-4">
+                                <div class="flex gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span>Use T<sub>ref</sub> = 80°F (28°C) unless the actual ductile to brittle transition temperature is known (entered in Required Data).</span>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col gap-4">
+                                <div class="flex justify-between items-center bg-gray-50 p-4 rounded-lg border">
+                                    <span class="font-bold text-gray-700">Reference Temperature (T<sub>ref</sub>):</span>
+                                    <span class="font-extrabold text-2xl text-blue-900"><span id="brit885_tref_display">--</span> <span class="text-sm font-normal text-gray-500">°F</span></span>
+                                </div>
+                                <p id="brit885_tref_source_msg" class="text-sm text-right text-gray-500 italic">--</p>
+                            </div>
+
+                            <button id="btn_brit885_step3_confirm" class="btn btn-primary w-full mt-6">Confirm T<sub>ref</sub> & Proceed to Step 4</button>
+                            
+                            <!-- Step 4 Container -->
+                            <div id="brit885_step4_container" class="hidden mt-6 border-t pt-4">
+                                <h4 class="font-bold text-lg text-blue-900 mb-2">Step 4: Determine (T<sub>min</sub> - T<sub>ref</sub>)</h4>
+                                <p class="text-gray-500 text-sm mb-4">Calculate the difference between the Minimum Operating Temperature and the Reference Temperature.</p>
+                                
+                                <!-- Step 4 Result -->
+                                <div id="brit885_step4_result" class="hidden mt-4 bg-blue-50 p-4 rounded-lg border border-blue-100 flex justify-between items-center animate-fade-in">
+                                    <span class="text-blue-900 font-bold">Difference (T<sub>min</sub> - T<sub>ref</sub>):</span>
+                                    <span class="font-extrabold text-2xl text-blue-900"><span id="brit885_diff_val">--</span> <span class="text-sm font-normal text-gray-500">°F</span></span>
+                                </div>
+                            </div>
+                            
+                            <!-- Step 5 Container -->
+                            <div id="brit885_step5_container" class="hidden mt-6 border-t pt-4">
+                                <h4 class="font-bold text-lg text-blue-900 mb-2">Step 5: Determine 885°F Embrittlement Damage Factor (D<sub>f</sub><sup>885F</sup>)</h4>
+                                <p class="text-gray-500 text-sm mb-4">The Damage Factor is determined from Table 2.E.5.3 based on (T<sub>min</sub> - T<sub>ref</sub>).</p>
+                                
+                                <div class="bg-blue-50 p-4 rounded-lg border border-blue-100 flex justify-between items-center animate-fade-in shadow-sm">
+                                    <span class="text-blue-900 font-bold">885°F Embrittlement Damage Factor (D<sub>f</sub><sup>885F</sup>):</span>
+                                    <span class="font-extrabold text-3xl text-blue-900" id="brit885_df_val">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Sigma Phase (D_f^sigma) -->
+            <div id="cont_brit_sigma" class="brittle-input-group hidden animate-fade-in">
+                 <div class="card bg-base-100 border border-gray-200 p-6">
+                    <h3 class="font-bold text-xl text-blue-950 mb-4 border-b pb-2">Sigma Phase Embrittlement</h3>
+                    
+                    <!-- Table 2.E.6.1 -->
+                    <div class="mb-6">
+                        <h4 class="font-bold text-sm text-gray-700 mb-2">Table 2.E.6.1 - Required Data for Determination of the DF - Sigma Phase Embrittlement</h4>
+                         <div class="overflow-x-auto">
+                            <table class="table w-full border-collapse">
+                                <thead class="hidden lg:table-header-group">
+                                    <tr class="bg-blue-50 text-blue-900 border-b border-gray-200">
+                                        <th class="py-3 px-4 text-left font-semibold w-1/3">Required Data</th>
+                                        <th class="py-3 px-4 text-left font-semibold w-1/3">Comments</th>
+                                        <th class="py-3 px-4 text-left font-semibold w-1/3">Input Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="block lg:table-row-group">
+                                    
+                                    <!-- Row 1: Admin Controls -->
+                                    <tr class="flex flex-col lg:table-row mb-4 border border-gray-200 rounded-lg p-4 lg:p-0 lg:border-none lg:mb-0 bg-white border-b lg:border-gray-100">
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 font-medium align-top">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Required Data</span>
+                                            Administrative controls for upset management (Yes/No)
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 text-gray-600 text-sm align-top">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Comments</span>
+                                            Are there controls and or awareness training to prevent the coincident occurrence of low temperatures (upset) at or near design pressures?
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 align-top">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Input Value</span>
+                                            <select id="sigma_admin_controls" class="select select-bordered select-sm w-full">
+                                                <option value="" disabled selected>Select...</option>
+                                                <option value="Yes">Yes</option>
+                                                <option value="No">No</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Row 2: Min Op Temp -->
+                                    <tr class="flex flex-col lg:table-row mb-4 border border-gray-200 rounded-lg p-4 lg:p-0 lg:border-none lg:mb-0 bg-white border-b lg:border-gray-100">
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 font-medium align-top">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Required Data</span>
+                                            Minimum operating temperature under normal, start-up/shutdown, or upset conditions, °F (°C)
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 text-gray-600 text-sm align-top">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Comments</span>
+                                            This may be the temperature below which the operating pressure is reduced for purposes of fracture control. If not known, the temperature should be set to the atmospheric boiling point of the fluid in the component if the fluid is a liquid.
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 align-top">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Input Value</span>
+                                            <div class="flex gap-2">
+                                                <input type="number" id="sigma_min_op_temp" class="input input-sm input-bordered w-full" placeholder="Enter Temp">
+                                                <select class="select select-bordered select-sm w-24 bg-gray-100 text-gray-500" disabled>
+                                                    <option value="F" selected>°F</option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Row 3: Amount of Sigma -->
+                                    <tr class="flex flex-col lg:table-row mb-4 border border-gray-200 rounded-lg p-4 lg:p-0 lg:border-none lg:mb-0 bg-white">
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 font-medium align-top">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Required Data</span>
+                                            Amount of sigma
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 text-gray-600 text-sm align-top">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Comments</span>
+                                            Estimate of the amount of sigma phase present. <br>
+                                            Low (> 1 %, < 5 %) <br>
+                                            Medium (≥ 5 %, < 10 %) <br>
+                                            High (≥ 10 %)
+                                        </td>
+                                        <td class="block lg:table-cell w-full lg:w-auto p-2 lg:p-4 align-top">
+                                            <span class="lg:hidden text-xs font-bold uppercase text-gray-400 block mb-1">Input Value</span>
+                                            <select id="sigma_amount" class="select select-bordered select-sm w-full">
+                                                <option value="" disabled selected>Select...</option>
+                                                <option value="Low">Low</option>
+                                                <option value="Medium">Medium</option>
+                                                <option value="High">High</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end mt-4">
+                        <button id="btn_sigma_confirm" class="btn btn-sm btn-primary gap-2">
+                            Confirm & Next
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Step 1 Container -->
+                    <div id="sigma_step1_container" class="hidden mt-6 animate-fade-in">
+                        <h4 class="font-bold text-lg text-blue-900 mb-2 mt-4 border-t pt-4">Step 1: Determine the evaluation temperature (T<sub>min</sub>)</h4>
+                        
+                        <p class="text-gray-600 text-sm mb-4">
+                            The material may be evaluated at normal operating conditions or at a lower temperature such as shutdown or upset temperature.
+                        </p>
+
+                        <div class="card bg-base-100 border-l-4 border-blue-500 shadow-sm p-4 animate-fade-in">
+                             <div class="flex justify-between items-center">
+                                <span class="text-blue-900 font-bold">Evaluation Temperature (T<sub>min</sub>):</span>
+                                <span class="font-extrabold text-2xl text-blue-900"><span id="sigma_tmin_val">--</span> <span class="text-sm font-normal text-gray-500">°F</span></span>
+                            </div>
+                        </div>
+
+                        <button id="btn_sigma_step1_confirm" class="btn btn-sm btn-primary w-full mt-4">Confirm T<sub>min</sub> & Proceed to Step 2</button>
+                    </div>
+
+                    <!-- Step 2 Container -->
+                    <div id="sigma_step2_container" class="hidden mt-6 animate-fade-in border-t pt-4">
+                        <h4 class="font-bold text-lg text-blue-900 mb-2">Step 2: Determine the estimated % sigma in the material</h4>
+                        
+                        <p class="text-gray-600 text-sm mb-4">
+                            This can be estimated through comparisons with materials in similar service or via metallographic examination.
+                        </p>
+
+                        <div class="card bg-base-100 border-l-4 border-blue-500 shadow-sm p-4 animate-fade-in">
+                             <div class="flex justify-between items-center">
+                                <span class="text-blue-900 font-bold">Estimated % Sigma:</span>
+                                <span class="font-extrabold text-2xl text-blue-900" id="sigma_amount_val">--</span>
+                            </div>
+                        </div>
+
+                        <button id="btn_sigma_step2_confirm" class="btn btn-sm btn-primary w-full mt-4">Confirm % Sigma & Proceed to Step 3</button>
+                    </div>
+
+                    <!-- Step 3 Container -->
+                    <div id="sigma_step3_container" class="hidden mt-6 animate-fade-in border-t pt-4">
+                        <h4 class="font-bold text-lg text-blue-900 mb-2">Step 3: Determine the Damage Factor</h4>
+                        
+                        <p class="text-gray-600 text-sm mb-4">
+                             Damage Factor determines using Table 2.E.6.3 based on Evaluation Temperature (T<sub>min</sub>) and % Sigma.
+                        </p>
+
+                        <div class="card bg-base-100 border-l-4 border-blue-500 shadow-sm p-4 animate-fade-in">
+                             <div class="flex justify-between items-center">
+                                <span class="text-blue-900 font-bold">Damage Factor (Df):</span>
+                                <span class="font-extrabold text-3xl text-blue-900" id="sigma_df_val">--</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+<!-- Modal: Exemption Curve Info -->
+<!-- Modal: Exemption Curve Info (DaisyUI Checkbox Pattern) -->
+<input type="checkbox" id="modal_curve_info_toggle" class="modal-toggle" />
+<div class="modal modal-bottom sm:modal-middle" role="dialog">
+  <div class="modal-box w-11/12 max-w-5xl bg-white text-gray-900 z-50">
+    <h3 class="font-bold text-lg text-blue-950">Exemption Curve Assignments (Table 2.E.3.1)</h3>
+    <div class="py-4" id="table_curve_container">
+        <table id="table_curve_details" class="table table-zebra table-compact w-full text-xs">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="w-1/6 text-left text-gray-900 font-bold">Curve</th>
+                    <th class="text-left text-gray-900 font-bold">Material Assignment</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Populated by JS -->
+            </tbody>
+        </table>
+        <div id="table_curve_notes" class="mt-4 text-xs text-gray-600 bg-yellow-50 p-3 rounded border border-yellow-100">
+             <!-- Notes -->
+        </div>
+    </div>
+    <div class="modal-action">
+      <label for="modal_curve_info_toggle" class="btn btn-primary">Close</label>
+    </div>
+  </div>
+  <label class="modal-backdrop" for="modal_curve_info_toggle">Close</label>
+</div>
+
+<!-- Modal: Reference Temperature (Table 2.E.3.3) -->
+<input type="checkbox" id="modal_ref_temp_toggle" class="modal-toggle" />
+<div class="modal modal-bottom sm:modal-middle" role="dialog">
+  <div class="modal-box w-11/12 max-w-5xl bg-white text-gray-900 z-50">
+    <h3 class="font-bold text-lg text-blue-950">Reference Temperature (Table 2.E.3.3)</h3>
+    <div class="py-4">
+        <!-- Tabs for Material Type -->
+        <div class="tabs tabs-boxed mb-4 bg-gray-100">
+            <a class="tab tab-active" id="tab_ref_cs">Carbon Steels</a> 
+            <a class="tab" id="tab_ref_las">Low-Alloy Steels</a> 
+        </div>
+
+        <div id="content_ref_cs">
+            <h4 class="font-bold text-sm mb-2">Carbon Steels (20J / 15 ft-lb)</h4>
+            <div class="overflow-x-auto">
+                <table id="table_ref_cs" class="table table-compact table-zebra w-full text-xs text-center border">
+                    <thead>
+                        <tr class="bg-gray-200">
+                            <th>Min Yield Strength (<span class="unit-ys">ksi</span>)</th>
+                            <th>Curve A</th>
+                            <th>Curve B</th>
+                            <th>Curve C</th>
+                            <th>Curve D</th>
+                        </tr>
+                    </thead>
+                    <tbody><!-- JS Populated --></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="content_ref_las" class="hidden">
+            <h4 class="font-bold text-sm mb-2">Low-Alloy Steels (27J / 20 ft-lb)</h4>
+            <div class="overflow-x-auto">
+                <table id="table_ref_las" class="table table-compact table-zebra w-full text-xs text-center border">
+                    <thead>
+                        <tr class="bg-gray-200">
+                            <th>Min Yield Strength (<span class="unit-ys">ksi</span>)</th>
+                            <th>Curve A</th>
+                            <th>Curve B</th>
+                            <th>Curve C</th>
+                            <th>Curve D</th>
+                        </tr>
+                    </thead>
+                    <tbody><!-- JS Populated --></tbody>
+                </table>
+            </div>
+        </div>
+        
+    </div>
+    <div class="modal-action">
+      <label for="modal_ref_temp_toggle" class="btn btn-primary">Close</label>
+    </div>
+  </div>
+  <label class="modal-backdrop" for="modal_ref_temp_toggle">Close</label>
+</div>

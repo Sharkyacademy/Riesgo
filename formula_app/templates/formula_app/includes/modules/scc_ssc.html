@@ -1,0 +1,257 @@
+<!-- SCC Sulfide Stress Cracking (SSC) Module -->
+<div class="space-y-6">
+
+    <!-- Description of Damage -->
+    <div class="card bg-base-100 border border-gray-200 shadow-sm p-4">
+        <h4 class="font-bold text-lg text-blue-900 mb-2">Description of Damage</h4>
+        <div class="text-sm text-gray-700 space-y-2 h-40 overflow-y-auto pr-2 custom-scrollbar">
+            <p>
+                SSC is defined as cracking of a metal under the combined action of tensile stress and corrosion in the 
+                presence of water and hydrogen sulfide. SSC is a form of HSC resulting from absorption of atomic hydrogen 
+                that is produced by the sulfide corrosion process on the metal surface. SSC usually occurs more readily in 
+                high-strength (high hardness) steels in hard weld deposits or hard HAZs of lower-strength steels.
+            </p>
+            <p>
+                Susceptibility to SSC is related to the hydrogen permeation flux in the steel, which is primarily associated with 
+                two environmental parameters, pH and H2S content of the water. Typically, the hydrogen flux in steels has 
+                been found to be lowest in near neutral pH solutions, with increasing flux at both lower and higher pH values.
+            </p>
+            <p>
+                Environmental conditions known to cause SSC damage include carbon and low-alloy steels in process environments 
+                containing an aqueous phase (liquid water) with high sulfide content (typically > 50 ppmw), low pH (< 4), 
+                presence of cyanides, or high partial pressure of H2S.
+            </p>
+        </div>
+    </div>
+
+    <!-- Required Data Table (Dynamic) -->
+    <div id="div_scc_ssc_required_data_container" class="mb-6">
+        <h4 class="text-lg font-medium text-blue-900 mb-2">Table 2.C.10.1 — Data Required for Determination of the DF — SSC</h4>
+        <div class="overflow-x-auto">
+            <table class="table table-sm table-zebra w-full border" id="table_scc_ssc_required_data">
+                <thead class="bg-blue-900 text-white">
+                    <tr>
+                        <th>Required Data</th>
+                        <th>Comments</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody_scc_ssc_required_data">
+                    <!-- Loaded via JS -->
+                    <tr><td colspan="2" class="text-center italic text-gray-400">Loading data...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Step 1: Environmental Severity -->
+    <div id="div_scc_ssc_step1" class="pt-4">
+        <h4 class="font-bold text-md text-blue-900 mb-2">Step 1: Environmental Severity Determination</h4>
+        <p class="text-sm text-gray-600 mb-4">Determine the environmental severity for cracking based on the H2S content of the water and its pH (Table 2.C.10.2).</p>
+        <div id="div_scc_ssc_step1_inputs" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- pH Input -->
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">Water pH</span></label>
+                <input type="number" id="inp_scc_ssc_ph" class="input input-bordered input-sm w-full" placeholder="e.g. 5.5" step="0.1" />
+            </div>
+
+            <!-- H2S Content Input -->
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text font-semibold">Environment H<sub>2</sub>S Content (ppm)</span>
+                </label>
+                <input type="number" id="inp_scc_ssc_h2s" class="input input-bordered input-sm w-full" placeholder="e.g. 50" min="0" step="any" onkeydown="return event.key !== 'e' && event.key !== 'E' && event.key !== '-'" />
+            </div>
+            
+            <div id="err_scc_ssc_step1" class="hidden text-red-600 text-sm mt-2 font-semibold"></div>
+
+            <!-- Calculate Severity Button -->
+            <div class="form-control mt-4 md:col-span-2">
+                 <button id="btn_scc_ssc_calc_severity" class="btn btn-sm btn-primary w-full md:w-auto">
+                    Calculate Environmental Severity
+                </button>
+            </div>
+            
+            <!-- Result Display -->
+            <div id="div_scc_ssc_step1_result" class="hidden md:col-span-2 mt-4 pl-1">
+                <div class="text-lg">
+                    <span class="font-bold text-gray-800">Environmental Severity:</span> <span id="val_scc_ssc_env_severity" class="font-bold ml-1">--</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 2: Susceptibility Determination -->
+    <div id="div_scc_ssc_step2" class="hidden pt-4 mt-6">
+        <h4 class="font-bold text-md text-blue-900 mb-2">Step 2: Susceptibility Determination</h4>
+        <p class="text-sm text-gray-600 mb-4">Determine the susceptibility for cracking using Table 2.C.10.3 based on the environmental severity, hardness, and PWHT.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Max Brinnell Hardness -->
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">Max Brinnell Hardness</span></label>
+                <input type="number" id="inp_scc_ssc_hardness" class="input input-bordered input-sm w-full" placeholder="e.g. 210" />
+            </div>
+
+            <!-- PWHT -->
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">Post Weld Heat Treatment (PWHT)</span></label>
+                <select id="sel_scc_ssc_pwht" class="select select-bordered select-sm w-full">
+                    <option value="As-welded">As-welded</option>
+                    <option value="PWHT">PWHT</option>
+                </select>
+            </div>
+            
+            <!-- Calculate Button (Moved Up) -->
+             <div class="form-control mt-4 md:col-span-2">
+                 <button id="btn_scc_ssc_calc_susceptibility" class="btn btn-sm btn-primary w-full md:w-auto">
+                    Calculate Susceptibility
+                </button>
+            </div>
+
+            <!-- Cracks Logic Container (Initially Hidden) -->
+            <div id="div_scc_ssc_cracks_container" class="hidden md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 animate-fade-in border-t pt-4 mt-2">
+                 <!-- Cracks Logic (Redesigned) -->
+                 <div class="form-control md:col-span-2">
+                    <label class="label"><span class="label-text font-semibold">Cracking is confirmed to be present?</span></label>
+                    <select id="sel_scc_ssc_cracks_present" class="select select-bordered select-sm w-full">
+                        <option value="" selected disabled>Select an option...</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+
+                <!-- Cracks Removed (Hidden unless Present detected) -->
+                 <div id="div_scc_ssc_cracks_removed" class="hidden form-control md:col-span-2 ml-4 border-l-4 border-red-200 pl-4 animate-fade-in">
+                    <label class="label"><span class="label-text font-semibold text-red-900">Have the cracks been removed?</span></label>
+                    <select id="sel_scc_ssc_cracks_removed" class="select select-bordered select-sm w-full max-w-xs">
+                        <option value="" selected disabled>Select an option...</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Result Display -->
+            <div id="div_scc_ssc_step2_result" class="hidden md:col-span-2 mt-4 pl-1">
+                <div class="text-lg">
+                    <span class="font-bold text-gray-800">Susceptibility:</span> <span id="val_scc_ssc_susceptibility" class="font-bold ml-1">--</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 3: Severity Index -->
+    <div id="div_scc_ssc_step3" class="hidden pt-4 mt-6">
+        <h4 class="font-bold text-md text-blue-900 mb-2">Step 3: Severity Index (SVI) Determination</h4>
+        <p class="text-sm text-gray-600 mb-4">Based on the susceptibility in Step 2, determine the severity index, Svi, from Table 2.C.1.2.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Result Display Only (Auto-calc) -->
+            <div id="div_scc_ssc_step3_result" class="hidden md:col-span-2 mt-1 pl-1">
+                <div class="text-lg">
+                    <span class="font-bold text-gray-800">Severity Index (Svi):</span> <span id="val_scc_ssc_svi" class="font-bold ml-1">--</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 4: Time in Service -->
+    <div id="div_scc_ssc_step4" class="hidden pt-4 mt-6">
+        <h4 class="font-bold text-md text-blue-900 mb-2">Step 4: Time in Service Determination</h4>
+        <p class="text-sm text-gray-600 mb-4">Determine the in-service time (age) since the last inspection.</p>
+        
+         <div class="form-control w-full max-w-xs">
+            <label class="label">
+                <span class="label-text font-semibold">Date of Installation (or last effective inspection)</span>
+            </label>
+            <input type="date" id="inp_scc_ssc_install_date" class="input input-bordered w-full max-w-xs" />
+            <div id="err_scc_ssc_step4" class="hidden text-red-600 text-sm mt-1 font-semibold"></div>
+            <label class="label">
+                <span class="label-text-alt text-gray-500">Calculated Age: <span id="val_scc_ssc_age" class="font-bold text-black">--</span> years</span>
+            </label>
+        </div>
+    </div>
+
+    <!-- Step 5: Inspection History -->
+    <div id="div_scc_ssc_step5" class="hidden mt-6 animate-fade-in pl-0 pt-4">
+         <h4 class="font-bold text-md text-blue-900 mb-2">Step 5: Inspection Effectiveness Determination</h4>
+         <div class="text-gray-700 mb-2">Enter the number of inspections performed during the in-service time for each category (Section 2.C.10.6.2).</div>
+         
+         <!-- Inspection Definitions Toggle -->
+         <div class="mb-4">
+            <button id="btn_scc_ssc_view_definitions" class="btn btn-xs btn-outline btn-info">
+                <i class="fas fa-info-circle mr-1"></i> View Inspection Definitions (Table 2.F.8.6)
+            </button>
+            <div id="div_scc_ssc_definitions" class="hidden mt-2 overflow-x-auto bg-base-100 rounded-box border shadow-sm">
+                <table class="table table-xs w-full">
+                    <thead>
+                        <tr class="bg-gray-200">
+                            <th>Category</th>
+                            <th>Effectiveness</th>
+                            <th>Intrusive Inspection Example</th>
+                            <th>Non-intrusive Inspection Example</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody_scc_ssc_definitions">
+                        <!-- Loaded via JS -->
+                    </tbody>
+                </table>
+            </div>
+         </div>
+
+         <div class="grid grid-cols-2 gap-4 max-w-lg">
+             <div class="form-control">
+                 <label class="label"><span class="label-text">Category A (Highly Effective)</span></label>
+                 <input type="number" id="inp_scc_ssc_insp_A" class="input input-bordered w-full" value="0" min="0" />
+             </div>
+             <div class="form-control">
+                 <label class="label"><span class="label-text">Category B (Usually Effective)</span></label>
+                 <input type="number" id="inp_scc_ssc_insp_B" class="input input-bordered w-full" value="0" min="0" />
+             </div>
+             <div class="form-control">
+                 <label class="label"><span class="label-text">Category C (Fairly Effective)</span></label>
+                 <input type="number" id="inp_scc_ssc_insp_C" class="input input-bordered w-full" value="0" min="0" />
+             </div>
+             <div class="form-control">
+                 <label class="label"><span class="label-text">Category D (Poorly Effective)</span></label>
+                 <input type="number" id="inp_scc_ssc_insp_D" class="input input-bordered w-full" value="0" min="0" />
+             </div>
+         </div>
+         
+         <div id="div_scc_ssc_step5_result" class="mt-4 p-3 bg-gray-50 rounded hidden">
+             <div class="font-bold text-gray-900">Final Effective Inspection (after equivalency):</div>
+             <div class="text-blue-800 text-lg">
+                 <span id="val_scc_ssc_final_eff_cat" class="font-bold">--</span> 
+                 <span class="text-sm text-gray-600">(Count: <span id="val_scc_ssc_final_eff_count">--</span>)</span>
+             </div>
+         </div>
+    </div>
+    
+    <!-- Step 6: Base Damage Factor -->
+    <div id="div_scc_ssc_step6" class="hidden mt-6 animate-fade-in pl-0 pt-4">
+        <h4 class="font-bold text-md text-blue-900 mb-2">Step 6: Base Damage Factor Determination (D<sub>fB</sub><sup>SSC</sup>)</h4>
+         <div class="text-gray-700 mb-2">Based on the Severity Index (S<sub>VI</sub>) from Step 3 and Inspection Effectiveness from Step 5.</div>
+         
+         <div class="p-4 bg-blue-50 border border-blue-200 rounded-md">
+             <div class="flex items-center justify-between">
+                 <span class="font-bold text-gray-800">Base Damage Factor:</span>
+                 <span id="val_scc_ssc_base_df" class="text-2xl font-extrabold text-blue-900">--</span>
+             </div>
+         </div>
+    </div>
+
+    <!-- Step 7: Final Damage Factor -->
+    <div id="div_scc_ssc_step7" class="hidden mt-6 animate-fade-in pl-0 pt-4">
+        <h4 class="font-bold text-md text-blue-900 mb-2">Step 7: Final Damage Factor Calculation (D<sub>f</sub><sup>SSC</sup>)</h4>
+         <div class="text-gray-700 mb-2">Escalation based on time in service since last inspection (Equation 2.C.9).</div>
+         
+         <div class="p-4 bg-green-50 border border-green-200 rounded-md">
+             <div class="flex items-center justify-between">
+                 <span class="font-bold text-gray-800">Final Damage Factor:</span>
+                 <span id="val_scc_ssc_final_df" class="text-3xl font-extrabold text-green-900">--</span>
+             </div>
+             <div class="text-xs text-gray-500 mt-2 text-right">D<sub>f</sub><sup>SSC</sup> = min(D<sub>fB</sub><sup>SSC</sup> · max(age, 1.0)<sup>1.1</sup>, 5000)</div>
+         </div>
+    </div>
+
+</div>

@@ -1,0 +1,30 @@
+[
+    {
+        "parameter": "Susceptibility (Low, Medium, High)",
+        "comments": "The susceptibility is determined by expert advice or using the procedures in this section."
+    },
+    {
+        "parameter": "Cl<sup>-</sup> concentration of process water (ppm)",
+        "comments": "Determine the bulk Cl<sup>-</sup> concentration of the water phase. If unknown, the default value for ppm is > 1000. Consider Cl<sup>-</sup> content of any water present in system (i.e. hydrotest, boiler feed, steam). Also, consider the possibility of concentration of Cl<sup>-</sup> by evaporation or upset conditions."
+    },
+    {
+        "parameter": "Operating temperature, &deg;F (&deg;C)",
+        "comments": "Determine the highest operating temperature expected during operation (consider normal and non-normal operating conditions)."
+    },
+    {
+        "parameter": "pH of process water",
+        "comments": "Determine pH of the process water. High pH solutions with high chlorides generally are not as susceptible to cracking as low pH solution with chlorides."
+    },
+    {
+        "parameter": "Age (years)",
+        "comments": "Use inspection history to determine the time since the last SCC inspection."
+    },
+    {
+        "parameter": "Inspection effectiveness category",
+        "comments": "The effectiveness category that has been performed on the component."
+    },
+    {
+        "parameter": "Number of inspections",
+        "comments": "The number of inspections in each effectiveness category that have been performed."
+    }
+]

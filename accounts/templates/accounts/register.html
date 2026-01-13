@@ -1,0 +1,105 @@
+{%extends 'theme/base.html'%}   
+{% load static %}
+
+{%block title%}Create Account{%endblock%}
+
+{%block content%}
+
+    <div class="absolute inset-0 bg-cover bg-center" 
+        style="background-image: url('{% static 'hero-industrial.png' %}');">
+    </div>
+    
+    <div class="absolute inset-0 bg-black/50"></div>
+
+    <div class="relative flex flex-col items-center justify-center min-h-full p-4 sm:p-8">
+        
+        <div class="w-full max-w-sm sm:max-w-md md:w-96 bg-transparent text-center">
+            
+            <p class="mb-3 font-extrabold text-xl sm:text-2xl md:text-xl text-white drop-shadow-lg">
+                CREATE YOUR ACCOUNT
+            </p>
+            
+            <form action="#" method="post" autocomplete="off" class="space-y-3">
+                {%csrf_token%}
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    
+                    <div class="flex flex-col items-center w-full">
+                        <label for="first_name" class="text-white text-base font-medium mb-1">FIRST NAME</label>
+                        <input name="first_name" id="first_name" type="text"
+                               class="input input-bordered w-full text-white bg-gray-800 border-gray-700 placeholder-gray-500 input-sm" placeholder="First Name"/>
+                    </div>
+                    
+                    <div class="flex flex-col items-center w-full">
+                        <label for="last_name" class="text-white text-base font-medium mb-1">LAST NAME</label>
+                        <input name="last_name" id="last_name" type="text"
+                               class="input input-bordered w-full text-white bg-gray-800 border-gray-700 placeholder-gray-500 input-sm" placeholder="Last Name"/>
+                    </div>
+                </div>
+
+                <div class="flex flex-col items-center w-full">
+                    <label for="email" class="text-white text-base font-medium mb-1">EMAIL</label>
+                    <input name="email" id="email" type="email" autocomplete="off" autocorrect="off" 
+                           class="input input-bordered w-full text-white bg-gray-800 border-gray-700 placeholder-gray-500 input-sm" placeholder="Email"/>
+                </div>
+                
+                <div class="flex flex-col items-center w-full">
+                    <label for="password" class="text-white text-base font-medium mb-1">PASSWORD</label>
+                    <input name="password" id="password" type="password" autocorrect="off" autocomplete="off" 
+                           class="input input-bordered w-full text-white bg-gray-800 border-gray-700 placeholder-gray-500 input-sm" placeholder="Password"/>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    
+                    <div class="flex flex-col items-center w-full">
+                        <label for="country" class="text-white text-base font-medium mb-1">COUNTRY</label>
+                        <input name="country" id="country" type="text"
+                               list="country-list"  
+                               class="input input-bordered w-full text-white bg-gray-800 border-gray-700 placeholder-gray-500 input-sm" placeholder="Select or type country"/>
+                        
+                        <datalist id="country-list">
+                            <option value="United States">
+                            <option value="Canada">
+                            <option value="Mexico">
+                            <option value="Colombia">
+                            <option value="Spain">
+                            <option value="Germany">
+                            <option value="China">
+                            </datalist>
+                    </div>
+
+                    <div class="flex flex-col items-center w-full">
+                        <label for="city" class="text-white text-base font-medium mb-1">CITY</label>
+                        <input name="city" id="city" type="text"
+                               class="input input-bordered w-full text-white bg-gray-800 border-gray-700 placeholder-gray-500 input-sm" placeholder="City"/>
+                    </div>
+                </div>
+
+                <div class="flex flex-col items-center w-full">
+                    <label for="address" class="text-white text-base font-medium mb-1">ADDRESS</label>
+                    <input name="address" id="address" type="text"
+                           class="input input-bordered w-full text-white bg-gray-800 border-gray-700 placeholder-gray-500 input-sm" placeholder="Address"/>
+                </div>
+
+                <div class="flex flex-col items-center w-full">
+                    <label for="birth_day" class="text-white text-base font-medium mb-1">BIRTH DAY</label>
+                    <input name="birth_day" id="birth_day" type="date"
+                           class="input input-bordered w-full text-white bg-gray-800 border-gray-700 placeholder-gray-500 input-sm"/>
+                </div>
+                
+                <div class="flex flex-col items-center mt-4 space-y-2 pt-2">
+                    
+                    <button type="submit" class="btn bg-blue-600 hover:bg-blue-700 border-none text-white w-full transition duration-300 ease-in-out btn-sm">
+                        Create Account
+                    </button>
+                    
+                    <div class="pt-1 text-white text-xs">
+                        Already have an account? 
+                        <a class="font-bold hover:underline" href="/">Sign in</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+{%endblock%}

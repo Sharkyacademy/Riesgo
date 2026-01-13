@@ -1,0 +1,42 @@
+{
+    "title": "Table 2.C.2.1 — Data Required for Determination of the DF — ACSCC",
+    "headers": ["Required Data", "Comments"],
+    "rows": [
+        {
+            "data": "Susceptibility (Low, Medium, High)",
+            "comments": "The susceptibility is determined by expert advice or using the procedures in this section. This type of cracking may be sporadic and may grow rapidly depending on subtle changes in the process conditions. Periodic monitoring of process pH and CO3 <sup>2-</sup> in FCC alkaline waters should be done to determine cracking susceptibility."
+        },
+        {
+            "data": "Presence of water (Yes or No)",
+            "comments": "Determine whether free water is present in the component. Consider not only normal operating conditions but also start-up, shutdown, process upsets, etc."
+        },
+        {
+            "data": "Presence of H<sub>2</sub>S in the water (Yes or No)",
+            "comments": "Determine whether H<sub>2</sub>S is present in the water phase in this component. If analytical results are not readily available, it should be estimated by a knowledgeable process engineer."
+        },
+        {
+            "data": "pH of water",
+            "comments": "Determine the pH of the water phase. If analytical results are not readily available, it should be estimated by a knowledgeable process engineer."
+        },
+        {
+            "data": "CO<sub>3</sub><sup>2-</sup> concentration in water",
+            "comments": "Determine the carbonate ion concentration of the water phase present in this component. If analytical results are not readily available, it should be estimated by a knowledgeable process engineer."
+        },
+        {
+            "data": "Age (years)",
+            "comments": "Use inspection history to determine the time since the last SCC inspection."
+        },
+        {
+            "data": "PWHT",
+            "comments": "Effective heat treatment to minimize residual stresses of carbon and low-alloy steel weldments."
+        },
+        {
+            "data": "Inspection effectiveness category",
+            "comments": "The effectiveness category that has been performed on the component."
+        },
+        {
+            "data": "Number of inspections",
+            "comments": "The number of inspections in each effectiveness category that have been performed."
+        }
+    ]
+}
