@@ -54,6 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 2. Buttons
+    /* LEGACY LISTENER - DISABLED TO PREVENT CONFLICT WITH MODULES/BRITTLE_FRACTURE/UI/CARBON.JS
     const btnCarbonConfirm = document.getElementById('btn_brittle_carbon_confirm');
     if (btnCarbonConfirm) {
         btnCarbonConfirm.addEventListener('click', () => {
@@ -93,6 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
              handleBrittleFractureCalculation(data); 
         });
     }
+    */
 
     // --- Calculation / Flow Logic ---
 
@@ -1184,6 +1186,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Temper Embrittlement Logic ---
 
+    /* LEGACY LISTENER - DISABLED TO PREVENT CONFLICT WITH MODULES/BRITTLE_FRACTURE/UI/TEMPER.JS
     const btnTemperConfirm = document.getElementById('btn_temper_confirm');
     if (btnTemperConfirm) {
         btnTemperConfirm.addEventListener('click', () => {
@@ -1289,6 +1292,7 @@ document.addEventListener('DOMContentLoaded', () => {
              }
         });
     }
+    */
 
 
 
@@ -1788,10 +1792,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // 885°F Embrittlement Logic
     // -------------------------------------------------------------------------
 
+    /* LEGACY LISTENER - DISABLED TO PREVENT CONFLICT WITH MODULES/BRITTLE_FRACTURE/UI/BRIT885.JS
     const btnBrit885Confirm = document.getElementById('btn_brit885_confirm');
     if (btnBrit885Confirm) {
         btnBrit885Confirm.addEventListener('click', handleBrit885Step1);
     }
+    */
 
     function handleBrit885Step1() {
         const adminControlsSelect = document.getElementById('brit885_admin_controls');
@@ -2059,6 +2065,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Sigma Phase Embrittlement Logic
     // -------------------------------------------------------------------------
     
+    /* LEGACY LISTENER - DISABLED TO PREVENT CONFLICT WITH MODULES/BRITTLE_FRACTURE/UI/SIGMA.JS
     // Confirm & Next Button
     const btnSigmaConfirm = document.getElementById('btn_sigma_confirm');
     if (btnSigmaConfirm) {
@@ -2094,6 +2101,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+    */
 
     // Step 1 Confirm (Proceed to Step 2)
     const btnSigmaStep1Confirm = document.getElementById('btn_sigma_step1_confirm');

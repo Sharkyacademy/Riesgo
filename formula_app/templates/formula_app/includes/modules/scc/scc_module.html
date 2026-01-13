@@ -1,0 +1,255 @@
+<div id="scc_module_top_container" class="module-container hidden space-y-8 animate-fade-in">
+    <!-- Header Removed by User Request -->
+
+    <!-- SCC Sub-Mechanism Selection -->
+    <div class="card bg-white shadow-xl border border-gray-100 p-6">
+        <h2 class="text-xl font-semibold text-blue-950 mb-4 border-b pb-2">Step 1: Specific SCC Mechanisms</h2>
+        <p class="text-gray-600 mb-4">Select the specific Stress Corrosion Cracking mechanisms to evaluate. The final Governing SCC DF will be the maximum of these values.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <!-- Col 1 -->
+            <div class="form-control">
+                <label class="label cursor-pointer justify-start gap-3">
+                    <input type="checkbox" id="scc_mech_caustic" class="checkbox checkbox-sm checkbox-primary scc-mech-check" />
+                    <span class="label-text">Caustic Cracking</span>
+                </label>
+            </div>
+            <div class="form-control">
+                <label class="label cursor-pointer justify-start gap-3">
+                    <input type="checkbox" id="scc_mech_amine" class="checkbox checkbox-sm checkbox-primary scc-mech-check" />
+                    <span class="label-text">Amine Cracking</span>
+                </label>
+            </div>
+            <div class="form-control">
+                <label class="label cursor-pointer justify-start gap-3">
+                    <input type="checkbox" id="scc_mech_ssc" class="checkbox checkbox-sm checkbox-primary scc-mech-check" />
+                    <span class="label-text">Sulfide Stress Cracking (SSC)</span>
+                </label>
+            </div>
+            <!-- Temporarily disabled until HIC/SOHIC-H2S module is implemented
+            <div class="form-control">
+                <label class="label cursor-pointer justify-start gap-3">
+                    <input type="checkbox" id="scc_mech_hic_h2s" class="checkbox checkbox-sm checkbox-primary scc-mech-check" />
+                    <span class="label-text">HIC/SOHIC-H2S</span>
+                </label>
+            </div>
+            -->
+            <div class="form-control">
+                <label class="label cursor-pointer justify-start gap-3">
+                    <input type="checkbox" id="scc_mech_acscc" class="checkbox checkbox-sm checkbox-primary scc-mech-check" />
+                    <span class="label-text">Alkaline Carbonate SCC</span>
+                </label>
+            </div>
+
+            <!-- Col 2 -->
+            <div class="form-control">
+                <label class="label cursor-pointer justify-start gap-3">
+                    <input type="checkbox" id="scc_mech_pascc" class="checkbox checkbox-sm checkbox-primary scc-mech-check" />
+                    <span class="label-text">Polythionic Acid SCC</span>
+                </label>
+            </div>
+            <div class="form-control">
+                <label class="label cursor-pointer justify-start gap-3">
+                    <input type="checkbox" id="scc_mech_ciscc" class="checkbox checkbox-sm checkbox-primary scc-mech-check" />
+                    <span class="label-text">Chloride SCC</span>
+                </label>
+            </div>
+             <div class="form-control">
+                <label class="label cursor-pointer justify-start gap-3">
+                    <input type="checkbox" id="scc_mech_hsc_hf" class="checkbox checkbox-sm checkbox-primary scc-mech-check" />
+                    <span class="label-text">HSC-HF</span>
+                </label>
+            </div>
+            <div class="form-control">
+                <label class="label cursor-pointer justify-start gap-3">
+                    <input type="checkbox" id="scc_mech_hic_hf" class="checkbox checkbox-sm checkbox-primary scc-mech-check" />
+                    <span class="label-text">HIC/SOHIC-HF</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- DYNAMIC TABS (Mini-Stepper) -->
+    <div id="scc_tabs_container" class="hidden mb-6 animate-fade-in">
+        <div class="tabs tabs-boxed bg-gray-100 p-1 rounded-lg overflow-x-auto flex-nowrap" id="scc_tabs_list">
+            <!-- Tabs injected by JS -->
+        </div>
+    </div>
+
+    <!-- MECHANISM SPECIFIC INPUTS CONTAINER -->
+    <div id="scc_inputs_area" class="min-h-[200px]">
+        
+        <!-- Welcome / Default Message -->
+        <div id="scc_inputs_placeholder" class="text-center text-gray-500 py-10 italic">
+            Select one or more mechanisms above to configure their parameters.
+        </div>
+
+        <!-- 1. Caustic -->
+        <div id="cont_scc_caustic" class="scc-input-group hidden animate-fade-in space-y-6">
+            
+            <div class="card bg-base-100 border border-gray-200 p-6">
+                <h3 class="font-bold text-2xl text-blue-950 mb-4 border-b pb-2">SCC DF — Caustic Cracking</h3>
+                
+                <!-- Table always visible -->
+                <div class="mb-6">
+                    <h4 class="text-lg font-medium text-blue-900 mb-2">Required Data (Reference)</h4>
+                    <div class="overflow-x-auto">
+                        <table class="table table-sm table-zebra w-full border">
+                            <thead class="bg-blue-900 text-white">
+                                <tr>
+                                    <th class="w-1/3">Required Data</th>
+                                    <th class="w-1/3">Comments</th>
+                                    <th class="w-1/3">Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="font-semibold">Susceptibility (Low, Medium, High)</td>
+                                    <td>The susceptibility is determined by expert advice or using the procedures in this section.</td>
+                                    <td>
+                                        <input type="text" id="req_scc_caustic_susceptibility" class="input input-bordered input-sm w-full bg-gray-100" placeholder="Calculated..." readonly />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="font-semibold">NaOH concentration (%)</td>
+                                    <td>Determine the concentration of the caustic solution being handled. Consideration for heating/flashing.</td>
+                                    <td>
+                                        <input type="number" id="req_scc_caustic_naoh_conc" class="input input-bordered input-sm w-full" placeholder="e.g. 10" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="font-semibold">Maximum process temperature</td>
+                                    <td>Determine the maximum process temperature. Consider local heating/mixing.</td>
+                                    <td>
+                                        <div class="join w-full">
+                                            <input type="number" id="req_scc_caustic_temp" class="input input-bordered input-sm join-item w-full" placeholder="e.g. 150" />
+                                            <select id="req_scc_caustic_temp_unit" class="select select-bordered select-sm join-item">
+                                                <option value="F">°F</option>
+                                                <option value="C">°C</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="font-semibold">Steam out? (Yes or No)</td>
+                                    <td>Determine whether the component has been steamed out prior to water flushing to remove residual caustic.</td>
+                                    <td>
+                                        <select id="req_scc_caustic_steamed_out" class="select select-bordered select-sm w-full">
+                                            <option value="">Select...</option>
+                                            <option value="Yes">Yes</option>
+                                            <option value="No">No</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="font-semibold">Time since last SCC inspection</td>
+                                    <td>Use inspection history to determine years since the last SCC inspection.</td>
+                                    <td>
+                                         <input type="number" id="req_scc_caustic_age" class="input input-bordered input-sm w-full" placeholder="Yields from Install Date" readonly />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="font-semibold">Inspection effectiveness category</td>
+                                    <td>The effectiveness category that has been performed on the component (A, B, C, etc).</td>
+                                    <td>
+                                        <select id="req_scc_caustic_insp_eff" class="select select-bordered select-sm w-full" disabled>
+                                            <option value="">Calculated from Step 4</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="font-semibold">Number of inspections</td>
+                                    <td>The number of inspections in each effectiveness category that have been performed.</td>
+                                    <td>
+                                         <input type="number" id="req_scc_caustic_insp_count" class="input input-bordered input-sm w-full bg-gray-100" placeholder="Calculated..." readonly />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="flex justify-end mt-4 mb-6">
+                    <button id="btn_scc_caustic_confirm_table" class="btn btn-primary btn-sm">
+                        <i class="fas fa-save mr-2"></i> Save & Begin Analysis
+                    </button>
+                </div>
+
+                {% include "formula_app/includes/modules/scc/scc_caustic.html" %}
+            </div>
+        </div>
+
+        <!-- 3. SSC (Sulfide Stress Cracking) -->
+        <div id="cont_scc_ssc" class="scc-input-group hidden">
+            <div class="card bg-base-100 border border-gray-200 p-6">
+                <h3 class="font-bold text-2xl text-blue-950 mb-4 border-b pb-2">SCC DF — Sulfide Stress Cracking (SSC)</h3>
+                
+                {% include "formula_app/includes/modules/scc/scc_ssc.html" %}
+            </div>
+        </div>
+
+    <!-- ACSCC Content -->
+    <div id="cont_scc_acscc" class="scc-input-group hidden">
+        {% include 'formula_app/includes/modules/scc/scc_acscc.html' %}
+    </div>
+
+    <!-- ClSCC Content (Chloride) -->
+    <div id="cont_scc_ciscc" class="scc-input-group hidden">
+        {% include 'formula_app/includes/modules/scc/scc_clscc.html' %}
+    </div>
+
+    <!-- HIC/SOHIC-HF Content -->
+    <div id="cont_scc_hic_hf" class="scc-input-group hidden">
+        <div class="card bg-base-100 border border-gray-200 p-6">
+            <h3 class="font-bold text-2xl text-blue-950 mb-4 border-b pb-2">SCC DF — HIC/SOHIC-HF</h3>
+            {% include 'formula_app/includes/modules/scc/scc_hic_sohic_hf.html' %}
+        </div>
+    </div>
+
+    <!-- HSC-HF Content -->
+    <div id="cont_scc_hsc_hf" class="scc-input-group hidden">
+        <div class="card bg-base-100 border border-gray-200 p-6">
+            <h3 class="font-bold text-2xl text-blue-950 mb-4 border-b pb-2">SCC DF — HSC-HF</h3>
+            {% include 'formula_app/includes/modules/scc/scc_hsc_hf.html' %}
+        </div>
+    </div>
+
+    <!-- Amine Cracking Content -->
+    <div id="cont_scc_amine" class="scc-input-group hidden">
+        <div class="card bg-base-100 border border-gray-200 p-6">
+            <h3 class="font-bold text-2xl text-blue-950 mb-4 border-b pb-2">SCC DF — Amine Cracking</h3>
+            {% include 'formula_app/includes/modules/scc/scc_amine.html' %}
+        </div>
+    </div>
+
+    <!-- Polythionic Acid SCC Content -->
+    <div id="cont_scc_pascc" class="scc-input-group hidden">
+        <div class="card bg-base-100 border border-gray-200 p-6">
+            <h3 class="font-bold text-2xl text-blue-950 mb-4 border-b pb-2">SCC DF — Polythionic Acid SCC (PASCC)</h3>
+            {% include 'formula_app/includes/modules/scc/scc_pascc.html' %}
+        </div>
+    </div>
+
+    </div>
+
+    <!-- STEPPER CONTROLS -->
+    <div id="scc_stepper_controls" class="flex justify-between mt-6 hidden">
+        <button id="btn_scc_prev" class="btn btn-sm btn-ghost gap-2" disabled>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+            Previous
+        </button>
+        <button id="btn_scc_next" class="btn btn-sm btn-outline gap-2">
+            Next
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+        </button>
+    </div>
+    
+    <!-- RESULTS (Max) -->
+    <div class="mt-6 hidden p-4 bg-white border border-gray-300 rounded-md shadow-sm" id="scc_max_result_container">
+        <h3 class="font-bold text-gray-800 text-lg border-b pb-2 mb-2">Governing SCC Damage Factor</h3>
+        <div class="flex items-center justify-between">
+            <span class="text-gray-600 font-medium">Maximum Damage Factor (D<sub>f-gov</sub><sup>SCC</sup>):</span>
+            <span class="text-3xl font-extrabold text-blue-900" id="val_scc_governing">0.00</span>
+        </div>
+    </div>
+</div>

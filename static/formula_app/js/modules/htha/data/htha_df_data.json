@@ -1,0 +1,22 @@
+[
+  {
+    "susceptibility": "Damage Observed",
+    "df": 5000
+  },
+  {
+    "susceptibility": "High Susceptibility",
+    "df": 5000
+  },
+  {
+    "susceptibility": "Medium Susceptibility",
+    "df": 2000
+  },
+  {
+    "susceptibility": "Low Susceptibility",
+    "df": 100
+  },
+  {
+    "susceptibility": "No Susceptibility",
+    "df": 0
+  }
+]

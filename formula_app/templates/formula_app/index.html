@@ -110,19 +110,18 @@
 
                     <!-- MODULES CONTAINER -->
                     <!-- 1. Thinning Module -->
-                    {% include 'formula_app/includes/modules/thinning_module.html' %}
+                    {% include 'formula_app/includes/modules/thinning/thinning_module.html' %}
 
-                    <!-- 2. SCC Module -->
-                    {% include 'formula_app/includes/modules/scc_module.html' %}
+                    <!-- 3. SCC Module -->
+                    {% include 'formula_app/includes/modules/scc/scc_module.html' %}
 
                     <!-- 3. External Damage Module -->
                     <!-- 3. External Damage Module -->
-                    {% include 'formula_app/includes/modules/external_damage_module.html' %}
+                    {% include 'formula_app/includes/modules/external_damage/external_damage_module.html' %}
 
                     <!-- 4. HTHA Module -->
-                    {% include 'formula_app/includes/modules/htha.html' %}
-
-                    <!-- 5. Brittle Fracture Module -->
+                    <!-- HTHA Module -->
+                    {% include 'formula_app/includes/modules/htha/htha.html' %}
                     {% include 'formula_app/includes/modules/brittle_fracture/brittle_fracture.html' %}
                 </div>
             </section>
@@ -166,12 +165,11 @@
 <script src="{% static 'formula_app/data/app_main_loader.js' %}"></script>
 <script src="{% static 'formula_app/components/steps_handler.js' %}"></script>
 <script src="{% static 'formula_app/js/module_navigator.js' %}"></script>
-<script type="module" src="{% static 'formula_app/js/scc_interactions.js' %}?v=37"></script>
-<script src="{% static 'formula_app/js/external_damage_interactions.js' %}?v=5"></script>
-<script type="module" src="{% static 'formula_app/js/htha_interactions.js' %}"></script>
-<script type="module" src="{% static 'formula_app/components/external_corrosion_ferritic.js' %}"></script>
-<script src="{% static 'formula_app/components/cui_ferritic.js' %}?v=5"></script>
-<script type="module" src="{% static 'formula_app/components/external_clscc_austenitic.js' %}"></script>
-<script type="module" src="{% static 'formula_app/js/modules/brittle_fracture/interactions.js' %}"></script>
-<script type="module" src="{% static 'formula_app/js/temper_embrittlement_interactions.js' %}"></script>
+<script type="module" src="{% static 'formula_app/js/modules/scc/interactions.js' %}?v=37"></script>
+<script src="{% static 'formula_app/js/modules/external_damage/interactions.js' %}?v=5"></script>
+<script type="module" src="{% static 'formula_app/js/modules/htha/interactions.js' %}"></script>
+<script type="module" src="{% static 'formula_app/js/modules/external_damage/components/external_corrosion_ferritic/main.js' %}"></script>
+<script src="{% static 'formula_app/js/modules/external_damage/components/cui_ferritic.js' %}?v=5"></script>
+<script type="module" src="{% static 'formula_app/js/modules/external_damage/components/external_clscc_austenitic.js' %}"></script>
+<script type="module" src="{% static 'formula_app/js/modules/brittle_fracture/main.js' %}"></script>
 {% endblock %}

@@ -1,0 +1,678 @@
+<div id="ext_corr_ferritic_content" class="space-y-8 animate-fade-in"> 
+    
+    <!-- Required Data Table -->
+    <div class="mb-6 animate-fade-in">
+        <h4 class="font-bold text-md text-blue-900 mb-2">Required Data (Table 2.D.3.1)</h4>
+        <div class="overflow-x-auto bg-base-100 rounded-box border shadow-sm">
+            <table class="table table-sm table-zebra w-full" id="table_2d_3_1_content">
+                <!-- Dynamically Populated -->
+            </table>
+        </div>
+    </div>
+
+    <!-- Step 1: Furnished Thickness & Age -->
+    <div id="ext_ferritic_step1_section">
+        <h3 class="font-bold text-lg text-blue-950 mb-2 border-b-2 border-gray-100 pb-2">Step 1: Determine Furnished Thickness and Age</h3>
+        <p class="text-sm text-gray-600 mb-4">
+            Determine the furnished thickness (t) and age (age) for the component from the installation date.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- Furnished Thickness -->
+            <div class="form-control w-full">
+                <label class="label">
+                    <span class="label-text font-semibold">Furnished Thickness (t)</span>
+                    <span class="label-text-alt text-gray-500">mm</span>
+                </label>
+                <!-- Usually comes from Step 1, allowing manual override or auto-fill -->
+                <input type="number" id="inp_ext_ferritic_thickness" class="input input-bordered input-sm w-full" placeholder="e.g. 12.7" step="0.01" />
+            </div>
+
+            <!-- Installation Date -->
+            <div class="form-control w-full">
+                <label class="label">
+                    <span class="label-text font-semibold">Installation Date</span>
+                </label>
+                <input type="date" id="inp_ext_ferritic_install_date" class="input input-bordered input-sm w-full" />
+            </div>
+
+            <!-- Age Result -->
+            <div class="col-span-1 md:col-span-2">
+                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-gray-700">Component Age (age)</span>
+                        <span class="text-2xl font-extrabold text-blue-900" id="val_ext_ferritic_age">--</span>
+                    </div>
+                    <div class="text-right text-xs text-gray-500 mt-1">years</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Step 2: Corrosion Rate Basis -->
+    <div id="ext_ferritic_step2_container" class="hidden animate-fade-in">
+        <h3 class="font-bold text-lg text-blue-950 mb-2 border-b-2 border-gray-100 pb-2">Step 2: Determine Corrosion Rate Basis</h3>
+        <p class="text-sm text-gray-600 mb-4">
+            If the corrosion rate is determined based on inspection history or assigned by a knowledgeable specialist, use the assigned corrosion rate and go to Step 5.
+        </p>
+
+        <div id="ext_ferritic_step2_result" class="py-2">
+            <!-- Dynamic Content -->
+        </div>
+
+        <div class="mt-4 flex justify-end">
+             <button id="btn_ext_ferritic_step2_next" class="btn btn-sm btn-primary hidden">Proceed</button>
+        </div>
+    </div>
+
+    <!-- Step 3: Determine Base Corrosion Rate -->
+    <div id="ext_ferritic_step3_container" class="hidden animate-fade-in">
+        <h3 class="font-bold text-lg text-blue-950 mb-2 border-b-2 border-gray-100 pb-2">Step 3: Determine Base Corrosion Rate (Cr<sub>B</sub>)</h3>
+        <p class="text-sm text-gray-600 mb-4">
+            Determine the base corrosion rate based on the driver and operating temperature using Table 2.D.3.2.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- Operating Temperature (Editable) -->
+            <div class="form-control w-full">
+                <label class="label">
+                    <span class="label-text font-semibold">Operating Temperature</span>
+                </label>
+                <div class="join w-full">
+                    <input type="number" id="inp_ext_ferritic_op_temp" class="input input-bordered input-sm join-item w-full" step="any" />
+                    <select id="sel_ext_ferritic_temp_unit" class="select select-bordered select-sm join-item">
+                        <option value="F">°F</option>
+                        <option value="C">°C</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Driver Selection -->
+            <div class="form-control w-full">
+                <label class="label">
+                    <span class="label-text font-semibold">Corrosion Driver</span>
+                </label>
+                <select id="sel_ext_ferritic_driver" class="select select-bordered select-sm w-full">
+                    <option value="" disabled selected>Select Driver...</option>
+                    <option value="Severe">Severe</option>
+                    <option value="Moderate">Moderate</option>
+                    <option value="Mild">Mild</option>
+                    <option value="Dry">Dry</option>
+                </select>
+                <div class="label">
+                   <span class="label-text-alt text-gray-400">See Table 2.D.3.1 for Driver criteria.</span>
+                </div>
+            </div>
+
+            <!-- Base Corrosion Rate Result -->
+            <div class="col-span-1 md:col-span-2">
+                <div class="p-4 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg shadow-sm">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-blue-900">Base Corrosion Rate (Cr<sub>B</sub>)</span>
+                        <span class="text-3xl font-extrabold text-blue-900" id="val_ext_ferritic_crb">--</span>
+                    </div>
+                    <div class="text-right text-sm text-blue-700 mt-1 font-semibold" id="lbl_ext_ferritic_rate_unit">mpy</div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Step 4: Determine Final Corrosion Rate -->
+    <div id="ext_ferritic_step4_container" class="hidden animate-fade-in mt-12">
+        <h3 class="font-bold text-lg text-blue-950 mb-2 border-b-2 border-gray-100 pb-2">Step 4: Determine Final Corrosion Rate (Cr)</h3>
+        <p class="text-sm text-gray-600 mb-4">
+            Determine final corrosion rate using Equation (2.D.14) and adjustment factors.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <!-- F_INS: Insulation Type -->
+            <div class="form-control w-full">
+                <label class="label">
+                    <span class="label-text font-semibold">Insulation Type (F<sub>INS</sub>)</span>
+                </label>
+                <select id="sel_ext_ferritic_ins_type" class="select select-bordered select-sm w-full">
+                    <option value="" disabled selected>Select Insulation...</option>
+                    <!-- Dynamically Populated -->
+                </select>
+                <div class="label">
+                    <span class="label-text-alt text-gray-400">See Table 2.D.3.3</span>
+                    <span class="label-text-alt font-bold text-blue-800" id="val_ext_ferritic_fins">Factor: --</span>
+                </div>
+            </div>
+
+            <!-- F_CM: Complexity -->
+            <div class="form-control w-full">
+                <label class="label">
+                    <span class="label-text font-semibold">Complexity (F<sub>CM</sub>)</span>
+                </label>
+                <select id="sel_ext_ferritic_complexity" class="select select-bordered select-sm w-full">
+                    <option value="" disabled selected>Select Complexity...</option>
+                    <option value="0.75">Below Average (0.75)</option>
+                    <option value="1.0">Average (1.0)</option>
+                    <option value="1.25">Above Average (1.25)</option>
+                </select>
+            </div>
+
+            <!-- F_IC: Insulation Condition -->
+            <div class="form-control w-full">
+                <label class="label">
+                    <span class="label-text font-semibold">Insulation Condition (F<sub>IC</sub>)</span>
+                </label>
+                <select id="sel_ext_ferritic_ins_condition" class="select select-bordered select-sm w-full">
+                    <option value="" disabled selected>Select Condition...</option>
+                    <option value="1.25">Below Average (1.25)</option>
+                    <option value="1.0">Average (1.0)</option>
+                    <option value="0.75">Above Average (0.75)</option>
+                </select>
+            </div>
+
+            <!-- F_EQ: Equipment Design -->
+            <div class="form-control w-full">
+                <label class="label">
+                    <span class="label-text font-semibold">Equipment Design (F<sub>EQ</sub>)</span>
+                </label>
+                <select id="sel_ext_ferritic_eq_design" class="select select-bordered select-sm w-full">
+                    <option value="" disabled selected>Select Design...</option>
+                    <option value="1">No water pooling (1.0)</option>
+                    <option value="2">Allows water pooling (2.0)</option>
+                </select>
+            </div>
+
+            <!-- F_IF: Interface -->
+            <div class="form-control w-full">
+                <label class="label">
+                    <span class="label-text font-semibold">Interface (F<sub>IF</sub>)</span>
+                </label>
+                <select id="sel_ext_ferritic_interface" class="select select-bordered select-sm w-full">
+                    <option value="" disabled selected>Select Interface...</option>
+                    <option value="1">No Interface (1.0)</option>
+                    <option value="2">Interface Soil/Water (2.0)</option>
+                </select>
+            </div>
+
+            <!-- Final Result -->
+            <div class="col-span-1 md:col-span-2 mt-4">
+                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-gray-800">Final Corrosion Rate (Cr)</span>
+                        <span class="text-3xl font-extrabold text-blue-900" id="val_ext_ferritic_final_cr">--</span>
+                    </div>
+                    <div class="text-right text-sm text-gray-500 mt-1" id="lbl_ext_ferritic_final_rate_unit">mpy</div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Step 5: Determine Time in Service (age_tke) -->
+    <div id="ext_ferritic_step5_container" class="hidden animate-fade-in mt-12">
+        <h3 class="font-bold text-lg text-blue-950 mb-2 border-b-2 border-gray-100 pb-2">Step 5: Determine Time in Service (age<sub>tke</sub>)</h3>
+        <p class="text-sm text-gray-600 mb-4">
+            Determine the time in service (age<sub>tke</sub>) since the last known thickness and the starting thickness (t<sub>rde</sub>).
+        </p>
+
+        <div class="card bg-gray-50 border border-gray-200 p-4 shadow-sm mb-6">
+            <div class="form-control">
+                <label class="label cursor-pointer justify-start gap-4">
+                    <span class="label-text font-bold">Is measured wall loss (L<sub>e</sub>) available from inspection?</span>
+                    <input type="checkbox" class="toggle toggle-primary" id="tgl_ext_ferritic_has_inspection" />
+                </label>
+            </div>
+        </div>
+
+        <div id="ext_ferritic_step5_inspection_inputs" class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden">
+            <!-- Inspection Date -->
+            <div class="form-control w-full">
+                <label class="label">
+                    <span class="label-text font-semibold">Inspection Date</span>
+                </label>
+                <input type="date" id="inp_ext_ferritic_inspection_date" class="input input-bordered input-sm w-full" />
+            </div>
+
+            <!-- Measured Wall Loss (Le) -->
+            <div class="form-control w-full">
+                <label class="label">
+                    <span class="label-text font-semibold">Measured Wall Loss (L<sub>e</sub>)</span>
+                    <span class="label-text-alt">mm</span>
+                </label>
+                <input type="number" id="inp_ext_ferritic_le" class="input input-bordered input-sm w-full" placeholder="e.g. 1.0" step="0.01" />
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <!-- Result: age_tke -->
+            <div class="w-full">
+                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-gray-700">Time in Service (age<sub>tke</sub>)</span>
+                        <span class="text-2xl font-extrabold text-blue-900" id="val_ext_ferritic_age_tke">--</span>
+                    </div>
+                    <div class="text-right text-xs text-gray-500 mt-1">years</div>
+                </div>
+            </div>
+
+            <!-- Result: trde -->
+            <div class="w-full">
+                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-gray-700">Starting Thickness (t<sub>rde</sub>)</span>
+                        <span class="text-2xl font-extrabold text-blue-900" id="val_ext_ferritic_trde">--</span>
+                    </div>
+                    <div class="text-right text-xs text-gray-500 mt-1">mm</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Step 6: Determine Coating Age (age_coat) -->
+    <div id="ext_ferritic_step6_container" class="hidden animate-fade-in mt-12 mb-12">
+        <h3 class="font-bold text-lg text-blue-950 mb-2 border-b-2 border-gray-100 pb-2">Step 6: Determine Coating Age (age<sub>coat</sub>)</h3>
+        <p class="text-sm text-gray-600 mb-4">
+            Determine the in-service time (age<sub>coat</sub>) since the coating was installed using Equation (2.D.16).
+        </p>
+
+        <div class="card bg-gray-50 border border-gray-200 p-4 shadow-sm mb-6">
+            <div class="form-control w-full">
+                <label class="label">
+                    <span class="label-text font-bold">Is the component coated?</span>
+                </label>
+                <select id="sel_ext_ferritic_is_coated" class="select select-bordered w-full">
+                    <option value="" disabled selected>Select...</option>
+                    <option value="Yes">Yes - Component is Coated</option>
+                    <option value="No">No - Component is Uncoated</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="ext_ferritic_step6_coating_inputs" class="hidden">
+            <div class="form-control w-full md:w-1/2">
+                <label class="label">
+                    <span class="label-text font-semibold">Coating Installation Date</span>
+                </label>
+                <input type="date" id="inp_ext_ferritic_coating_date" class="input input-bordered input-sm w-full" />
+            </div>
+        </div>
+
+        <div class="w-full md:w-1/2 mt-6">
+            <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <div class="flex justify-between items-center">
+                    <span class="font-bold text-gray-700">Coating Age (age<sub>coat</sub>)</span>
+                    <span class="text-2xl font-extrabold text-blue-900" id="val_ext_ferritic_age_coat">0.00</span>
+                </div>
+                <div class="text-right text-xs text-gray-500 mt-1">years</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Step 7: Determine Expected Coating Age (Cage) -->
+    <div id="ext_ferritic_step7_container" class="hidden animate-fade-in mt-12 mb-12">
+        <h3 class="font-bold text-lg text-blue-950 mb-2 border-b-2 border-gray-100 pb-2">Step 7: Determine Expected Coating Age (C<sub>age</sub>)</h3>
+        <p class="text-sm text-gray-600 mb-4">
+            Determine the expected coating age (C<sub>age</sub>) based on coating type, quality, and service conditions.
+            <br>
+            <span class="text-xs text-slate-500">Lower quality: ~5 years. High quality: ~15 years. Poor/None: 0 years.</span>
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <div class="form-control w-full">
+                <label class="label">
+                    <span class="label-text font-semibold">Coating Quality</span>
+                </label>
+                <select id="sel_ext_ferritic_coating_quality" class="select select-bordered select-sm w-full">
+                    <option value="" disabled selected>Select Quality...</option>
+                    <option value="0">No Coating / Poor Quality (0 years)</option>
+                    <option value="5">Lower Quality / Standard (5 years)</option>
+                    <option value="15">High Quality (15 years)</option>
+                    <option value="custom">Custom Evaluation...</option>
+                </select>
+            </div>
+
+            <div class="form-control w-full hidden" id="div_ext_ferritic_cage_custom">
+                <label class="label">
+                    <span class="label-text font-semibold">Custom C<sub>age</sub></span>
+                    <span class="label-text-alt">years</span>
+                </label>
+                <input type="number" id="inp_ext_ferritic_cage_custom" class="input input-bordered input-sm w-full" placeholder="Enter years e.g. 10" />
+            </div>
+
+            <div class="col-span-1 md:col-span-2 mt-4">
+                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-gray-800">Final C<sub>age</sub> Value</span>
+                        <span class="text-2xl font-extrabold text-blue-900" id="val_ext_ferritic_cage_final">--</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Step 8: Determine Coating Adjustment (Coat_adj) -->
+    <div id="ext_ferritic_step8_container" class="hidden animate-fade-in mt-12 mb-12">
+        <h3 class="font-bold text-lg text-blue-950 mb-2 border-b-2 border-gray-100 pb-2">Step 8: Determine Coating Adjustment (Coat<sub>adj</sub>)</h3>
+        <p class="text-sm text-gray-600 mb-4">
+            Determine the coating adjustment (Coat<sub>adj</sub>) using Equations (2.D.17) and (2.D.18).
+        </p>
+
+        <!-- Conditional Question for age_tke < age_coat -->
+        <div id="ext_ferritic_step8_condition_input" class="card bg-orange-50 border border-orange-200 p-4 shadow-sm mb-6 hidden">
+            <div class="form-control">
+                <label class="label cursor-pointer justify-start gap-4">
+                    <span class="label-text font-bold text-orange-900">Did the coating fail at the time of inspection?</span>
+                    <select id="sel_ext_ferritic_coating_failed" class="select select-bordered select-sm select-warning">
+                        <option value="" disabled selected>Select...</option>
+                        <option value="Yes">Yes (Failed)</option>
+                        <option value="No">No (Intact)</option>
+                    </select>
+                </label>
+            </div>
+        </div>
+
+        <div class="w-full md:w-1/2 mt-6">
+            <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <div class="flex justify-between items-center">
+                    <span class="font-bold text-gray-700">Coating Adjustment (Coat<sub>adj</sub>)</span>
+                    <span class="text-2xl font-extrabold text-blue-900" id="val_ext_ferritic_coat_adj">--</span>
+                </div>
+                <div class="text-right text-xs text-gray-500 mt-1">years</div>
+            </div>
+        </div>
+        
+    </div>
+        
+    <!-- Step 9: Determine In-Service Time (age) -->
+    <div id="ext_ferritic_step9_container" class="hidden animate-fade-in mt-12 mb-12">
+        <h3 class="font-bold text-lg text-blue-950 mb-2 border-b-2 border-gray-100 pb-2">Step 9: Determine In-Service Time (age)</h3>
+        <p class="text-sm text-gray-600 mb-4">
+            Determine the in-service time, <b>age</b>, over which CUI may have occurred using Equation (2.D.19).
+        </p>
+
+        <div class="w-full md:w-1/2 mt-6">
+            <div class="p-4 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg shadow-sm">
+                <div class="flex justify-between items-center">
+                    <span class="font-bold text-blue-900">In-Service Time (age)</span>
+                    <span class="text-3xl font-extrabold text-blue-900" id="val_ext_ferritic_final_age">--</span>
+                </div>
+                <div class="text-right text-sm text-blue-700 mt-1 font-semibold">years</div>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- Step 10: Determine Allowable Stress, Efficiency, and t_min -->
+    <div id="ext_ferritic_step10_container" class="hidden animate-fade-in mt-12 mb-12">
+        <h3 class="font-bold text-lg text-blue-950 mb-2 border-b-2 border-gray-100 pb-2">Step 10: Determine S, E, and t<sub>min</sub></h3>
+        <p class="text-sm text-gray-600 mb-4">
+            Determine allowable stress (S), weld joint efficiency (E), and minimum required thickness (<sub>min</sub>).
+            Verify values from construction code or API 579-1/ASME FFS-1.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <div class="form-control w-full">
+                <label class="label flex-col items-start gap-1">
+                    <span class="label-text font-semibold">Allowable Stress (S)</span>
+                    <span class="text-xs text-gray-500">psi (or MPa)</span>
+                </label>
+                <input type="number" id="inp_ext_ferritic_allowable_stress" class="input input-bordered input-sm w-full" placeholder="e.g. 20000" />
+            </div>
+
+            <div class="form-control w-full">
+                <label class="label flex-col items-start gap-1">
+                    <span class="label-text font-semibold">Weld Joint Efficiency (E)</span>
+                    <span class="text-xs text-gray-500">(0.0 to 1.0)</span>
+                </label>
+                <input type="number" step="0.01" id="inp_ext_ferritic_weld_efficiency" class="input input-bordered input-sm w-full" placeholder="e.g. 1.0" />
+            </div>
+
+            <div class="form-control w-full">
+                <label class="label flex-col items-start gap-1">
+                    <span class="label-text font-semibold">Min. Required Thickness (t<sub>min</sub>)</span>
+                    <span class="text-xs text-gray-500">in (or mm) - Code Calculated</span>
+                </label>
+                <input type="number" step="0.001" id="inp_ext_ferritic_tmin" class="input input-bordered input-sm w-full" placeholder="e.g. 0.25 (Code Calc)" />
+            </div>
+
+        </div>
+        
+        <!-- Aligned Button -->
+        <div class="mt-8 flex justify-end">
+            <button class="btn btn-primary" id="btn_ext_ferritic_confirm_step10">Confirm & Proceed</button>
+        </div>
+
+    </div>
+
+    <!-- Step 11: Determine Art -->
+    <div id="ext_ferritic_step11_container" class="hidden animate-fade-in mt-12 mb-12">
+        <h3 class="font-bold text-lg text-blue-900 mb-3 border-b pb-2">Step 11: Determine A<sub>rt</sub></h3>
+        <p class="text-sm text-gray-700 mb-4">
+            Determine the A<sub>rt</sub> parameter using Equation (2.D.20) based on the age and t<sub>rde</sub> from Step 5, and C<sub>r</sub> from Step 4.
+        </p>
+
+        <div class="w-full md:w-1/2 mt-6">
+            <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <div class="flex justify-between items-center">
+                    <span class="font-bold text-gray-800">A<sub>rt</sub> Parameter</span>
+                    <span class="text-3xl font-extrabold text-blue-900" id="val_ext_ferritic_art">--</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-8 flex w-full justify-end">
+            <button class="btn btn-primary" id="btn_ext_ferritic_step11_next">Proceed to Step 12</button>
+        </div>
+
+    </div>
+
+    <!-- Step 12: Calculate Flow Stress (FS_CUIF) -->
+    <div id="ext_ferritic_step12_container" class="hidden animate-fade-in mt-12 mb-12">
+        <h3 class="font-bold text-lg text-blue-900 mb-3 border-b pb-2">Step 12: Calculate Flow Stress (FS<sup>CUIF</sup>)</h3>
+        <p class="text-sm text-gray-700 mb-4">
+            Calculate the flow stress using E from Step 10 and Equation (2.D.21).
+            <br>
+            <span class="font-mono text-xs bg-gray-100 p-1 rounded">FS<sup>CUIF</sup> = ((YS + TS) / 2) * E * 1.1</span>
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <div class="form-control w-full">
+                <label class="label">
+                    <span class="label-text font-semibold">Yield Strength (YS)</span>
+                    <span class="label-text-alt">psi/MPa</span>
+                </label>
+                <input type="number" id="inp_ext_ferritic_ys" class="input input-bordered input-sm w-full" placeholder="e.g. 30000" />
+            </div>
+
+            <div class="form-control w-full">
+                <label class="label">
+                    <span class="label-text font-semibold">Tensile Strength (TS)</span>
+                    <span class="label-text-alt">psi/MPa</span>
+                </label>
+                <input type="number" id="inp_ext_ferritic_ts" class="input input-bordered input-sm w-full" placeholder="e.g. 60000" />
+            </div>
+
+            <div class="col-span-1 md:col-span-2 mt-4">
+                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-gray-800">Flow Stress (FS<sup>CUIF</sup>)</span>
+                        <span class="text-3xl font-extrabold text-blue-900" id="val_ext_ferritic_fs_cuif">--</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mt-8 flex w-full justify-end">
+            <button class="btn btn-primary" id="btn_ext_ferritic_step12_next">Proceed to Step 13</button>
+        </div>
+
+    <!-- Step 13: Calculate Strength Ratio Parameter (SRp) -->
+    <div id="ext_ferritic_step13_container" class="hidden animate-fade-in mt-12 mb-12">
+        <h3 class="font-bold text-lg text-blue-900 mb-3 border-b pb-2">Step 13: Calculate Strength Ratio Parameter (SR<sub>p</sub><sup>CUIF</sup>)</h3>
+        <p class="text-sm text-gray-700 mb-4">
+            Calculate the strength ratio parameter using Equation (2.D.22).
+            <br>
+            <span class="font-mono text-xs bg-gray-100 p-1 rounded">SR<sub>p</sub><sup>CUIF</sup> = (S * E / FS<sup>CUIF</sup>) * (max(t<sub>min</sub>, t<sub>c</sub>) / t<sub>rde</sub>)</span>
+        </p>
+
+        <div class="w-full md:w-1/2 mt-6">
+            <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <div class="flex justify-between items-center">
+                    <span class="font-bold text-gray-800">Strength Ratio (SR<sub>p</sub><sup>CUIF</sup>)</span>
+                    <span class="text-3xl font-extrabold text-blue-900" id="val_ext_ferritic_srp">--</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-8 flex w-full justify-end">
+            <button class="btn btn-primary" id="btn_ext_ferritic_step13_next">Proceed to Step 14</button>
+        </div>
+
+    </div>
+
+    <!-- Step 14: Inspection History -->
+    <div id="ext_ferritic_step14_container" class="hidden animate-fade-in mt-12 mb-12">
+        <h3 class="font-bold text-lg text-blue-900 mb-3 border-b pb-2">Step 14: Inspection History</h3>
+        <p class="text-sm text-gray-700 mb-4">
+            Enter the number of past inspections and select the data confidence.
+        </p>
+        
+        <div class="mb-4 w-full md:w-1/3">
+             <label class="label"><span class="label-text font-bold">Data Confidence (Table 4.5)</span></label>
+             <select id="sel_ext_ferritic_confidence" class="select select-bordered w-full">
+                 <option value="Low">Low Confidence</option>
+                 <option value="Medium">Medium Confidence</option>
+                 <option value="High">High Confidence</option>
+             </select>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">Category A</span></label>
+                <input type="number" id="inp_ext_ferritic_count_A" class="input input-bordered input-sm" placeholder="0" min="0" />
+            </div>
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">Category B</span></label>
+                <input type="number" id="inp_ext_ferritic_count_B" class="input input-bordered input-sm" placeholder="0" min="0" />
+            </div>
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">Category C</span></label>
+                <input type="number" id="inp_ext_ferritic_count_C" class="input input-bordered input-sm" placeholder="0" min="0" />
+            </div>
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">Category D</span></label>
+                <input type="number" id="inp_ext_ferritic_count_D" class="input input-bordered input-sm" placeholder="0" min="0" />
+            </div>
+        </div>
+
+        <div class="mt-8 flex w-full justify-end">
+            <button class="btn btn-primary" id="btn_ext_ferritic_step14_next">Update & Proceed to Step 15/16</button>
+        </div>
+    </div>
+
+    <!-- Steps 15 & 16: Inspection Effectiveness Factors & Posterior Probabilities -->
+    <div id="ext_ferritic_steps15_16_container" class="hidden animate-fade-in mt-12 mb-12">
+        
+        <!-- Step 15 -->
+        <div class="mb-8">
+            <h3 class="font-bold text-lg text-blue-900 mb-3 border-b pb-2">Step 15: Inspection Effectiveness Factors (I<sub>1,2,3</sub>)</h3>
+            <p class="text-sm text-gray-700 mb-4">Calculated using Equation (2.D.24) and prior probabilities from Table 4.5.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="p-3 bg-gray-50 border rounded shadow-sm">
+                    <span class="block text-xs text-gray-500 font-bold uppercase">Factor I<sub>1</sub> (High)</span>
+                    <span class="text-lg font-mono font-bold text-blue-900" id="val_ext_ferritic_I1">--</span>
+                </div>
+                <div class="p-3 bg-gray-50 border rounded shadow-sm">
+                    <span class="block text-xs text-gray-500 font-bold uppercase">Factor I<sub>2</sub> (Med)</span>
+                    <span class="text-lg font-mono font-bold text-blue-900" id="val_ext_ferritic_I2">--</span>
+                </div>
+                <div class="p-3 bg-gray-50 border rounded shadow-sm">
+                    <span class="block text-xs text-gray-500 font-bold uppercase">Factor I<sub>3</sub> (Low)</span>
+                    <span class="text-lg font-mono font-bold text-blue-900" id="val_ext_ferritic_I3">--</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 16 -->
+        <div>
+            <h3 class="font-bold text-lg text-blue-900 mb-3 border-b pb-2">Step 16: Posterior Probabilities (Po<sub>p</sub>)</h3>
+            <p class="text-sm text-gray-700 mb-4">Calculated using Equation (2.D.25).</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="p-3 bg-gray-50 border border-gray-200 rounded shadow-sm">
+                    <span class="block text-xs text-gray-500 font-bold uppercase">Po<sub>p1</sub> (High Confidence)</span>
+                    <span class="text-xl font-mono font-extrabold text-blue-900" id="val_ext_ferritic_Po1">--</span>
+                </div>
+                <div class="p-3 bg-gray-50 border border-gray-200 rounded shadow-sm">
+                    <span class="block text-xs text-gray-500 font-bold uppercase">Po<sub>p2</sub> (Medium Confidence)</span>
+                    <span class="text-xl font-mono font-extrabold text-blue-900" id="val_ext_ferritic_Po2">--</span>
+                </div>
+                <div class="p-3 bg-gray-50 border border-gray-200 rounded shadow-sm">
+                    <span class="block text-xs text-gray-500 font-bold uppercase">Po<sub>p3</sub> (Low Confidence)</span>
+                    <span class="text-xl font-mono font-extrabold text-blue-900" id="val_ext_ferritic_Po3">--</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-8 flex w-full justify-end">
+            <button class="btn btn-primary" id="btn_ext_ferritic_step16_next">Proceed to Step 17</button>
+        </div>
+
+    </div>
+
+    <!-- Step 17: Calculate Beta Parameters -->
+    <div id="ext_ferritic_step17_container" class="hidden animate-fade-in mt-12 mb-12">
+        <h3 class="font-bold text-lg text-blue-900 mb-3 border-b pb-2">Step 17: Calculate Beta Parameters (&beta;)</h3>
+        <p class="text-sm text-gray-700 mb-4">
+            Calculating reliability parameters using Equation (2.D.12).
+            <br>
+            <span class="text-xs text-gray-500">Constants: COV<sub>&Delta;t</sub>=0.20, COV<sub>Sf</sub>=0.20, COV<sub>p</sub>=0.05</span>
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <span class="block text-xs text-gray-500 font-bold uppercase mb-1">&beta;<sub>1</sub> (DS=1)</span>
+                <span class="text-2xl font-extrabold text-blue-900" id="val_ext_ferritic_beta1">--</span>
+            </div>
+            <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <span class="block text-xs text-gray-500 font-bold uppercase mb-1">&beta;<sub>2</sub> (DS=2)</span>
+                <span class="text-2xl font-extrabold text-blue-900" id="val_ext_ferritic_beta2">--</span>
+            </div>
+            <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <span class="block text-xs text-gray-500 font-bold uppercase mb-1">&beta;<sub>3</sub> (DS=3)</span>
+                <span class="text-2xl font-extrabold text-blue-900" id="val_ext_ferritic_beta3">--</span>
+            </div>
+        </div>
+
+        <div class="mt-8 flex w-full justify-end">
+            <button class="btn btn-primary" id="btn_ext_ferritic_step17_next">Calculate Final Damage Factor</button>
+        </div>
+    </div>
+
+    <!-- Step 18: Final Damage Factor -->
+    <div id="ext_ferritic_step18_container" class="hidden animate-fade-in mt-12 mb-12">
+        <h3 class="font-bold text-lg text-blue-900 mb-3 border-b pb-2">Step 18: External Corrosion Damage Factor (D<sub>f</sub><sup>extcorr</sup>)</h3>
+        <p class="text-sm text-gray-700 mb-4">
+            Calculated using Equation (2.D.13).
+        </p>
+        
+        <div class="col-span-1 md:col-span-2 mt-4">
+             <div class="p-6 bg-blue-50 border border-blue-200 rounded-lg shadow-sm">
+                 <div class="flex justify-between items-center">
+                     <span class="font-bold text-gray-800 text-lg">Final Damage Factor</span>
+                     <span class="text-4xl font-extrabold text-blue-900" id="val_ext_ferritic_final_df">--</span>
+                 </div>
+             </div>
+        </div>
+    </div>
