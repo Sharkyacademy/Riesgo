@@ -110,3 +110,7 @@ def get_gff_value(request):
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 
+@login_required
+def cof_level_1_view(request):
+    return render(request, 'formula_app/cof_level_1.html')
+

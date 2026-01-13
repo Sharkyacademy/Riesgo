@@ -1,0 +1,183 @@
+{%extends 'theme/base.html'%}
+{% load static %}
+
+{%block title%}COF Level 1{%endblock%}
+
+{% block nav_content %}
+<div class="flex justify-end items-center h-full">
+    <ul class="menu menu-horizontal p-0 hidden lg:flex text-white space-x-2">
+        <li><a id="logout_btn" href="{% url 'logout' %}"
+                class="btn btn-ghost text-white hover:bg-blue-800 transition duration-200">Log out</a></li>
+        <li><a href="#" class="btn btn-ghost text-white hover:bg-blue-800 transition duration-200">Account</a></li>
+    </ul>
+
+    <label for="my-drawer" class="btn btn-square btn-ghost text-white lg:hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            class="inline-block w-6 h-6 stroke-current">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+    </label>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="drawer h-full overflow-hidden">
+    <input id="my-drawer" type="checkbox" class="drawer-toggle" />
+
+    <div class="drawer-content flex flex-col h-full overflow-hidden">
+        <main class="flex flex-1 h-full overflow-hidden">
+
+            <!-- SIDEBAR -->
+            <aside
+                class="hidden lg:block w-64 bg-white p-6 shadow-xl border-r border-gray-200 flex-shrink-0 overflow-y-auto">
+                {% include 'formula_app/includes/sidebar.html' %}
+            </aside>
+
+            <!-- MAIN CONTENT -->
+            <section class="flex flex-1 flex-col bg-gray-50 h-full overflow-hidden p-6 lg:p-10 relative">
+
+                <!-- HEADER -->
+                <div class="mb-8 text-center lg:text-left">
+                    <h1 class="text-3xl font-extrabold text-blue-900 mb-2">COF Level 1</h1>
+                    <p class="text-gray-500">Determine the Representative Fluid and Associated Properties</p>
+                </div>
+
+                <!-- CONTENT SCROLLABLE -->
+                <div class="flex-1 overflow-y-auto pr-2 space-y-6">
+
+                    <!-- STEP 4.1.1: Representative Fluids -->
+                    <div class="card bg-white shadow-sm border border-gray-200">
+                        <div class="card-body p-6">
+                            <h2 class="card-title text-blue-900 text-xl border-b pb-2 mb-4">
+                                4.1.1 Representative Fluids
+                            </h2>
+
+                            <div class="form-control w-full max-w-md">
+                                <label class="label">
+                                    <span class="label-text font-semibold">Select Representative Fluid</span>
+                                </label>
+                                <p class="text-xs text-gray-500 mb-2">
+                                    Select the representative fluid that most closely matches the fluid contained in the
+                                    pressurized system being evaluated
+                                </p>
+                                <select id="select_fluid" class="select select-bordered w-full bg-gray-50">
+                                    <option disabled selected>Select a fluid...</option>
+                                    <!-- Populated by JS -->
+                                </select>
+                            </div>
+
+                            <!-- Fluid Details Display -->
+                            <div id="fluid_details"
+                                class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-100 hidden">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <h3 class="text-sm font-bold text-gray-500 uppercase">Fluid Type</h3>
+                                        <p id="fluid_type_display" class="text-lg font-bold text-blue-900">-</p>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-sm font-bold text-gray-500 uppercase">Examples</h3>
+                                        <p id="fluid_examples_display" class="text-gray-700">-</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 4.1.2: Fluid Properties -->
+                    <div id="properties_card" class="card bg-white shadow-sm border border-gray-200 hidden">
+                        <div class="card-body p-6">
+                            <h2 class="card-title text-blue-900 text-xl border-b pb-2 mb-4">
+                                4.1.2 Fluid Properties
+                            </h2>
+                            <p class="text-xs text-gray-500 mb-4">
+                                Properties estimated for the selected representative fluid dependent on the stored
+                                phase.
+                            </p>
+
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+
+                                <div>
+                                    <h3 class="text-xs font-bold text-gray-500 uppercase mb-1">MW</h3>
+                                    <p id="prop_mw" class="text-xl font-bold text-gray-800">-</p>
+                                    <span class="text-xs text-gray-400">lb/lb-mol</span>
+                                </div>
+
+                                <div>
+                                    <h3 class="text-xs font-bold text-gray-500 uppercase mb-1">Liquid Density</h3>
+                                    <p id="prop_density" class="text-xl font-bold text-gray-800">-</p>
+                                    <span class="text-xs text-gray-400">lb/ft³</span>
+                                </div>
+
+                                <div>
+                                    <h3 class="text-xs font-bold text-gray-500 uppercase mb-1">NBP</h3>
+                                    <p id="prop_nbp" class="text-xl font-bold text-gray-800">-</p>
+                                    <span class="text-xs text-gray-400">°F</span>
+                                </div>
+
+                                <div>
+                                    <h3 class="text-xs font-bold text-gray-500 uppercase mb-1">AIT</h3>
+                                    <p id="prop_ait" class="text-xl font-bold text-gray-800">-</p>
+                                    <span class="text-xs text-gray-400">°F</span>
+                                </div>
+
+                            </div>
+
+                            <div class="divider my-4"></div>
+
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+                                <div>
+                                    <h3 class="text-xs font-bold text-gray-500 uppercase mb-1">Ambient State</h3>
+                                    <span id="prop_ambient" class="badge badge-lg badge-ghost font-bold">-</span>
+                                </div>
+
+                                <div class="col-span-2">
+                                    <h3 class="text-xs font-bold text-gray-500 uppercase mb-1">Ideal Gas Specific Heat
+                                        (Cp) Constants</h3>
+                                    <div class="overflow-x-auto">
+                                        <table class="table table-xs table-zebra w-full">
+                                            <thead>
+                                                <tr>
+                                                    <th>Eq.</th>
+                                                    <th>A</th>
+                                                    <th>B</th>
+                                                    <th>C</th>
+                                                    <th>D</th>
+                                                    <th>E</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td id="prop_cp_eq" class="font-bold">-</td>
+                                                    <td id="prop_cp_a">-</td>
+                                                    <td id="prop_cp_b">-</td>
+                                                    <td id="prop_cp_c">-</td>
+                                                    <td id="prop_cp_d">-</td>
+                                                    <td id="prop_cp_e">-</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- MOBILE SIDEBAR -->
+    <div class="drawer-side z-40">
+        <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+        <aside class="w-64 bg-white p-4 shadow-2xl flex-shrink-0">
+            {% include 'formula_app/includes/sidebar.html' %}
+        </aside>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="module" src="{% static 'formula_app/js/cof_level_1.js' %}"></script>
+{% endblock %}
