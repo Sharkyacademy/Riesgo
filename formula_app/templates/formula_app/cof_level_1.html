@@ -241,19 +241,31 @@
                         </div>
                     </div>
 
-                    <!-- STEP 4.2: Release Hole Size Selection -->
+                    <!-- STEP 4.2: Release Hole Size Selection & GFF -->
                     <div class="card bg-white shadow-sm border border-gray-200 mt-6">
                         <div class="card-body p-6">
                             <h2 class="card-title text-blue-900 text-xl border-b pb-2 mb-4">
-                                4.2 Release Hole Size Selection
+                                4.2 Release Hole Size & GFF Selection
                             </h2>
 
-                            <div class="form-control w-full max-w-md">
-                                <label class="label">
-                                    <span class="label-text font-semibold">Component Diameter (D) [inches]</span>
-                                </label>
-                                <input type="number" id="input_diameter" placeholder="e.g. 10" step="0.1"
-                                    class="input input-bordered w-full bg-gray-50" />
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+                                <div class="form-control w-full">
+                                    <label class="label">
+                                        <span class="label-text font-semibold">Component Diameter (D) [inches]</span>
+                                    </label>
+                                    <input type="number" id="input_diameter" placeholder="e.g. 10" step="0.1"
+                                        class="input input-bordered w-full bg-gray-50" />
+                                </div>
+
+                                <div class="form-control w-full">
+                                    <label class="label">
+                                        <span class="label-text font-semibold">Component Type (Table 3.1)</span>
+                                    </label>
+                                    <select id="select_component_type" class="select select-bordered w-full bg-gray-50">
+                                        <option disabled selected>Select equipment type...</option>
+                                        <!-- Populated by JS -->
+                                    </select>
+                                </div>
                             </div>
 
                             <div id="hole_sizes_container" class="overflow-x-auto mt-6 hidden">
@@ -263,6 +275,7 @@
                                             <th>Hole Size</th>
                                             <th>Generic Size</th>
                                             <th>Diameter (dn) [in]</th>
+                                            <th>GFF (failures/yr)</th>
                                         </tr>
                                     </thead>
                                     <tbody class="text-sm">
@@ -270,21 +283,29 @@
                                             <td class="font-bold">1</td>
                                             <td>Small</td>
                                             <td id="val_d1">-</td>
+                                            <td id="val_gff1">-</td>
                                         </tr>
                                         <tr>
                                             <td class="font-bold">2</td>
                                             <td>Medium</td>
                                             <td id="val_d2">-</td>
+                                            <td id="val_gff2">-</td>
                                         </tr>
                                         <tr>
                                             <td class="font-bold">3</td>
                                             <td>Large</td>
                                             <td id="val_d3">-</td>
+                                            <td id="val_gff3">-</td>
                                         </tr>
                                         <tr>
                                             <td class="font-bold">4</td>
                                             <td>Rupture</td>
                                             <td id="val_d4">-</td>
+                                            <td id="val_gff4">-</td>
+                                        </tr>
+                                        <tr class="bg-blue-50 border-t-2 border-blue-100">
+                                            <td colspan="3" class="text-right font-bold text-blue-900">Total GFF:</td>
+                                            <td id="val_gff_total" class="font-bold text-blue-900">-</td>
                                         </tr>
                                     </tbody>
                                 </table>

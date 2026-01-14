@@ -1,5 +1,6 @@
 import { RepresentativeFluids } from '../data/cof/table4_1_1.js';
 import { FluidProperties } from '../data/cof/table4_1_2.js';
+import ComponentGFFs from '../data/cof/gff_table_3_1.js'; // Default export
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -241,13 +242,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // --- STEP 4.2: Release Hole Size Calculation (Table 4.4) ---
                 const inputDiameter = document.getElementById('input_diameter');
+                const selectComponent = document.getElementById('select_component_type');
                 const holeSizesContainer = document.getElementById('hole_sizes_container');
                 const valD1 = document.getElementById('val_d1');
                 const valD2 = document.getElementById('val_d2');
                 const valD3 = document.getElementById('val_d3');
                 const valD4 = document.getElementById('val_d4');
 
+                const valGff1 = document.getElementById('val_gff1');
+                const valGff2 = document.getElementById('val_gff2');
+                const valGff3 = document.getElementById('val_gff3');
+                const valGff4 = document.getElementById('val_gff4');
+                const valGffTotal = document.getElementById('val_gff_total');
+
                 const diameter = inputDiameter ? parseFloat(inputDiameter.value) : NaN;
+                const componentLabel = selectComponent ? selectComponent.value : null;
 
                 if (!isNaN(diameter) && diameter > 0) {
                     // d1 = 0.25
@@ -267,6 +276,25 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (valD3) valD3.textContent = d3.toFixed(2);
                     if (valD4) valD4.textContent = d4.toFixed(2);
 
+                    // GFF Lookup
+                    if (componentLabel && componentLabel !== "Select equipment type...") {
+                        const compData = ComponentGFFs.find(c => c.label === componentLabel);
+                        if (compData) {
+                            if (valGff1) valGff1.textContent = compData.gff.small.toExponential(2);
+                            if (valGff2) valGff2.textContent = compData.gff.medium.toExponential(2);
+                            if (valGff3) valGff3.textContent = compData.gff.large.toExponential(2);
+                            if (valGff4) valGff4.textContent = compData.gff.rupture.toExponential(2);
+                            if (valGffTotal) valGffTotal.textContent = compData.gffTotal.toExponential(2);
+                        }
+                    } else {
+                        // Clear GFFs if no component selected
+                        if (valGff1) valGff1.textContent = '-';
+                        if (valGff2) valGff2.textContent = '-';
+                        if (valGff3) valGff3.textContent = '-';
+                        if (valGff4) valGff4.textContent = '-';
+                        if (valGffTotal) valGffTotal.textContent = '-';
+                    }
+
                     if (holeSizesContainer) holeSizesContainer.classList.remove('hidden');
                 } else {
                     if (holeSizesContainer) holeSizesContainer.classList.add('hidden');
@@ -277,6 +305,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 propertiesCard.classList.add('hidden');
                 if (document.getElementById('release_phase_card')) document.getElementById('release_phase_card').classList.add('hidden');
             }
+        }
+
+        // Populate Component Dropdown
+        const selectComponent = document.getElementById('select_component_type');
+        if (selectComponent && ComponentGFFs) {
+            ComponentGFFs.forEach(comp => {
+                const option = document.createElement('option');
+                option.value = comp.label;
+                option.textContent = comp.label;
+                selectComponent.appendChild(option);
+            });
+            // Listener
+            selectComponent.addEventListener('change', updateDisplay);
         }
 
         // Event Listeners
