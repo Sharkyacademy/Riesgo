@@ -296,6 +296,80 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
 
                     if (holeSizesContainer) holeSizesContainer.classList.remove('hidden');
+
+                    // --- STEP 4.3.2: Liquid Release Rate Calculation ---
+                    const liquidReleaseCard = document.getElementById('liquid_release_card');
+                    const inputPs = document.getElementById('input_ps');
+                    const valWn1 = document.getElementById('val_wn1');
+                    const valWn2 = document.getElementById('val_wn2');
+                    const valWn3 = document.getElementById('val_wn3');
+                    const valWn4 = document.getElementById('val_wn4');
+                    const valWnD1 = document.getElementById('val_wn_d1');
+                    const valWnD2 = document.getElementById('val_wn_d2');
+                    const valWnD3 = document.getElementById('val_wn_d3');
+                    const valWnD4 = document.getElementById('val_wn_d4');
+
+                    // Check if Final Phase is Liquid
+                    const finalPhaseText = dispFinalPhase ? dispFinalPhase.textContent : '';
+
+                    if (finalPhaseText === 'Liquid') {
+                        if (liquidReleaseCard) liquidReleaseCard.classList.remove('hidden');
+
+                        const Ps = inputPs ? parseFloat(inputPs.value) : NaN;
+                        const Patm = document.getElementById('input_patm') ? parseFloat(document.getElementById('input_patm').value) : 14.7;
+
+                        // New inputs
+                        const inputCd = document.getElementById('input_cd');
+                        const inputKvn = document.getElementById('input_kvn');
+
+                        const Cd = inputCd ? parseFloat(inputCd.value) : 0.61;
+                        const Kvn = inputKvn ? parseFloat(inputKvn.value) : 1.0;
+
+                        // Need Liquid Density (lb/ft3) from FluidProperties
+                        const rho_l = props.liquid_density;
+
+                        if (document.getElementById('disp_rho_l')) {
+                            document.getElementById('disp_rho_l').textContent = rho_l;
+                        }
+
+                        if (!isNaN(Ps) && !isNaN(rho_l) && rho_l > 0) {
+
+                            const gc = 32.174; // ft-lb/lbf-s2
+
+                            const calcWn = (dn) => {
+                                // Formula derived: Wn = Cd * Kvn * An_ft2 * sqrt(2 * rho_l * gc * DeltaP_lbfft2)
+                                const An_in2 = Math.PI * Math.pow(dn, 2) / 4;
+                                const An_ft2 = An_in2 / 144;
+
+                                // Ps is assumed Absolute (psia)
+                                // DeltaP = Ps - Patm
+                                const DeltaP_psi = Ps - Patm;
+
+                                if (DeltaP_psi <= 0) return 0.00;
+
+                                const DeltaP_lbfft2 = DeltaP_psi * 144;
+                                return Cd * Kvn * An_ft2 * Math.sqrt(2 * rho_l * gc * DeltaP_lbfft2);
+                            };
+
+                            if (valWn1) valWn1.textContent = calcWn(d1).toFixed(2);
+                            if (valWn2) valWn2.textContent = calcWn(d2).toFixed(2);
+                            if (valWn3) valWn3.textContent = calcWn(d3).toFixed(2);
+                            if (valWn4) valWn4.textContent = calcWn(d4).toFixed(2);
+
+                            if (valWnD1) valWnD1.textContent = d1.toFixed(2);
+                            if (valWnD2) valWnD2.textContent = d2.toFixed(2);
+                            if (valWnD3) valWnD3.textContent = d3.toFixed(2);
+                            if (valWnD4) valWnD4.textContent = d4.toFixed(2);
+
+                        } else {
+                            if (valWn1) valWn1.textContent = '-';
+                            if (valWn2) valWn2.textContent = '-';
+                            if (valWn3) valWn3.textContent = '-';
+                            if (valWn4) valWn4.textContent = '-';
+                        }
+                    } else {
+                        if (liquidReleaseCard) liquidReleaseCard.classList.add('hidden');
+                    }
                 } else {
                     if (holeSizesContainer) holeSizesContainer.classList.add('hidden');
                 }
@@ -326,10 +400,23 @@ document.addEventListener('DOMContentLoaded', () => {
             selectPhase.addEventListener('change', updateDisplay);
         }
         if (inputTemperature) {
-            inputTemperature.addEventListener('input', updateDisplay); // Real-time calculation
+            inputTemperature.addEventListener('input', updateDisplay);
         }
+
         if (document.getElementById('input_diameter')) {
             document.getElementById('input_diameter').addEventListener('input', updateDisplay); // Real-time
+        }
+        if (document.getElementById('input_ps')) {
+            document.getElementById('input_ps').addEventListener('input', updateDisplay); // Real-time
+        }
+        if (document.getElementById('input_patm')) {
+            document.getElementById('input_patm').addEventListener('input', updateDisplay); // Real-time
+        }
+        if (document.getElementById('input_cd')) {
+            document.getElementById('input_cd').addEventListener('input', updateDisplay); // Real-time
+        }
+        if (document.getElementById('input_kvn')) {
+            document.getElementById('input_kvn').addEventListener('input', updateDisplay); // Real-time
         }
     }
 });

@@ -314,6 +314,113 @@
                         </div>
                     </div>
 
+                    <!-- STEP 4.3: Release Rate Calculation -->
+                    <div class="mt-8 mb-4 border-b-2 border-blue-900 pb-2">
+                        <h1 class="text-2xl font-bold text-blue-900">4.3 Release Rate Calculation</h1>
+                    </div>
+
+                    <!-- STEP 4.3.2: Liquid Release Rate -->
+                    <div id="liquid_release_card" class="card bg-white shadow-sm border border-gray-200 mt-6 hidden">
+                        <div class="card-body p-6">
+                            <h2 class="card-title text-blue-900 text-xl border-b pb-2 mb-4">
+                                4.3.2 Liquid Release Rate Calculation
+                            </h2>
+                            <p class="text-xs text-gray-500 mb-4">
+                                Calculated using Equation (3.3) for Liquid Phase.
+                            </p>
+
+                            <div class="mb-6">
+                                <p class="mb-2 text-sm text-gray-700 font-semibold">Equation (3.3):</p>
+                                <div class="overflow-x-auto">
+                                    $$ W_n = C_d \cdot K_{v,n} \cdot \rho_l \cdot \frac{A_n}{C_1} \sqrt{ \frac{2 \cdot
+                                    g_c \cdot (P_s - P_{atm})}{\rho_l} } $$
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                                <div class="form-control w-full">
+                                    <label class="label">
+                                        <span class="label-text font-semibold">Storage Pressure (Ps) [psia]</span>
+                                    </label>
+                                    <input type="number" id="input_ps" placeholder="e.g. 64.7"
+                                        class="input input-bordered w-full bg-gray-50" />
+                                </div>
+                                <div class="form-control w-full">
+                                    <label class="label">
+                                        <span class="label-text font-semibold">Atm. Pressure (Patm) [psi]</span>
+                                    </label>
+                                    <input type="number" id="input_patm" value="14.7" step="0.1"
+                                        class="input input-bordered w-full bg-gray-50" />
+                                </div>
+                                <div class="form-control w-full">
+                                    <label class="label">
+                                        <span class="label-text font-semibold">Discharge Coeff. (Cd)</span>
+                                    </label>
+                                    <input type="number" id="input_cd" value="0.61" min="0.60" max="0.65" step="0.01"
+                                        class="input input-bordered w-full bg-gray-50" />
+                                    <label class="label">
+                                        <span class="label-text-alt text-gray-400">Range: 0.60 - 0.65 (Rec: 0.61)</span>
+                                    </label>
+                                </div>
+                                <div class="form-control w-full">
+                                    <label class="label">
+                                        <span class="label-text font-semibold">Viscosity Corr. (Kvn)</span>
+                                    </label>
+                                    <input type="number" id="input_kvn" value="1.0" step="0.1"
+                                        class="input input-bordered w-full bg-gray-50" />
+                                    <label class="label">
+                                        <span class="label-text-alt text-gray-400">Rec: 1.0 (Conservative)</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Constants Display -->
+                            <div class="grid grid-cols-2 gap-4 mb-6 p-3 bg-gray-50 rounded text-sm text-gray-600">
+                                <div>
+                                    <span class="font-bold">Liquid Density (\(\rho_l\)):</span> <span
+                                        id="disp_rho_l">-</span> lb/ft³
+                                </div>
+                                <div>
+                                    <span class="font-bold">Gravitational Const. (\(g_c\)):</span> 32.174 lb·ft/lbf·s²
+                                </div>
+                            </div>
+
+                            <div class="overflow-x-auto">
+                                <table class="table table-zebra w-full text-center">
+                                    <thead class="bg-gray-100 text-gray-600">
+                                        <tr>
+                                            <th>Hole Size</th>
+                                            <th>Diameter [in]</th>
+                                            <th>Release Rate (Wn) [lb/s]</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-sm">
+                                        <tr>
+                                            <td class="font-bold">1 (Small)</td>
+                                            <td id="val_wn_d1">-</td>
+                                            <td id="val_wn1" class="font-bold text-blue-900">-</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-bold">2 (Medium)</td>
+                                            <td id="val_wn_d2">-</td>
+                                            <td id="val_wn2" class="font-bold text-blue-900">-</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-bold">3 (Large)</td>
+                                            <td id="val_wn_d3">-</td>
+                                            <td id="val_wn3" class="font-bold text-blue-900">-</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-bold">4 (Rupture)</td>
+                                            <td id="val_wn_d4">-</td>
+                                            <td id="val_wn4" class="font-bold text-blue-900">-</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
     </div>
