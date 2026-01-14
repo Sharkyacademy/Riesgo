@@ -263,8 +263,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const componentLabel = selectComponent ? selectComponent.value : null;
 
                 if (!isNaN(diameter) && diameter > 0) {
-                    // d1 = 0.25
-                    const d1 = 0.25;
+                    // d1 = 0.25 (limited by D)
+                    const d1 = Math.min(diameter, 0.25);
 
                     // d2 = min(D, 1)
                     const d2 = Math.min(diameter, 1);
