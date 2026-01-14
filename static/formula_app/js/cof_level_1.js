@@ -46,6 +46,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const phase = selectPhase ? selectPhase.value : null;
             const tempF = inputTemperature ? parseFloat(inputTemperature.value) : NaN;
 
+            let finalPhase = '-'; // Scope accessible for all steps
+
             if (!selectedLabel || selectedLabel === "Select a fluid...") return;
 
             const selectedFluid = RepresentativeFluids.find(f => f.label === selectedLabel);
@@ -189,11 +191,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (selectedFluid && phase) {
                     const ambientState = props.ambient_state; // 'Gas' or 'Liquid'
                     const nbp = props.nbp;
-                    let finalPhase = '-';
+                    // finalPhase already declared at top of function
                     let message = '';
                     let showMsg = false;
 
                     // Logic from Table 4.3
+                    console.log(`[PhaseCheck] Phase: ${phase}, Ambient: ${ambientState}, NBP: ${nbp}`);
+
                     if (phase === 'Vapor') {
                         if (ambientState === 'Gas') {
                             finalPhase = 'Gas';
@@ -298,7 +302,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (holeSizesContainer) holeSizesContainer.classList.remove('hidden');
 
                     // --- STEP 4.3.2: Liquid Release Rate Calculation ---
-                    const liquidReleaseCard = document.getElementById('liquid_release_card');
                     const inputPs = document.getElementById('input_ps');
                     const valWn1 = document.getElementById('val_wn1');
                     const valWn2 = document.getElementById('val_wn2');
@@ -309,8 +312,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     const valWnD3 = document.getElementById('val_wn_d3');
                     const valWnD4 = document.getElementById('val_wn_d4');
 
-                    // Check if Final Phase is Liquid
-                    const finalPhaseText = dispFinalPhase ? dispFinalPhase.textContent : '';
+                    // Check if Final Phase is Liquid or Gas
+                    const finalPhaseText = finalPhase;
+                    console.log("Final Phase Detected:", finalPhaseText);
+
+                    const liquidReleaseCard = document.getElementById('liquid_release_card');
+                    const vaporReleaseCard = document.getElementById('vapor_release_card');
+
+                    console.log("Cards Found:", !!liquidReleaseCard, !!vaporReleaseCard);
+
+                    // Default: Hide both
+                    if (liquidReleaseCard) liquidReleaseCard.classList.add('hidden');
+                    if (vaporReleaseCard) vaporReleaseCard.classList.add('hidden');
 
                     if (finalPhaseText === 'Liquid') {
                         if (liquidReleaseCard) liquidReleaseCard.classList.remove('hidden');
@@ -367,8 +380,94 @@ document.addEventListener('DOMContentLoaded', () => {
                             if (valWn3) valWn3.textContent = '-';
                             if (valWn4) valWn4.textContent = '-';
                         }
-                    } else {
-                        if (liquidReleaseCard) liquidReleaseCard.classList.add('hidden');
+                    } else if (finalPhaseText === 'Gas') {
+                        console.log("Entering Gas Block. Showing Card...");
+                        if (vaporReleaseCard) vaporReleaseCard.classList.remove('hidden');
+
+                        // Inputs
+                        // Inputs
+                        const inputPsVap = document.getElementById('input_ps_vap');
+                        let PsVap = inputPsVap ? parseFloat(inputPsVap.value) : NaN;
+
+                        // Fallback: If vapor input empty, try liquid input
+                        if (isNaN(PsVap) && inputPs && inputPs.value) {
+                            PsVap = parseFloat(inputPs.value);
+                            // Optional: Sync visible value for clarity
+                            if (inputPsVap) inputPsVap.value = PsVap;
+                        }
+
+                        const PatmVap = document.getElementById('input_patm_vap') ? parseFloat(document.getElementById('input_patm_vap').value) : 14.7;
+                        const inputCdVap = document.getElementById('input_cd_vap');
+                        const CdVap = inputCdVap ? parseFloat(inputCdVap.value) : 1.0;
+                        const inputC2Vap = document.getElementById('input_c2_vap');
+                        const C2Vap = inputC2Vap ? parseFloat(inputC2Vap.value) : 1.0;
+
+                        // Props
+                        const MW = props.mw;
+
+                        // Get k from UI
+                        let k = 1.4;
+                        const valRatioK = document.getElementById('val_ratio_k');
+                        if (valRatioK && !isNaN(parseFloat(valRatioK.textContent))) {
+                            k = parseFloat(valRatioK.textContent);
+                        }
+
+                        // Display Intermediates
+                        const R_gas = 1545.3; // ft-lbf / (lb-mol R)
+                        const Ts_R = tempF + 459.67;
+
+                        if (document.getElementById('disp_k_vap')) document.getElementById('disp_k_vap').textContent = k.toFixed(3);
+                        if (document.getElementById('disp_mw_vap')) document.getElementById('disp_mw_vap').textContent = MW;
+                        if (document.getElementById('disp_ts_vap')) document.getElementById('disp_ts_vap').textContent = Ts_R.toFixed(1);
+
+                        if (!isNaN(PsVap) && !isNaN(k) && !isNaN(MW) && PsVap > 0) {
+                            // Eq 3.5 Transition Pressure
+                            const termK = k / (k - 1);
+                            const Ptrans = PatmVap * Math.pow((k + 1) / 2, termK);
+
+                            if (document.getElementById('disp_ptrans')) document.getElementById('disp_ptrans').textContent = Ptrans.toFixed(2);
+
+                            const isSonic = PsVap > Ptrans;
+                            const regimeText = isSonic ? 'Sonic (Choked)' : 'Subsonic';
+                            const dispRegime = document.getElementById('disp_flow_regime');
+                            if (dispRegime) {
+                                dispRegime.textContent = regimeText;
+                                dispRegime.className = isSonic ? 'text-red-700 font-bold' : 'text-green-700 font-bold';
+                            }
+
+                            const gc = 32.174;
+
+                            const calcWnGas = (dn) => {
+                                const An = Math.PI * Math.pow(dn, 2) / 4;
+
+                                let Wn = 0;
+                                if (isSonic) {
+                                    const term1 = (k * MW * gc) / (R_gas * Ts_R);
+                                    const term2 = Math.pow(2 / (k + 1), (k + 1) / (k - 1));
+                                    Wn = (CdVap / C2Vap) * An * PsVap * Math.sqrt(term1 * term2);
+                                } else {
+                                    const term1 = (MW * gc) / (R_gas * Ts_R);
+                                    const term2 = (2 * k) / (k - 1);
+                                    const pr = PatmVap / PsVap;
+                                    if (pr >= 1) return 0.00;
+                                    const term3 = Math.pow(pr, 2 / k);
+                                    const term4 = 1 - Math.pow(pr, (k - 1) / k);
+                                    Wn = (CdVap / C2Vap) * An * PsVap * Math.sqrt(term1 * term2 * term3 * term4);
+                                }
+                                return Wn;
+                            };
+
+                            if (document.getElementById('val_wn1_vap')) document.getElementById('val_wn1_vap').textContent = calcWnGas(d1).toFixed(2);
+                            if (document.getElementById('val_wn2_vap')) document.getElementById('val_wn2_vap').textContent = calcWnGas(d2).toFixed(2);
+                            if (document.getElementById('val_wn3_vap')) document.getElementById('val_wn3_vap').textContent = calcWnGas(d3).toFixed(2);
+                            if (document.getElementById('val_wn4_vap')) document.getElementById('val_wn4_vap').textContent = calcWnGas(d4).toFixed(2);
+
+                        } else {
+                            if (document.getElementById('val_wn1_vap')) document.getElementById('val_wn1_vap').textContent = '-';
+                            if (document.getElementById('val_wn2_vap')) document.getElementById('val_wn2_vap').textContent = '-';
+                            if (document.getElementById('val_wn3_vap')) document.getElementById('val_wn3_vap').textContent = '-';
+                            if (document.getElementById('val_wn4_vap')) document.getElementById('val_wn4_vap').textContent = '-';
+                        }
                     }
                 } else {
                     if (holeSizesContainer) holeSizesContainer.classList.add('hidden');
@@ -418,5 +517,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (document.getElementById('input_kvn')) {
             document.getElementById('input_kvn').addEventListener('input', updateDisplay); // Real-time
         }
+
+        // Vapor Inputs Listeners
+        if (document.getElementById('input_ps_vap')) document.getElementById('input_ps_vap').addEventListener('input', updateDisplay);
+        if (document.getElementById('input_patm_vap')) document.getElementById('input_patm_vap').addEventListener('input', updateDisplay);
+        if (document.getElementById('input_cd_vap')) document.getElementById('input_cd_vap').addEventListener('input', updateDisplay);
+        if (document.getElementById('input_c2_vap')) document.getElementById('input_c2_vap').addEventListener('input', updateDisplay);
     }
 });

@@ -421,23 +421,132 @@
                         </div>
                     </div>
 
+                    <!-- 4.3.3 Vapor Release Rate Card -->
+                    <div id="vapor_release_card"
+                        class="card bg-white shadow-lg p-6 mb-6 hidden border-l-4 border-orange-500">
+                        <h2 class="card-title text-orange-900 text-xl border-b pb-2 mb-4">
+                            4.3.3 Vapor Release Rate Calculation
+                        </h2>
+                        <p class="text-xs text-gray-500 mb-4">
+                            Calculated using Eq (3.6) [Sonic] or Eq (3.7) [Subsonic].
+                        </p>
+
+                        <!-- Equations Display (Toggle) -->
+                        <details class="mb-6 collapse collapse-arrow border border-base-300 bg-base-100 rounded-box">
+                            <summary class="collapse-title text-sm font-medium text-gray-700">
+                                Show Equations (3.5, 3.6, 3.7)
+                            </summary>
+                            <div class="collapse-content overflow-x-auto text-xs">
+                                <p class="mb-2"><strong>Eq 3.5 (Transition Pressure):</strong></p>
+                                <div class="mb-4">$$ P_{trans} = P_{atm} \left( \frac{k+1}{2}
+                                    \right)^{\frac{k}{k-1}} $$</div>
+                                <p class="mb-2"><strong>Eq 3.6 (Sonic Flow, \(P_s > P_{trans}\)):</strong></p>
+                                <div class="mb-4">$$ W_n = \frac{C_d}{C_2} A_n P_s \sqrt{ \frac{k \cdot MW \cdot
+                                    g_c}{R \cdot T_s} \left(\frac{2}{k+1}\right)^{\frac{k+1}{k-1}} } $$</div>
+                                <p class="mb-2"><strong>Eq 3.7 (Subsonic Flow, \(P_s \le P_{trans}\)):</strong></p>
+                                <div>$$ W_n = \frac{C_d}{C_2} A_n P_s \sqrt{ \frac{MW \cdot g_c}{R \cdot T_s}
+                                    \left(\frac{2k}{k-1}\right) \left(\frac{P_{atm}}{P_s}\right)^{\frac{2}{k}} \dots
+                                    } $$</div>
+                            </div>
+                        </details>
+
+                        <!-- Inputs -->
+                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                            <div class="form-control w-full">
+                                <label class="label"><span class="label-text font-semibold">Storage Pressure (\(P_s\))
+                                        [psia]</span></label>
+                                <input type="number" id="input_ps_vap" placeholder="e.g. 100"
+                                    class="input input-bordered w-full bg-gray-50 bg-orange-50" />
+                            </div>
+                            <div class="form-control w-full">
+                                <label class="label"><span class="label-text font-semibold">Atm. Pressure
+                                        (\(P_{atm}\)) [psi]</span></label>
+                                <input type="number" id="input_patm_vap" value="14.7" step="0.1"
+                                    class="input input-bordered w-full bg-gray-50 bg-orange-50" />
+                            </div>
+                            <div class="form-control w-full">
+                                <label class="label"><span class="label-text font-semibold">Discharge Coeff.
+                                        (\(C_d\))</span></label>
+                                <input type="number" id="input_cd_vap" value="1.0" min="0.61" max="1.0" step="0.01"
+                                    class="input input-bordered w-full bg-gray-50 bg-orange-50" />
+                                <label class="label"><span class="label-text-alt">Rec: 1.0 (Sonic), 0.61
+                                        (Sub)</span></label>
+                            </div>
+                            <div class="form-control w-full">
+                                <label class="label"><span class="label-text font-semibold">Conversion
+                                        (\(C_2\))</span></label>
+                                <input type="number" id="input_c2_vap" value="1" step="0.01"
+                                    class="input input-bordered w-full bg-gray-50 bg-orange-50" />
+                                <label class="label"><span class="label-text-alt">Update if needed</span></label>
+                            </div>
+                        </div>
+
+                        <!-- Intermediate Values -->
+                        <div
+                            class="grid grid-cols-2 gap-4 mb-6 p-3 bg-orange-50 rounded text-sm text-gray-700 border border-orange-200">
+                            <div><span class="font-bold">k (Ratio):</span> <span id="disp_k_vap">-</span></div>
+                            <div><span class="font-bold">MW:</span> <span id="disp_mw_vap">-</span></div>
+                            <div><span class="font-bold">Ts:</span> <span id="disp_ts_vap">-</span> °R</div>
+                            <div><span class="font-bold">R Gas Const:</span> 1545.3</div>
+                        </div>
+
+                        <!-- Regime & Result -->
+                        <div class="alert alert-info shadow-sm mb-4">
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    class="stroke-current flex-shrink-0 w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <div>
+                                    <h3 class="font-bold">Flow Regime: <span id="disp_flow_regime"
+                                            class="text-blue-900">-</span></h3>
+                                    <div class="text-xs">Ptrans = <span id="disp_ptrans">-</span> psia</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Table -->
+                        <div class="overflow-x-auto">
+                            <table class="table table-zebra w-full text-center">
+                                <thead class="bg-gray-100 text-gray-600">
+                                    <tr>
+                                        <th>Hole Size</th>
+                                        <th>Rate (\(W_n\)) [lb/s]</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Small (\(d_1\))</td>
+                                        <td class="font-bold text-orange-700" id="val_wn1_vap">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Medium (\(d_2\))</td>
+                                        <td class="font-bold text-orange-700" id="val_wn2_vap">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Large (\(d_3\))</td>
+                                        <td class="font-bold text-orange-700" id="val_wn3_vap">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Rupture (\(d_4\))</td>
+                                        <td class="font-bold text-orange-700" id="val_wn4_vap">-</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- MOBILE SIDEBAR -->
+                    <div class="drawer-side z-40">
+                        <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+                        <aside class="w-64 bg-white p-4 shadow-2xl flex-shrink-0">
+                            {% include 'formula_app/includes/sidebar.html' %}
+                        </aside>
+                    </div>
                 </div>
+                {% endblock %}
 
-    </div>
-    </section>
-    </main>
-</div>
-
-<!-- MOBILE SIDEBAR -->
-<div class="drawer-side z-40">
-    <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-    <aside class="w-64 bg-white p-4 shadow-2xl flex-shrink-0">
-        {% include 'formula_app/includes/sidebar.html' %}
-    </aside>
-</div>
-</div>
-{% endblock %}
-
-{% block scripts %}
-<script type="module" src="{% static 'formula_app/js/cof_level_1.js' %}"></script>
-{% endblock %}
+                {% block scripts %}
+                <script type="module" src="{% static 'formula_app/js/cof_level_1.js' %}"></script>
+                {% endblock %}
