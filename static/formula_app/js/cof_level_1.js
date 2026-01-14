@@ -131,8 +131,35 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (calculatedCp !== null) {
                         cpResultContainer.classList.remove('hidden');
                         cpCalculatedValue.textContent = calculatedCp.toFixed(2);
+
+                        // --- STEP 4.1.4: Ratio k Calculation ---
+
+                        // Default R = 8314 J/kmol-K (or 8.314 J/mol-K)
+                        // Note 6 says: "For Note 1 [Eq 1], R = 8.314 J/mol-K [=8314 J/kmol-K]; for Notes 2 and 3 [Eq 2,3], R = 8314 Jkmol-K."
+                        // Since calculatedCp is in J/kmol-K (consistent with coefficients), we use R = 8314.
+
+                        let R_const = 8314;
+                        if (props.cp_eq === 1) {
+                            R_const = 8.314;
+                        }
+
+                        // k = Cp / (Cp - R)
+                        const k_val = calculatedCp / (calculatedCp - R_const);
+
+                        if (!isNaN(k_val) && isFinite(k_val)) {
+                            // Display
+                            const valRatioK = document.getElementById('val_ratio_k');
+                            const cardRatioK = document.getElementById('ratio_k_card');
+
+                            if (valRatioK && cardRatioK) {
+                                valRatioK.textContent = k_val.toFixed(3);
+                                cardRatioK.classList.remove('hidden');
+                            }
+                        }
+
                     } else {
                         cpResultContainer.classList.add('hidden');
+                        if (document.getElementById('ratio_k_card')) document.getElementById('ratio_k_card').classList.add('hidden');
                     }
 
                     // Gas: NBP, MW, Cp, AIT. (Fade out Density)
@@ -143,9 +170,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (document.getElementById('card_mw')) document.getElementById('card_mw').style.opacity = '0.3';
                     if (document.getElementById('card_cp')) document.getElementById('card_cp').style.opacity = '0.3';
                     cpResultContainer.classList.add('hidden');
+                    if (document.getElementById('ratio_k_card')) document.getElementById('ratio_k_card').classList.add('hidden');
                 } else {
                     // Reset or default if no phase/temp
                     cpResultContainer.classList.add('hidden');
+                    if (document.getElementById('ratio_k_card')) document.getElementById('ratio_k_card').classList.add('hidden');
                 }
 
                 // --- STEP 4.1.7: Release Phase Calculation (Table 4.3) ---
@@ -210,6 +239,39 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (releasePhaseCard) releasePhaseCard.classList.add('hidden');
                 }
 
+                // --- STEP 4.2: Release Hole Size Calculation (Table 4.4) ---
+                const inputDiameter = document.getElementById('input_diameter');
+                const holeSizesContainer = document.getElementById('hole_sizes_container');
+                const valD1 = document.getElementById('val_d1');
+                const valD2 = document.getElementById('val_d2');
+                const valD3 = document.getElementById('val_d3');
+                const valD4 = document.getElementById('val_d4');
+
+                const diameter = inputDiameter ? parseFloat(inputDiameter.value) : NaN;
+
+                if (!isNaN(diameter) && diameter > 0) {
+                    // d1 = 0.25
+                    const d1 = 0.25;
+
+                    // d2 = min(D, 1)
+                    const d2 = Math.min(diameter, 1);
+
+                    // d3 = min(D, 4)
+                    const d3 = Math.min(diameter, 4);
+
+                    // d4 = min(D, 16)
+                    const d4 = Math.min(diameter, 16);
+
+                    if (valD1) valD1.textContent = d1.toFixed(2);
+                    if (valD2) valD2.textContent = d2.toFixed(2);
+                    if (valD3) valD3.textContent = d3.toFixed(2);
+                    if (valD4) valD4.textContent = d4.toFixed(2);
+
+                    if (holeSizesContainer) holeSizesContainer.classList.remove('hidden');
+                } else {
+                    if (holeSizesContainer) holeSizesContainer.classList.add('hidden');
+                }
+
             } else {
                 console.warn(`No properties found for ${selectedLabel}`);
                 propertiesCard.classList.add('hidden');
@@ -224,6 +286,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (inputTemperature) {
             inputTemperature.addEventListener('input', updateDisplay); // Real-time calculation
+        }
+        if (document.getElementById('input_diameter')) {
+            document.getElementById('input_diameter').addEventListener('input', updateDisplay); // Real-time
         }
     }
 });

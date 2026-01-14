@@ -187,6 +187,23 @@
                         </div>
                     </div>
 
+
+                    <!-- STEP 4.1.4: Estimation of Ideal Gas Specific Heat Capacity Ratio -->
+                    <div id="ratio_k_card" class="card bg-white shadow-sm border border-gray-200 mt-6 hidden">
+                        <div class="card-body p-6">
+                            <h2 class="card-title text-blue-900 text-xl border-b pb-2 mb-4">
+                                4.1.4 Estimation of Ideal Gas Specific Heat Capacity Ratio (k)
+                            </h2>
+                            <p class="text-xs text-gray-500 mb-4">
+                                Calculated using Equation (3.1): \( k = \frac{C_p}{C_p - R} \)
+                            </p>
+                            <div class="flex items-center gap-4">
+                                <span class="font-bold text-gray-700">Specific Heat Ratio (k):</span>
+                                <span id="val_ratio_k" class="text-2xl font-bold text-blue-900">-</span>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- STEP 4.1.7: Calculation of Release Phase -->
                     <div id="release_phase_card" class="card bg-white shadow-sm border border-gray-200 mt-6 hidden">
                         <div class="card-body p-6">
@@ -219,6 +236,58 @@
                             <div id="phase_msg_container"
                                 class="mt-4 p-3 bg-yellow-50 text-yellow-800 text-sm rounded-md hidden">
                                 <span class="font-bold">Note:</span> <span id="phase_determination_msg"></span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- STEP 4.2: Release Hole Size Selection -->
+                    <div class="card bg-white shadow-sm border border-gray-200 mt-6">
+                        <div class="card-body p-6">
+                            <h2 class="card-title text-blue-900 text-xl border-b pb-2 mb-4">
+                                4.2 Release Hole Size Selection
+                            </h2>
+
+                            <div class="form-control w-full max-w-md">
+                                <label class="label">
+                                    <span class="label-text font-semibold">Component Diameter (D) [inches]</span>
+                                </label>
+                                <input type="number" id="input_diameter" placeholder="e.g. 10" step="0.1"
+                                    class="input input-bordered w-full bg-gray-50" />
+                            </div>
+
+                            <div id="hole_sizes_container" class="overflow-x-auto mt-6 hidden">
+                                <table class="table table-zebra w-full text-center">
+                                    <thead class="bg-gray-100 text-gray-600">
+                                        <tr>
+                                            <th>Hole Size</th>
+                                            <th>Generic Size</th>
+                                            <th>Diameter (dn) [in]</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-sm">
+                                        <tr>
+                                            <td class="font-bold">1</td>
+                                            <td>Small</td>
+                                            <td id="val_d1">-</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-bold">2</td>
+                                            <td>Medium</td>
+                                            <td id="val_d2">-</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-bold">3</td>
+                                            <td>Large</td>
+                                            <td id="val_d3">-</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-bold">4</td>
+                                            <td>Rupture</td>
+                                            <td id="val_d4">-</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
 
                         </div>
