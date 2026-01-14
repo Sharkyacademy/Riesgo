@@ -66,6 +66,25 @@
                                 </select>
                             </div>
 
+                            <div class="form-control w-full max-w-md mt-4">
+                                <label class="label">
+                                    <span class="label-text font-semibold">Stored Phase</span>
+                                </label>
+                                <select id="select_phase" class="select select-bordered w-full bg-gray-50">
+                                    <option disabled selected>Select Phase...</option>
+                                    <option value="Liquid">Liquid</option>
+                                    <option value="Vapor">Vapor / Gas</option>
+                                </select>
+                            </div>
+
+                            <div class="form-control w-full max-w-md mt-4">
+                                <label class="label">
+                                    <span class="label-text font-semibold">Temperature (°F)</span>
+                                </label>
+                                <input type="number" id="input_temperature" placeholder="Enter temperature"
+                                    class="input input-bordered w-full bg-gray-50" />
+                            </div>
+
                             <!-- Fluid Details Display -->
                             <div id="fluid_details"
                                 class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-100 hidden">
@@ -96,25 +115,25 @@
 
                             <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
 
-                                <div>
+                                <div id="card_mw" class="transition-opacity duration-300">
                                     <h3 class="text-xs font-bold text-gray-500 uppercase mb-1">MW</h3>
                                     <p id="prop_mw" class="text-xl font-bold text-gray-800">-</p>
                                     <span class="text-xs text-gray-400">lb/lb-mol</span>
                                 </div>
 
-                                <div>
+                                <div id="card_density" class="transition-opacity duration-300">
                                     <h3 class="text-xs font-bold text-gray-500 uppercase mb-1">Liquid Density</h3>
                                     <p id="prop_density" class="text-xl font-bold text-gray-800">-</p>
                                     <span class="text-xs text-gray-400">lb/ft³</span>
                                 </div>
 
-                                <div>
+                                <div id="card_nbp" class="transition-opacity duration-300">
                                     <h3 class="text-xs font-bold text-gray-500 uppercase mb-1">NBP</h3>
                                     <p id="prop_nbp" class="text-xl font-bold text-gray-800">-</p>
                                     <span class="text-xs text-gray-400">°F</span>
                                 </div>
 
-                                <div>
+                                <div id="card_ait" class="transition-opacity duration-300">
                                     <h3 class="text-xs font-bold text-gray-500 uppercase mb-1">AIT</h3>
                                     <p id="prop_ait" class="text-xl font-bold text-gray-800">-</p>
                                     <span class="text-xs text-gray-400">°F</span>
@@ -125,12 +144,12 @@
                             <div class="divider my-4"></div>
 
                             <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
-                                <div>
+                                <div id="card_ambient" class="transition-opacity duration-300">
                                     <h3 class="text-xs font-bold text-gray-500 uppercase mb-1">Ambient State</h3>
                                     <span id="prop_ambient" class="badge badge-lg badge-ghost font-bold">-</span>
                                 </div>
 
-                                <div class="col-span-2">
+                                <div id="card_cp" class="col-span-2 transition-opacity duration-300">
                                     <h3 class="text-xs font-bold text-gray-500 uppercase mb-1">Ideal Gas Specific Heat
                                         (Cp) Constants</h3>
                                     <div class="overflow-x-auto">
@@ -157,24 +176,68 @@
                                             </tbody>
                                         </table>
                                     </div>
+                                    <div id="cp_result_container" class="mt-2 hidden">
+                                        <span class="font-bold text-sm text-gray-700">Calculated Cp:</span>
+                                        <span id="cp_calculated_value" class="font-bold text-blue-900 ml-2">-</span>
+                                        <span class="text-xs text-gray-500">J/(kg·K)</span>
+                                    </div>
                                 </div>
                             </div>
 
                         </div>
                     </div>
 
-                </div>
-            </section>
-        </main>
-    </div>
+                    <!-- STEP 4.1.7: Calculation of Release Phase -->
+                    <div id="release_phase_card" class="card bg-white shadow-sm border border-gray-200 mt-6 hidden">
+                        <div class="card-body p-6">
+                            <h2 class="card-title text-blue-900 text-xl border-b pb-2 mb-4">
+                                4.1.7 Calculation of Release Phase
+                            </h2>
+                            <p class="text-xs text-gray-500 mb-4">
+                                Determination of Final Phase for Consequence Calculation based on stored and ambient
+                                conditions
+                                (Table 4.3).
+                            </p>
 
-    <!-- MOBILE SIDEBAR -->
-    <div class="drawer-side z-40">
-        <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-        <aside class="w-64 bg-white p-4 shadow-2xl flex-shrink-0">
-            {% include 'formula_app/includes/sidebar.html' %}
-        </aside>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                                <div>
+                                    <h3 class="text-xs font-bold text-gray-500 uppercase mb-1">Stored Phase</h3>
+                                    <p id="disp_stored_phase" class="text-lg font-bold text-gray-700">-</p>
+                                </div>
+                                <div>
+                                    <h3 class="text-xs font-bold text-gray-500 uppercase mb-1">Ambient Phase</h3>
+                                    <p id="disp_ambient_phase" class="text-lg font-bold text-gray-700">-</p>
+                                </div>
+                                <div>
+                                    <h3 class="text-xs font-bold text-gray-500 uppercase mb-1 text-blue-900">Final Phase
+                                    </h3>
+                                    <span id="disp_final_phase"
+                                        class="badge badge-lg badge-primary font-bold text-white">-</span>
+                                </div>
+                            </div>
+
+                            <div id="phase_msg_container"
+                                class="mt-4 p-3 bg-yellow-50 text-yellow-800 text-sm rounded-md hidden">
+                                <span class="font-bold">Note:</span> <span id="phase_determination_msg"></span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
     </div>
+    </section>
+    </main>
+</div>
+
+<!-- MOBILE SIDEBAR -->
+<div class="drawer-side z-40">
+    <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+    <aside class="w-64 bg-white p-4 shadow-2xl flex-shrink-0">
+        {% include 'formula_app/includes/sidebar.html' %}
+    </aside>
+</div>
 </div>
 {% endblock %}
 
