@@ -745,6 +745,104 @@
                         </div>
                     </div>
 
+                    <!-- STEP 4.7: Final Release Rate and Mass -->
+                    <div id="release_mass_card"
+                        class="card bg-white shadow-lg p-6 mb-6 border-l-4 border-emerald-500 hidden">
+                        <h2 class="card-title text-emerald-900 text-xl border-b pb-2 mb-4">
+                            4.7 Final Release Rate & Mass
+                        </h2>
+                        <p class="text-xs text-gray-500 mb-4">
+                            Calculated using Eqs 3.12, 3.14, and 3.13. Limits release duration by inventory.
+                        </p>
+
+                        <div class="overflow-x-auto">
+                            <table class="table table-zebra w-full text-center text-sm">
+                                <thead class="bg-gray-100 text-gray-600">
+                                    <tr>
+                                        <th>Hole Size</th>
+                                        <th>Adj Rate (\(rate_n\))<br>[lb/s]</th>
+                                        <th>Duration (\(ld_n\))<br>[s]</th>
+                                        <th>Mass (\(mass_n\))<br>[lb]</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Small</td>
+                                        <td id="fin_rate1">-</td>
+                                        <td id="fin_dur1">-</td>
+                                        <td id="fin_mass1" class="font-bold text-emerald-700">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Medium</td>
+                                        <td id="fin_rate2">-</td>
+                                        <td id="fin_dur2">-</td>
+                                        <td id="fin_mass2" class="font-bold text-emerald-700">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Large</td>
+                                        <td id="fin_rate3">-</td>
+                                        <td id="fin_dur3">-</td>
+                                        <td id="fin_mass3" class="font-bold text-emerald-700">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Rupture</td>
+                                        <td id="fin_rate4">-</td>
+                                        <td id="fin_dur4">-</td>
+                                        <td id="fin_mass4" class="font-bold text-emerald-700">-</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- STEP 4.8: Flammable Consequence -->
+                    <div id="flammable_consequence_card"
+                        class="card bg-white shadow-lg p-6 mb-6 border-l-4 border-red-500 hidden">
+                        <h2 class="card-title text-red-900 text-xl border-b pb-2 mb-4">
+                            4.8 Flammable & Explosive Consequence
+                        </h2>
+
+                        <!-- Mitigation System Input -->
+                        <div class="form-control w-full mb-6">
+                            <label class="label"><span class="label-text font-semibold">Mitigation System (Table
+                                    4.10)</span></label>
+                            <select id="select_mitigation" class="select select-bordered w-full bg-red-50">
+                                <option value="None" selected>None/No Mitigation (0%)</option>
+                                <option value="InventoryBlowdown">Inventory blowdown, coupled with isolation system
+                                    (25%)</option>
+                                <option value="FireWaterDeluge">Fire water deluge system and monitors (20%)</option>
+                                <option value="FireWaterMonitors">Fire water monitors only (5%)</option>
+                                <option value="FoamSpray">Foam spray system (15%)</option>
+                            </select>
+                            <p class="text-xs text-gray-500 mt-2 italic">Select the mitigation system present to apply
+                                reduction factor.</p>
+                        </div>
+
+                        <div class="divider">FINAL CONSEQUENCE AREAS</div>
+
+                        <!-- Final Results Table -->
+                        <div class="overflow-x-auto">
+                            <table class="table table-zebra w-full text-center text-sm">
+                                <thead class="bg-gray-100 text-gray-600">
+                                    <tr>
+                                        <th>Component Damage Area<br>(\(CA_{cmd}^{flam}\)) [ft²]</th>
+                                        <th>Personnel Injury Area<br>(\(CA_{inj}^{flam}\)) [ft²]</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="text-2xl">
+                                        <td id="val_final_cmd" class="font-bold text-red-700">-</td>
+                                        <td id="val_final_inj" class="font-bold text-orange-700">-</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <p class="text-xs text-gray-400 mt-4 text-center">
+                            Weighted probability average based on Hole Size GFF and Blended Release Types.
+                        </p>
+                    </div>
+
                     <!-- MOBILE SIDEBAR -->
                     <div class="drawer-side z-40">
                         <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
