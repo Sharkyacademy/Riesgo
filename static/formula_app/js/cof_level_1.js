@@ -316,6 +316,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     const finalPhaseText = finalPhase;
                     console.log("Final Phase Detected:", finalPhaseText);
 
+                    // Variables for Step 4.4 (Fluid Inventory)
+                    let calcReleaseRate = null; // Function to reuse for 8" hole
+                    let Wn1 = 0, Wn2 = 0, Wn3 = 0, Wn4 = 0;
+
                     const liquidReleaseCard = document.getElementById('liquid_release_card');
                     const vaporReleaseCard = document.getElementById('vapor_release_card');
 
@@ -364,10 +368,16 @@ document.addEventListener('DOMContentLoaded', () => {
                                 return Cd * Kvn * An_ft2 * Math.sqrt(2 * rho_l * gc * DeltaP_lbfft2);
                             };
 
-                            if (valWn1) valWn1.textContent = calcWn(d1).toFixed(2);
-                            if (valWn2) valWn2.textContent = calcWn(d2).toFixed(2);
-                            if (valWn3) valWn3.textContent = calcWn(d3).toFixed(2);
-                            if (valWn4) valWn4.textContent = calcWn(d4).toFixed(2);
+                            calcReleaseRate = calcWn;
+                            Wn1 = calcWn(d1);
+                            Wn2 = calcWn(d2);
+                            Wn3 = calcWn(d3);
+                            Wn4 = calcWn(d4);
+
+                            if (valWn1) valWn1.textContent = Wn1.toFixed(2);
+                            if (valWn2) valWn2.textContent = Wn2.toFixed(2);
+                            if (valWn3) valWn3.textContent = Wn3.toFixed(2);
+                            if (valWn4) valWn4.textContent = Wn4.toFixed(2);
 
                             if (valWnD1) valWnD1.textContent = d1.toFixed(2);
                             if (valWnD2) valWnD2.textContent = d2.toFixed(2);
@@ -457,10 +467,16 @@ document.addEventListener('DOMContentLoaded', () => {
                                 return Wn;
                             };
 
-                            if (document.getElementById('val_wn1_vap')) document.getElementById('val_wn1_vap').textContent = calcWnGas(d1).toFixed(2);
-                            if (document.getElementById('val_wn2_vap')) document.getElementById('val_wn2_vap').textContent = calcWnGas(d2).toFixed(2);
-                            if (document.getElementById('val_wn3_vap')) document.getElementById('val_wn3_vap').textContent = calcWnGas(d3).toFixed(2);
-                            if (document.getElementById('val_wn4_vap')) document.getElementById('val_wn4_vap').textContent = calcWnGas(d4).toFixed(2);
+                            calcReleaseRate = calcWnGas;
+                            Wn1 = calcWnGas(d1);
+                            Wn2 = calcWnGas(d2);
+                            Wn3 = calcWnGas(d3);
+                            Wn4 = calcWnGas(d4);
+
+                            if (document.getElementById('val_wn1_vap')) document.getElementById('val_wn1_vap').textContent = Wn1.toFixed(2);
+                            if (document.getElementById('val_wn2_vap')) document.getElementById('val_wn2_vap').textContent = Wn2.toFixed(2);
+                            if (document.getElementById('val_wn3_vap')) document.getElementById('val_wn3_vap').textContent = Wn3.toFixed(2);
+                            if (document.getElementById('val_wn4_vap')) document.getElementById('val_wn4_vap').textContent = Wn4.toFixed(2);
 
                         } else {
                             if (document.getElementById('val_wn1_vap')) document.getElementById('val_wn1_vap').textContent = '-';
@@ -469,6 +485,58 @@ document.addEventListener('DOMContentLoaded', () => {
                             if (document.getElementById('val_wn4_vap')) document.getElementById('val_wn4_vap').textContent = '-';
                         }
                     }
+
+                    // --- STEP 4.4: Estimate Fluid Inventory Available for Release ---
+                    const fluidInvCard = document.getElementById('fluid_inventory_card');
+
+                    if (calcReleaseRate) {
+                        if (fluidInvCard) fluidInvCard.classList.remove('hidden');
+
+                        // 1. Calculate W_max8 (Release Rate for 8 inch hole)
+                        // Note: If D < 8, limitation d_n = D applies.
+                        const d8 = Math.min(diameter, 8.0);
+                        const W_max8 = calcReleaseRate(d8);
+
+                        if (document.getElementById('disp_w_max8')) document.getElementById('disp_w_max8').textContent = W_max8.toFixed(2);
+
+                        // 2. Read Masses
+                        const inputMassInv = document.getElementById('input_mass_inv');
+                        const inputMassComp = document.getElementById('input_mass_comp');
+                        const massInv = inputMassInv && inputMassInv.value ? parseFloat(inputMassInv.value) : Infinity;
+                        const massComp = inputMassComp && inputMassComp.value ? parseFloat(inputMassComp.value) : 0;
+
+                        // Helper to update row
+                        const updateRow = (suffix, Wn, Wmax8) => {
+                            // Update Rate col
+                            const tblWn = document.getElementById(`tbl_wn${suffix}`);
+                            if (tblWn) tblWn.textContent = Wn.toFixed(2);
+
+                            // Calc Mass Add (Eq 3.10) => 180 * min(Wn, Wmax8)
+                            const massAdd = 180 * Math.min(Wn, Wmax8);
+                            const valMassAdd = document.getElementById(`val_mass_add${suffix}`);
+                            if (valMassAdd) valMassAdd.textContent = massAdd.toFixed(1);
+
+                            // Calc Mass Avail (Eq 3.11) => min(massComp + massAdd, massInv)
+                            // Use MassInv as upper limit if defined
+                            const massInvEff = (inputMassInv && inputMassInv.value) ? massInv : (massComp + massAdd);
+
+                            const massAvail = Math.min(massComp + massAdd, massInvEff);
+
+                            const valMassAvail = document.getElementById(`val_mass_avail${suffix}`);
+                            if (valMassAvail) valMassAvail.textContent = massAvail.toFixed(1);
+                        };
+
+                        updateRow('1', Wn1, W_max8);
+                        updateRow('2', Wn2, W_max8);
+                        updateRow('3', Wn3, W_max8);
+                        updateRow('4', Wn4, W_max8);
+
+                    } else {
+                        // Hide if no calculation happened (e.g. error in inputs)
+                        // But keep logic clean: if calcReleaseRate is null, we are not in a valid state
+                        if (fluidInvCard) fluidInvCard.classList.add('hidden');
+                    }
+
                 } else {
                     if (holeSizesContainer) holeSizesContainer.classList.add('hidden');
                 }
@@ -523,5 +591,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (document.getElementById('input_patm_vap')) document.getElementById('input_patm_vap').addEventListener('input', updateDisplay);
         if (document.getElementById('input_cd_vap')) document.getElementById('input_cd_vap').addEventListener('input', updateDisplay);
         if (document.getElementById('input_c2_vap')) document.getElementById('input_c2_vap').addEventListener('input', updateDisplay);
+
+        // Step 4.4 Fluid Inventory Listeners
+        if (document.getElementById('input_mass_inv')) document.getElementById('input_mass_inv').addEventListener('input', updateDisplay);
+        if (document.getElementById('input_mass_comp')) document.getElementById('input_mass_comp').addEventListener('input', updateDisplay);
     }
 });
