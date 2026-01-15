@@ -1,6 +1,7 @@
 import { RepresentativeFluids } from '../data/cof/table4_1_1.js';
 import { FluidProperties } from '../data/cof/table4_1_2.js';
-import ComponentGFFs from '../data/cof/gff_table_3_1.js'; // Default export
+import ComponentGFFs from '../data/cof/gff_table_3_1.js';
+import { getReductionFactor, getLeakDuration, DetectionDescriptions, IsolationDescriptions } from '../data/cof/table4_6_7.js';
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -593,11 +594,57 @@ document.addEventListener('DOMContentLoaded', () => {
                         updateReleaseType('3', d3, Wn3);
                         updateReleaseType('4', d4, Wn4);
 
+                        // --- STEP 4.6: Detection and Isolation Systems ---
+                        const detIsoCard = document.getElementById('detection_isolation_card');
+                        const selectDet = document.getElementById('select_detection');
+                        const selectIso = document.getElementById('select_isolation');
+
+                        if (detIsoCard) detIsoCard.classList.remove('hidden');
+
+                        const detClass = selectDet ? selectDet.value : null;
+                        const isoClass = selectIso ? selectIso.value : null;
+
+                        // Update Description Text
+                        if (selectDet && DetectionDescriptions[detClass]) {
+                            const descEl = document.getElementById('desc_detection');
+                            if (descEl) descEl.textContent = DetectionDescriptions[detClass];
+                        }
+                        if (selectIso && IsolationDescriptions[isoClass]) {
+                            const descEl = document.getElementById('desc_isolation');
+                            if (descEl) descEl.textContent = IsolationDescriptions[isoClass];
+                        }
+
+                        if (detClass && isoClass && detClass !== "Select Class..." && isoClass !== "Select Class...") {
+                            // Calculate Reduction Factor
+                            const factDi = getReductionFactor(detClass, isoClass);
+                            const valFactDi = document.getElementById('val_fact_di');
+                            if (valFactDi) valFactDi.textContent = factDi.toFixed(2);
+
+                            // Calculate Leak Durations
+                            const ld1 = getLeakDuration(detClass, isoClass, d1);
+                            const ld2 = getLeakDuration(detClass, isoClass, d2);
+                            const ld3 = getLeakDuration(detClass, isoClass, d3);
+                            const ld4 = getLeakDuration(detClass, isoClass, d4);
+
+                            if (document.getElementById('val_ld1')) document.getElementById('val_ld1').textContent = ld1;
+                            if (document.getElementById('val_ld2')) document.getElementById('val_ld2').textContent = ld2;
+                            if (document.getElementById('val_ld3')) document.getElementById('val_ld3').textContent = ld3;
+                            if (document.getElementById('val_ld4')) document.getElementById('val_ld4').textContent = ld4;
+                        } else {
+                            // Reset if not selected
+                            if (document.getElementById('val_fact_di')) document.getElementById('val_fact_di').textContent = '-';
+                            if (document.getElementById('val_ld1')) document.getElementById('val_ld1').textContent = '-';
+                            if (document.getElementById('val_ld2')) document.getElementById('val_ld2').textContent = '-';
+                            if (document.getElementById('val_ld3')) document.getElementById('val_ld3').textContent = '-';
+                            if (document.getElementById('val_ld4')) document.getElementById('val_ld4').textContent = '-';
+                        }
+
                     } else {
                         // Hide if no calculation happened (e.g. error in inputs)
                         // But keep logic clean: if calcReleaseRate is null, we are not in a valid state
                         if (fluidInvCard) fluidInvCard.classList.add('hidden');
                         if (document.getElementById('release_type_card')) document.getElementById('release_type_card').classList.add('hidden');
+                        if (document.getElementById('detection_isolation_card')) document.getElementById('detection_isolation_card').classList.add('hidden');
                     }
 
                 } else {
@@ -616,6 +663,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (fInv) fInv.classList.add('hidden');
 
                 if (document.getElementById('release_type_card')) document.getElementById('release_type_card').classList.add('hidden');
+
+                if (document.getElementById('detection_isolation_card')) document.getElementById('detection_isolation_card').classList.add('hidden');
             }
         }
 
@@ -666,5 +715,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Step 4.4 Fluid Inventory Listeners
         if (document.getElementById('input_mass_inv')) document.getElementById('input_mass_inv').addEventListener('input', updateDisplay);
         if (document.getElementById('input_mass_comp')) document.getElementById('input_mass_comp').addEventListener('input', updateDisplay);
+
+        // Step 4.6 Listeners
+        if (document.getElementById('select_detection')) document.getElementById('select_detection').addEventListener('change', updateDisplay);
+        if (document.getElementById('select_isolation')) document.getElementById('select_isolation').addEventListener('change', updateDisplay);
     }
 });

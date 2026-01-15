@@ -668,6 +668,83 @@
                         </div>
                     </div>
 
+                    <!-- STEP 4.6: Detection and Isolation Systems -->
+                    <div id="detection_isolation_card"
+                        class="card bg-white shadow-lg p-6 mb-6 border-l-4 border-pink-500 hidden">
+                        <h2 class="card-title text-pink-900 text-xl border-b pb-2 mb-4">
+                            4.6 Detection and Isolation Systems
+                        </h2>
+                        <p class="text-xs text-gray-500 mb-4">
+                            Assess impact of detection and isolation on release magnitude and duration (Tables 4.5, 4.6,
+                            4.7).
+                        </p>
+
+                        <!-- Dropdowns -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div class="form-control w-full">
+                                <label class="label"><span class="label-text font-semibold">Detection Classification
+                                        (Table 4.5)</span></label>
+                                <select id="select_detection" class="select select-bordered w-full bg-pink-50">
+                                    <option disabled selected>Select Class...</option>
+                                    <option value="A">A - Instrumentation (Auto)</option>
+                                    <option value="B">B - Detectors (Remote)</option>
+                                    <option value="C">C - Visual / Marginal</option>
+                                </select>
+                                <p id="desc_detection"
+                                    class="text-xs text-gray-500 mt-2 italic px-1 h-12 overflow-y-auto"></p>
+                            </div>
+                            <div class="form-control w-full">
+                                <label class="label"><span class="label-text font-semibold">Isolation Classification
+                                        (Table 4.5)</span></label>
+                                <select id="select_isolation" class="select select-bordered w-full bg-pink-50">
+                                    <option disabled selected>Select Class...</option>
+                                    <option value="A">A - Auto Isolation</option>
+                                    <option value="B">B - Remote Manual</option>
+                                    <option value="C">C - Manual Valves</option>
+                                </select>
+                                <p id="desc_isolation"
+                                    class="text-xs text-gray-500 mt-2 italic px-1 h-12 overflow-y-auto"></p>
+                            </div>
+                        </div>
+
+                        <!-- Results -->
+                        <div class="alert alert-info shadow-sm mb-4 bg-pink-50 border-pink-200 text-pink-900">
+                            <div>
+                                <span class="font-bold">Reduction Factor (\(fact_{di}\)):</span>
+                                <span id="val_fact_di" class="text-xl font-bold ml-2">-</span>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="table table-zebra w-full text-center text-sm">
+                                <thead class="bg-gray-100 text-gray-600">
+                                    <tr>
+                                        <th>Hole Size</th>
+                                        <th>Max Leak Duration (\(ld_{max}\))<br>[min]</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Small (\(d_1\))</td>
+                                        <td id="val_ld1" class="font-bold text-pink-900">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Medium (\(d_2\))</td>
+                                        <td id="val_ld2" class="font-bold text-pink-900">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Large (\(d_3\))</td>
+                                        <td id="val_ld3" class="font-bold text-pink-900">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Rupture (\(d_4\))</td>
+                                        <td id="val_ld4" class="font-bold text-pink-900">-</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                     <!-- MOBILE SIDEBAR -->
                     <div class="drawer-side z-40">
                         <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
