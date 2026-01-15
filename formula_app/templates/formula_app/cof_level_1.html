@@ -617,6 +617,57 @@
                         </div>
                     </div>
 
+                    <!-- STEP 4.5: Release Type Determination -->
+                    <div id="release_type_card"
+                        class="card bg-white shadow-lg p-6 mb-6 border-l-4 border-indigo-500 hidden">
+                        <h2 class="card-title text-indigo-900 text-xl border-b pb-2 mb-4">
+                            4.5 Determine Release Type
+                        </h2>
+                        <p class="text-xs text-gray-500 mb-4">
+                            Classification as Instantaneous or Continuous based on Hole Size and Release Rate (API 581
+                            Sec. 4.5.2).
+                        </p>
+
+                        <div class="overflow-x-auto">
+                            <table class="table table-zebra w-full text-center text-sm">
+                                <thead class="bg-gray-100 text-gray-600">
+                                    <tr>
+                                        <th>Hole Size</th>
+                                        <th>Diameter (\(d_n\))</th>
+                                        <th>Rate (\(W_n\))</th>
+                                        <th>Release Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Small</td>
+                                        <td id="rt_d1">-</td>
+                                        <td id="rt_wn1">-</td>
+                                        <td id="rt_type1" class="font-bold">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Medium</td>
+                                        <td id="rt_d2">-</td>
+                                        <td id="rt_wn2">-</td>
+                                        <td id="rt_type2" class="font-bold">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Large</td>
+                                        <td id="rt_d3">-</td>
+                                        <td id="rt_wn3">-</td>
+                                        <td id="rt_type3" class="font-bold">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Rupture</td>
+                                        <td id="rt_d4">-</td>
+                                        <td id="rt_wn4">-</td>
+                                        <td id="rt_type4" class="font-bold">-</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                     <!-- MOBILE SIDEBAR -->
                     <div class="drawer-side z-40">
                         <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>

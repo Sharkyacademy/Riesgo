@@ -550,10 +550,54 @@ document.addEventListener('DOMContentLoaded', () => {
                         updateRow('3', Wn3, W_max8);
                         updateRow('4', Wn4, W_max8);
 
+                        // --- STEP 4.5: Release Type Determination (Sec 4.5.2) ---
+                        const rtCard = document.getElementById('release_type_card');
+                        if (rtCard) rtCard.classList.remove('hidden');
+
+                        const updateReleaseType = (suffix, dn, Wn) => {
+                            let rType = 'Continuous';
+
+                            // Rule 1: dn <= 0.25 in -> Continuous
+                            if (dn <= 0.25) {
+                                rType = 'Continuous';
+                            }
+                            // Rule 2 Check: Wn > 55.6 lb/s -> Instantaneous
+                            else if (Wn > 55.6) {
+                                rType = 'Instantaneous';
+                            }
+                            // Default: Continuous
+                            else {
+                                rType = 'Continuous';
+                            }
+
+                            // UI Updates
+                            const elD = document.getElementById(`rt_d${suffix}`);
+                            const elWn = document.getElementById(`rt_wn${suffix}`);
+                            const elType = document.getElementById(`rt_type${suffix}`);
+
+                            if (elD) elD.textContent = dn.toFixed(2);
+                            if (elWn) elWn.textContent = Wn.toFixed(2);
+                            if (elType) {
+                                elType.textContent = rType;
+                                // Visual styling
+                                if (rType === 'Instantaneous') {
+                                    elType.className = 'font-bold text-red-600';
+                                } else {
+                                    elType.className = 'font-bold text-green-600';
+                                }
+                            }
+                        };
+
+                        updateReleaseType('1', d1, Wn1);
+                        updateReleaseType('2', d2, Wn2);
+                        updateReleaseType('3', d3, Wn3);
+                        updateReleaseType('4', d4, Wn4);
+
                     } else {
                         // Hide if no calculation happened (e.g. error in inputs)
                         // But keep logic clean: if calcReleaseRate is null, we are not in a valid state
                         if (fluidInvCard) fluidInvCard.classList.add('hidden');
+                        if (document.getElementById('release_type_card')) document.getElementById('release_type_card').classList.add('hidden');
                     }
 
                 } else {
@@ -570,6 +614,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const fInv = document.getElementById('fluid_inventory_card');
                 if (fInv) fInv.classList.add('hidden');
+
+                if (document.getElementById('release_type_card')) document.getElementById('release_type_card').classList.add('hidden');
             }
         }
 
