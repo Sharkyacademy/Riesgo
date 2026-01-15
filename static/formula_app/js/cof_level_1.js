@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let finalPhase = '-'; // Scope accessible for all steps
 
-            if (!selectedLabel || selectedLabel === "Select a fluid...") return;
+
 
             const selectedFluid = RepresentativeFluids.find(f => f.label === selectedLabel);
             const props = FluidProperties[selectedLabel];
@@ -239,12 +239,31 @@ document.addEventListener('DOMContentLoaded', () => {
                         } else {
                             phaseMsgContainer.classList.add('hidden');
                         }
+                    } else {
+                        if (releasePhaseCard) releasePhaseCard.classList.add('hidden');
+                        // Cascade Hide
+                        const holeSizesCardWrapper = document.getElementById('hole_sizes_card_wrapper');
+                        if (holeSizesCardWrapper) holeSizesCardWrapper.classList.add('hidden');
+                        if (document.getElementById('fluid_inventory_card')) document.getElementById('fluid_inventory_card').classList.add('hidden');
                     }
                 } else {
                     if (releasePhaseCard) releasePhaseCard.classList.add('hidden');
+                    // Cascade Hide
+                    const holeSizesCardWrapper = document.getElementById('hole_sizes_card_wrapper');
+                    if (holeSizesCardWrapper) holeSizesCardWrapper.classList.add('hidden');
+                    if (document.getElementById('fluid_inventory_card')) document.getElementById('fluid_inventory_card').classList.add('hidden');
                 }
 
                 // --- STEP 4.2: Release Hole Size Calculation (Table 4.4) ---
+                const holeSizesCardWrapper = document.getElementById('hole_sizes_card_wrapper');
+                // Show Step 4.2 Card ONLY if Step 4.1.7 (Phase) is valid
+                if (finalPhase !== '-' && holeSizesCardWrapper) {
+                    holeSizesCardWrapper.classList.remove('hidden');
+                } else {
+                    if (holeSizesCardWrapper) holeSizesCardWrapper.classList.add('hidden');
+                    if (document.getElementById('fluid_inventory_card')) document.getElementById('fluid_inventory_card').classList.add('hidden');
+                }
+
                 const inputDiameter = document.getElementById('input_diameter');
                 const selectComponent = document.getElementById('select_component_type');
                 const holeSizesContainer = document.getElementById('hole_sizes_container');
@@ -542,9 +561,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
             } else {
-                console.warn(`No properties found for ${selectedLabel}`);
-                propertiesCard.classList.add('hidden');
+                // If no fluid selected or invalid, hide all downstream
+                if (propertiesCard) propertiesCard.classList.add('hidden');
                 if (document.getElementById('release_phase_card')) document.getElementById('release_phase_card').classList.add('hidden');
+
+                const hWrapper = document.getElementById('hole_sizes_card_wrapper');
+                if (hWrapper) hWrapper.classList.add('hidden');
+
+                const fInv = document.getElementById('fluid_inventory_card');
+                if (fInv) fInv.classList.add('hidden');
             }
         }
 
