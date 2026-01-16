@@ -3,6 +3,7 @@ import { FluidProperties } from '../data/cof/table4_1_2.js';
 import ComponentGFFs from '../data/cof/gff_table_3_1.js';
 import { getReductionFactor, getLeakDuration, DetectionDescriptions, IsolationDescriptions } from '../data/cof/table4_6_7.js';
 import { ComponentDamageConstants, PersonnelInjuryConstants, MitigationSystems } from '../data/cof/table4_8_9_10.js';
+import { calcFlammableCA } from './cof_level_1_4_8.js';
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -45,85 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return constSet[phase] || null;
     };
 
-    // Helper: Calculate Flammable Consequence for a single hole
-    const calcFlammableCA = (fluidKey, rateN, massN, Ts, mitFactor, phase, isInstPrimary) => {
-        // 1. Fluid Type & Constants
-        const cmdConsts = ComponentDamageConstants[fluidKey];
-        const injConsts = PersonnelInjuryConstants[fluidKey];
 
-        if (!cmdConsts || !injConsts) return { cmd: 0, inj: 0 };
-
-        const fluidType = cmdConsts.type; // 0 or 1
-        const prop = FluidProperties[fluidKey];
-        const aitVal = prop ? prop.ait : null;
-
-        // Energy Efficiency for INST > 10k
-        const eneff = getEnergyEfficiencyFactor(massN);
-
-        // Mitigation Multiplier
-        const mitMult = 1.0 - mitFactor;
-
-        // --- COMPONENT DAMAGE ---
-        const calcRaw = (constantsObj, typeKey, inputVal, isInst) => {
-            const coeffs = getCoeffs(constantsObj[typeKey], phase);
-            let ca = calcPower(inputVal, coeffs);
-            ca = ca * mitMult;
-            if (isInst) ca = ca / eneff;
-            return ca;
-        };
-
-        const ca_cmd_AINL_CONT = calcRaw(cmdConsts, 'AINL_CONT', rateN, false);
-        const ca_cmd_AIL_CONT = calcRaw(cmdConsts, 'AIL_CONT', rateN, false);
-        const ca_cmd_AINL_INST = calcRaw(cmdConsts, 'AINL_INST', massN, true);
-        const ca_cmd_AIL_INST = calcRaw(cmdConsts, 'AIL_INST', massN, true);
-
-        // --- PERSONNEL INJURY ---
-        const ca_inj_AINL_CONT = calcRaw(injConsts, 'AINL_CONT', rateN, false);
-        const ca_inj_AIL_CONT = calcRaw(injConsts, 'AIL_CONT', rateN, false);
-        const ca_inj_AINL_INST = calcRaw(injConsts, 'AINL_INST', massN, true);
-        const ca_inj_AIL_INST = calcRaw(injConsts, 'AIL_INST', massN, true);
-
-
-        // --- BLENDING (Step 8.12 - 8.14) ---
-        let factIC = 0.0;
-
-        // Define holders for blended values
-        let ca_cmd_AIL, ca_cmd_AINL, ca_inj_AIL, ca_inj_AINL;
-
-        if (fluidType === 0) {
-            // Eq 3.18: For Type 0
-            const C5 = 55.6;
-            factIC = Math.min(rateN / C5, 1.0);
-
-            const blend = (inst, cont) => inst * factIC + cont * (1.0 - factIC);
-
-            ca_cmd_AIL = blend(ca_cmd_AIL_INST, ca_cmd_AIL_CONT);
-            ca_cmd_AINL = blend(ca_cmd_AINL_INST, ca_cmd_AINL_CONT);
-            ca_inj_AIL = blend(ca_inj_AIL_INST, ca_inj_AIL_CONT);
-            ca_inj_AINL = blend(ca_inj_AINL_INST, ca_inj_AINL_CONT);
-
-        } else { // Type 1
-            if (isInstPrimary) {
-                ca_cmd_AIL = ca_cmd_AIL_INST;
-                ca_cmd_AINL = ca_cmd_AINL_INST;
-                ca_inj_AIL = ca_inj_AIL_INST;
-                ca_inj_AINL = ca_inj_AINL_INST;
-            } else {
-                ca_cmd_AIL = ca_cmd_AIL_CONT;
-                ca_cmd_AINL = ca_cmd_AINL_CONT;
-                ca_inj_AIL = ca_inj_AIL_CONT;
-                ca_inj_AINL = ca_inj_AINL_CONT;
-            }
-        }
-
-        // --- AIT BLENDING (Step 8.15) ---
-        const factAIT = getAITBlendingFactor(Ts, aitVal);
-
-        return {
-            cmd: ca_cmd_AIL * factAIT + ca_cmd_AINL * (1.0 - factAIT),
-            inj: ca_inj_AIL * factAIT + ca_inj_AINL * (1.0 - factAIT)
-        };
-    };
 
     // --- DOM Elements ---
     const selectFluid = document.getElementById('select_fluid');
@@ -374,7 +297,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // --- STEP 4.3 CALCULATION (Re-impl) ---
                 const inputPs = document.getElementById('input_ps');
-                const valWn1 = document.getElementById('val_wn1'); // etc
+                const valWn1 = document.getElementById('val_wn1');
+                const valWn2 = document.getElementById('val_wn2');
+                const valWn3 = document.getElementById('val_wn3');
+                const valWn4 = document.getElementById('val_wn4');
+
+                // Diameters in Rate Table
+                if (document.getElementById('val_wn_d1')) document.getElementById('val_wn_d1').textContent = d1.toFixed(2);
+                if (document.getElementById('val_wn_d2')) document.getElementById('val_wn_d2').textContent = d2.toFixed(2);
+                if (document.getElementById('val_wn_d3')) document.getElementById('val_wn_d3').textContent = d3.toFixed(2);
+                if (document.getElementById('val_wn_d4')) document.getElementById('val_wn_d4').textContent = d4.toFixed(2);
 
                 let calcReleaseRate = null;
                 const liquidReleaseCard = document.getElementById('liquid_release_card');
@@ -492,6 +424,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     const rtCard = document.getElementById('release_type_card');
                     if (rtCard) rtCard.classList.remove('hidden');
                     const updateRT = (suffix, dn, Wn) => {
+                        // Update Table Cells
+                        if (document.getElementById(`rt_d${suffix}`)) document.getElementById(`rt_d${suffix}`).textContent = dn.toFixed(2);
+                        if (document.getElementById(`rt_wn${suffix}`)) document.getElementById(`rt_wn${suffix}`).textContent = Wn.toFixed(2);
+
                         let rType = 'Continuous';
                         if (dn <= 0.25) rType = 'Continuous';
                         else if (Wn > 55.6) rType = 'Instantaneous';
