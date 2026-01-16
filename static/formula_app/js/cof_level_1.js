@@ -161,6 +161,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Populate Component Type Dropdown
+    const selectComponentType = document.getElementById('select_component_type');
+    if (selectComponentType) {
+        console.log('Populating Component Type dropdown...', ComponentGFFs);
+        ComponentGFFs.forEach(comp => {
+            const option = document.createElement('option');
+            option.value = comp.label;
+            option.textContent = comp.label;
+            selectComponentType.appendChild(option);
+        });
+        console.log('Dropdown populated with', selectComponentType.options.length, 'options.');
+    } else {
+        console.error('Element select_component_type not found!');
+    }
+
     // Unified Update Function
     function updateDisplay() {
         const selectedLabel = selectFluid.value;
