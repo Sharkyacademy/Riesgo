@@ -482,6 +482,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         const mitFactor = MitigationSystems[mitKey] ? MitigationSystems[mitKey].factor : 0.0;
                         const tempR = (tempF ? tempF : 70) + 459.67;
 
+                        // Non-Flammable Check
+                        const isFlammable = !!ComponentDamageConstants[selectedLabel];
+                        const warningDiv = document.getElementById('non_flammable_msg');
+                        if (warningDiv) {
+                            if (!isFlammable) warningDiv.classList.remove('hidden');
+                            else warningDiv.classList.add('hidden');
+                        }
+
                         const updateFinalRelease = (suffix, Wn, Wmax8, massComp, massInv, factDi, ldMaxMin, dn, gffVal) => {
                             const massAdd = 180 * Math.min(Wn, Wmax8);
                             let massInvEff = massInv;
@@ -504,6 +512,11 @@ document.addEventListener('DOMContentLoaded', () => {
                             else if (rateN > 55.6) isInstPrimary = true;
 
                             const res = calcFlammableCA(selectedLabel, rateN, massN, tempR, mitFactor, finalPhase, isInstPrimary);
+
+                            // Detailed Table Update
+                            if (document.getElementById(`det_cmd${suffix}`)) document.getElementById(`det_cmd${suffix}`).textContent = res.cmd.toFixed(2);
+                            if (document.getElementById(`det_inj${suffix}`)) document.getElementById(`det_inj${suffix}`).textContent = res.inj.toFixed(2);
+
                             finalCmdTotal += res.cmd * gffVal;
                             finalInjTotal += res.inj * gffVal;
                             totalGffSum += gffVal;

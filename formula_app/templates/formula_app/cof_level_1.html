@@ -802,6 +802,20 @@
                             4.8 Flammable & Explosive Consequence
                         </h2>
 
+                        <!-- Non-Flammable Warning -->
+                        <div id="non_flammable_msg" class="alert alert-warning shadow-sm mb-4 hidden">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                            <div>
+                                <h3 class="font-bold">Non-Flammable Fluid</h3>
+                                <div class="text-xs">Selected fluid is not flammable (Constants unavailable).
+                                    Consequence is 0.</div>
+                            </div>
+                        </div>
+
                         <!-- Mitigation System Input -->
                         <div class="form-control w-full mb-6">
                             <label class="label"><span class="label-text font-semibold">Mitigation System (Table
@@ -821,7 +835,7 @@
                         <div class="divider">FINAL CONSEQUENCE AREAS</div>
 
                         <!-- Final Results Table -->
-                        <div class="overflow-x-auto">
+                        <div class="overflow-x-auto mb-4">
                             <table class="table table-zebra w-full text-center text-sm">
                                 <thead class="bg-gray-100 text-gray-600">
                                     <tr>
@@ -836,6 +850,53 @@
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+
+                        <!-- Collapse for Details -->
+                        <div class="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box">
+                            <input type="checkbox" />
+                            <div class="collapse-title font-medium text-gray-700">
+                                View Detailed Calculation Per Hole Size
+                            </div>
+                            <div class="collapse-content">
+                                <div class="overflow-x-auto">
+                                    <table class="table table-xs table-zebra w-full text-center">
+                                        <thead>
+                                            <tr class="text-gray-500">
+                                                <th>Hole Size</th>
+                                                <th>CMD Area [ft²]</th>
+                                                <th>INJ Area [ft²]</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="font-bold">Small</td>
+                                                <td id="det_cmd1">-</td>
+                                                <td id="det_inj1">-</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-bold">Medium</td>
+                                                <td id="det_cmd2">-</td>
+                                                <td id="det_inj2">-</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-bold">Large</td>
+                                                <td id="det_cmd3">-</td>
+                                                <td id="det_inj3">-</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-bold">Rupture</td>
+                                                <td id="det_cmd4">-</td>
+                                                <td id="det_inj4">-</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <p class="text-xs text-gray-400 mt-2">
+                                    Shows the intermediate consequence areas (blended & mitigated) for each release size
+                                    before GFF weighting.
+                                </p>
+                            </div>
                         </div>
 
                         <p class="text-xs text-gray-400 mt-4 text-center">
