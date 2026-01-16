@@ -359,11 +359,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     const R_gas = 1545.3;
                     const Ts_R = tempF + 459.67;
+                    if (document.getElementById('disp_ts_vap')) document.getElementById('disp_ts_vap').textContent = Ts_R.toFixed(1);
 
                     if (!isNaN(PsVap) && PsVap > 0) {
                         const termK = k / (k - 1);
                         const Ptrans = PatmVap * Math.pow((k + 1) / 2, termK);
                         const isSonic = PsVap > Ptrans;
+
+                        // Disp Regime
+                        if (document.getElementById('disp_ptrans')) document.getElementById('disp_ptrans').textContent = Ptrans.toFixed(2);
+                        if (document.getElementById('disp_flow_regime')) document.getElementById('disp_flow_regime').textContent = isSonic ? 'Sonic' : 'Subsonic';
+
                         const gc = 32.174;
 
                         const calcWnGas = (dn) => {
