@@ -2,7 +2,7 @@ import { RepresentativeFluids } from '../data/cof/table4_1_1.js';
 import { FluidProperties } from '../data/cof/table4_1_2.js';
 import ComponentGFFs from '../data/cof/gff_table_3_1.js';
 import { getReductionFactor, getLeakDuration, DetectionDescriptions, IsolationDescriptions } from '../data/cof/table4_6_7.js';
-import { ComponentDamageConstants, PersonnelInjuryConstants, MitigationSystems } from '../data/cof/table4_8_9_10.js';
+import { ComponentDamageConstants, PersonnelInjuryConstants, MitigationSystems, ToxicGasConstants } from '../data/cof/table4_8_9_10.js';
 import { calcFlammableCA } from './cof_level_1_4_8.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -528,18 +528,220 @@ document.addEventListener('DOMContentLoaded', () => {
                             totalGffSum += gffVal;
                         };
 
+                        // --- STEP 4.9: Toxic Determination ---
+                        const ToxicFluids = [
+                            "H2S", "HF", "HCl", "Ammonia", "Chlorine", "AlCl3", "CO", "Nitric acid", "NO2",
+                            "Phosgene", "TDI", "EO", "PO", "EE", "EEA", "EG", "Methanol", "Styrene", "DEE"
+                        ];
+                        const toxicCard = document.getElementById('toxic_consequence_card');
+                        const toxicYes = document.getElementById('toxic_yes_msg');
+                        const toxicNo = document.getElementById('toxic_no_msg');
+
+                        if (toxicCard) {
+                            toxicCard.classList.remove('hidden'); // Always show card
+                            if (ToxicFluids.includes(selectedLabel)) {
+                                if (toxicYes) toxicYes.classList.remove('hidden');
+                                if (toxicNo) toxicNo.classList.add('hidden');
+                            } else {
+                                if (toxicYes) toxicYes.classList.add('hidden');
+                                if (toxicNo) toxicNo.classList.remove('hidden');
+                            }
+                        }
+
+                        // Toxic Calculation (Step 4.9.5)
+                        const inputMfrac = document.getElementById('input_mfrac_tox');
+                        const mfracTox = inputMfrac ? parseFloat(inputMfrac.value) : 1.0;
+
+                        // Helper to get e/f from data point
+                        const getEF = (point, isGasState) => {
+                            if (point.gas && point.liquid) return isGasState ? point.gas : point.liquid;
+                            if (point.gas) return point.gas;
+                            if (point.liquid) return point.liquid;
+                            // Fallback if structure is flat (e.g. AlCl3 or simple)
+                            if (point.e !== undefined) return point;
+                            return { e: 0, f: 0 };
+                        };
+
+                        const updateToxicTable = (suffix, Wn, dn, massN, isGasState, ldMaxMinutes) => {
+                            // Recalculate Unmitigated Mass/Rate
+                            const massAdd = 180 * Math.min(Wn, W_max8);
+                            let massInvEff = massInv;
+                            if (!inputMassInv || !inputMassInv.value) massInvEff = massComp + massAdd;
+                            const massAvail = Math.min(massComp + massAdd, massInvEff);
+
+                            // Duration for Toxic (Equation 3.66)
+                            // ldMaxMinutes is ld_max,n from Table 4.7 (Calculated via getLeakDuration)
+                            const limit1 = 3600;
+                            const limit2 = (Wn > 0) ? (massAvail / Wn) : 3600;
+                            const limit3 = 60 * (ldMaxMinutes || 60); // default to 1 hour if unspecified
+
+                            const ldUnmitigated = Math.min(limit1, limit2, limit3);
+                            const massUnmitigated = Math.min(Wn * ldUnmitigated, massAvail);
+
+                            const rateTox = mfracTox * Wn;
+                            const massTox = mfracTox * massUnmitigated;
+
+                            if (document.getElementById(`val_rate_tox${suffix}`)) document.getElementById(`val_rate_tox${suffix}`).textContent = rateTox.toFixed(2);
+                            if (document.getElementById(`val_mass_tox${suffix}`)) document.getElementById(`val_mass_tox${suffix}`).textContent = massTox.toFixed(2);
+
+                            // Step 4.9.6, 4.9.7, 4.9.8: Toxic Area
+                            let caTox = 0;
+                            if (typeof ToxicGasConstants !== 'undefined' && ToxicGasConstants[selectedLabel]) {
+                                const consts = ToxicGasConstants[selectedLabel];
+
+                                // Determine Release Type (Logic from Step 4.5)
+                                let isInstantaneous = false;
+                                if (dn > 0.25 && Wn > 55.6) isInstantaneous = true;
+
+                                // Special handling for Step 4.9.8 Chemicals (Miscellaneous)
+                                // Rule: Use Equation 3.64 (Continuous).
+                                // If Instantaneous (per Step 4.5), model as 3-minute continuous release.
+                                const step498Chemicals = ["AlCl3", "CO", "HCl", "Nitric acid", "NO2", "Phosgene", "TDI", "EO", "PO", "EE", "EEA", "EG", "Methanol", "Styrene", "DEE"];
+
+                                if (step498Chemicals.includes(selectedLabel)) {
+                                    // We use Eq 3.64 for these.
+                                    let calcRate = rateTox;
+                                    let calcDurationMin = ldUnmitigated / 60;
+
+                                    if (isInstantaneous) {
+                                        // Enforce 3 minute rule
+                                        calcDurationMin = 3.0;
+                                        // Rate = Mass / (3 * 60)
+                                        // MassTox is the total toxic mass released.
+                                        // For instantaneous, usually Mass is limited by inventory or 30s rupture?
+                                        // We use massTox (already calculated based on inventory/rupture limits).
+                                        if (massTox > 0) calcRate = massTox / 180.0;
+                                    } else {
+                                        // Continuous: Clamp Duration
+                                        if (calcDurationMin > 60) calcDurationMin = 60;
+                                    }
+
+                                    // Interpolate constants for calcDurationMin
+                                    const { e, f } = getInterp(calcDurationMin, 'e', 'f');
+                                    if (calcRate > 0 && e !== undefined) {
+                                        caTox = e * Math.pow(calcRate, f);
+                                    }
+                                }
+                                // 1. HF / H2S (Step 4.9.6)
+                                else if (["HF", "H2S"].includes(selectedLabel)) {
+                                    if (isInstantaneous) {
+                                        const { c, d } = consts.instantaneous;
+                                        if (massTox > 0) {
+                                            const logMass = Math.log10(massTox);
+                                            caTox = Math.pow(10, c * logMass + d);
+                                        }
+                                    } else {
+                                        const durationMin = Math.max(Math.min(ldUnmitigated / 60, 60), 5);
+                                        const { c, d } = getInterp(durationMin, 'c', 'd');
+                                        if (rateTox > 0) {
+                                            const logRate = Math.log10(rateTox);
+                                            caTox = Math.pow(10, c * logRate + d);
+                                        }
+                                    }
+                                }
+                                // 2. Ammonia / Chlorine (Step 4.9.7)
+                                else if (["Ammonia", "Chlorine"].includes(selectedLabel)) {
+                                    if (isInstantaneous) {
+                                        const { e, f } = consts.instantaneous;
+                                        if (massTox > 0) caTox = e * Math.pow(massTox, f);
+                                    } else {
+                                        const durationMin = Math.max(Math.min(ldUnmitigated / 60, 60), 5);
+                                        const { e, f } = getInterp(durationMin, 'e', 'f');
+                                        if (rateTox > 0) caTox = e * Math.pow(rateTox, f);
+                                    }
+                                }
+                            }
+
+                            if (document.getElementById(`val_ca_tox${suffix}`)) {
+                                const displayVal = (caTox > 0) ? caTox.toFixed(1) : "-";
+                                document.getElementById(`val_ca_tox${suffix}`).textContent = displayVal;
+                            }
+                        };
+
+                        // 4.9.11 Probability of Ignition (POI) - Simplified Lookup (API 581 Table 4.1 approx)
+                        const getProbIgnition = (rate, isGas) => {
+                            // Rate in lb/s
+                            if (isGas) {
+                                if (rate < 1) return 0.01;
+                                if (rate < 10) return 0.07;
+                                if (rate < 100) return 0.30;
+                                return 0.80;
+                            } else {
+                                // Liquid
+                                if (rate < 1) return 0.01;
+                                if (rate < 10) return 0.03;
+                                if (rate < 100) return 0.07;
+                                return 0.15; // Assume High Flashpoint liquid for conservative or standard Level 1? 
+                                // Actually Level 1 distinction is often just Liquid/Gas.
+                            }
+                        };
+
+                        // Storage for weighted calc
+                        let totalToxAreaWeighted = 0;
+
+                        if (ToxicFluids.includes(selectedLabel)) {
+                            const isGasState = finalPhase === 'Gas';
+
+                            // 4.9.13 Mitigation
+                            // Applying mitigation factor to rate/mass if applicable
+                            // Step 4.9.13 says: "Effectiveness ... accounted for by reducing the release rate..."
+                            // If mitFactor > 0 (e.g. from Water Spray), we reduce rate.
+                            // We use the same mitFactor as Flammable (Step 4.8) for now.
+                            // mitFactor = 0.2 means 20% reduction? Or factor is reduction?
+                            // Logic in 4.8: mitMult = 1.0 - mitFactor.
+                            // So if mitFactor=0.9 (90% efficient), mult=0.1.
+                            const mitMult = 1.0 - mitFactor;
+
+                            const calcToxStep = (suffix, Wn, dn, ldMaxMinutes, gffVal) => {
+                                // Apply Mitigation to Rate (Step 4.9.13)
+                                const WnMitigated = Wn * mitMult;
+
+                                // Calc Area
+                                updateToxicTable(suffix, WnMitigated, dn, 0, isGasState, ldMaxMinutes);
+
+                                // Retrieve calculated value from UI (or we could just return it from function)
+                                const el = document.getElementById(`val_ca_tox${suffix}`);
+                                let caTox = 0;
+                                if (el && el.textContent !== "-" && !isNaN(parseFloat(el.textContent))) {
+                                    caTox = parseFloat(el.textContent);
+                                }
+
+                                // Step 4.9.11: Probability of Toxic Event = (1 - P_ign)
+                                // We need P_ign for this release rate.
+                                // Using Unmitigated rate for P_ign lookup? 
+                                // API 581 usually uses the release rate to determine POI.
+                                // Conservative: Use unmitigated rate for POI (higher probability of ignition -> lower toxic prob).
+                                // But effectively we want the *Toxic Risk*. 
+                                // Let's use WnMitigated for consistency if we assume mitigation works.
+                                // However, standard usually calculates POI based on the event magnitude.
+                                // I will use WnMitigated.
+                                const poi = getProbIgnition(WnMitigated, isGasState);
+                                const probToxic = 1.0 - poi;
+
+                                totalToxAreaWeighted += caTox * gffVal * probToxic;
+                            };
+
+                            calcToxStep('1', Wn1, d1, ld1, gffs.small);
+                            calcToxStep('2', Wn2, d2, ld2, gffs.medium);
+                            calcToxStep('3', Wn3, d3, ld3, gffs.large);
+                            calcToxStep('4', Wn4, d4, ld4, gffs.rupture);
+                        }
+
+                        // Final Toxic Area (Weighted)
+                        const finalToxArea = (totalGffSum > 0) ? (totalToxAreaWeighted / totalGffSum) : 0;
+                        if (document.getElementById('val_final_tox_area')) {
+                            document.getElementById('val_final_tox_area').textContent = finalToxArea.toFixed(1);
+                        }
+
                         updateFinalRelease('1', Wn1, W_max8, massComp, massInv, factDi, ld1, d1, gffs.small);
                         updateFinalRelease('2', Wn2, W_max8, massComp, massInv, factDi, ld2, d2, gffs.medium);
                         updateFinalRelease('3', Wn3, W_max8, massComp, massInv, factDi, ld3, d3, gffs.large);
                         updateFinalRelease('4', Wn4, W_max8, massComp, massInv, factDi, ld4, d4, gffs.rupture);
 
-                        const wCmd = totalGffSum > 0 ? (finalCmdTotal / totalGffSum) : 0;
-                        const wInj = totalGffSum > 0 ? (finalInjTotal / totalGffSum) : 0;
-
-                        if (document.getElementById('val_final_cmd')) document.getElementById('val_final_cmd').textContent = wCmd.toFixed(2);
-                        if (document.getElementById('val_final_inj')) document.getElementById('val_final_inj').textContent = wInj.toFixed(2);
-
-
+                        if (document.getElementById('val_cmd_total')) document.getElementById('val_cmd_total').textContent = (totalGffSum > 0 ? finalCmdTotal / totalGffSum : 0).toFixed(2);
+                        if (document.getElementById('val_inj_total')) document.getElementById('val_inj_total').textContent = (totalGffSum > 0 ? finalInjTotal / totalGffSum : 0).toFixed(2);
+                        // Also update Toxic Total if UI has it
+                        if (document.getElementById('val_tox_total')) document.getElementById('val_tox_total').textContent = finalToxArea.toFixed(2);
                     }
                 } else {
                     if (fluidInvCard) fluidInvCard.classList.add('hidden');
@@ -574,6 +776,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const el = document.getElementById(id);
         if (el) el.addEventListener('input', updateDisplay);
     });
+    if (document.getElementById('input_mfrac_tox')) document.getElementById('input_mfrac_tox').addEventListener('input', updateDisplay);
 
     if (document.getElementById('select_detection')) document.getElementById('select_detection').addEventListener('change', updateDisplay);
     if (document.getElementById('select_isolation')) document.getElementById('select_isolation').addEventListener('change', updateDisplay);

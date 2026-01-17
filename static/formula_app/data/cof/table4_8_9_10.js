@@ -306,3 +306,166 @@ export const MitigationSystems = {
     "FireWaterMonitors": { factor: 0.05, label: "Fire water monitors only" },
     "FoamSpray": { factor: 0.15, label: "Foam spray system" }
 };
+
+export const ToxicGasConstants = {
+    "HF": {
+        idlh: 30,
+        continuous: [
+            { min: 5, c: 1.1401, d: 3.5683 },
+            { min: 10, c: 1.1031, d: 3.8431 },
+            { min: 20, c: 1.0816, d: 4.1040 },
+            { min: 40, c: 1.0942, d: 4.3295 },
+            { min: 60, c: 1.1031, d: 4.4576 }
+        ],
+        instantaneous: { c: 1.4056, d: 0.33606 }
+    },
+    "H2S": {
+        idlh: 100,
+        continuous: [
+            { min: 5, c: 1.2411, d: 3.9686 },
+            { min: 10, c: 1.2410, d: 4.0948 },
+            { min: 20, c: 1.2370, d: 4.238 },
+            { min: 40, c: 1.2297, d: 4.3626 },
+            { min: 60, c: 1.2266, d: 4.4365 }
+        ],
+        instantaneous: { c: 0.9674, d: 2.7840 }
+    },
+    "Ammonia": {
+        idlh: 300,
+        continuous: [
+            { min: 5, e: 2690, f: 1.183 },
+            { min: 10, e: 3581, f: 1.181 },
+            { min: 15, e: 4459, f: 1.180 },
+            { min: 20, e: 5326, f: 1.178 },
+            { min: 25, e: 6180, f: 1.176 },
+            { min: 30, e: 7022, f: 1.174 },
+            { min: 35, e: 7852, f: 1.172 },
+            { min: 40, e: 8669, f: 1.169 },
+            { min: 45, e: 9475, f: 1.166 },
+            { min: 50, e: 10268, f: 1.161 },
+            { min: 55, e: 11049, f: 1.155 },
+            { min: 60, e: 11817, f: 1.145 }
+        ],
+        instantaneous: { e: 14.171, f: 0.9011 }
+    },
+    "Chlorine": {
+        idlh: 10,
+        continuous: [
+            { min: 5, e: 15150, f: 1.097 },
+            { min: 10, e: 15934, f: 1.095 },
+            { min: 15, e: 17242, f: 1.092 },
+            { min: 20, e: 19074, f: 1.089 },
+            { min: 25, e: 21430, f: 1.085 },
+            { min: 30, e: 24309, f: 1.082 },
+            { min: 35, e: 27712, f: 1.077 },
+            { min: 40, e: 31640, f: 1.072 },
+            { min: 45, e: 36090, f: 1.066 },
+            { min: 50, e: 41065, f: 1.057 },
+            { min: 55, e: 46564, f: 1.046 },
+            { min: 60, e: 52586, f: 1.026 }
+        ],
+        instantaneous: { e: 14.976, f: 1.177 }
+    },
+    // Table 4.13 Miscellaneous Chemicals
+    "AlCl3": {
+        continuous: { gas: { e: 17.663, f: 0.9411 } }
+    },
+    "CO": {
+        idlh: 1200,
+        continuous: [
+            { min: 3, e: 41.412, f: 1.15 },
+            { min: 5, e: 279.79, f: 1.06 },
+            { min: 10, e: 834.48, f: 1.13 },
+            { min: 20, e: 2915.9, f: 1.11 },
+            { min: 40, e: 5346.8, f: 1.17 },
+            { min: 60, e: 6293.7, f: 1.21 }
+        ]
+    },
+    "HCl": {
+        idlh: 50,
+        continuous: [
+            { min: 3, e: 215.48, f: 1.09 },
+            { min: 5, e: 536.28, f: 1.15 },
+            { min: 10, e: 2397.5, f: 1.10 },
+            { min: 20, e: 4027.0, f: 1.18 },
+            { min: 40, e: 7534.5, f: 1.20 },
+            { min: 60, e: 8625.1, f: 1.23 }
+        ]
+    },
+    "Nitric acid": {
+        continuous: [
+            { min: 3, gas: { e: 53013, f: 1.25 }, liquid: { e: 5110.0, f: 1.08 } },
+            { min: 5, gas: { e: 68700, f: 1.25 }, liquid: { e: 9640.8, f: 1.02 } },
+            { min: 10, gas: { e: 96325, f: 1.24 }, liquid: { e: 12453, f: 1.06 } },
+            { min: 20, gas: { e: 126942, f: 1.23 }, liquid: { e: 19149, f: 1.06 } },
+            { min: 40, gas: { e: 146941, f: 1.22 }, liquid: { e: 31145, f: 1.06 } },
+            { min: 60, gas: { e: 156345, f: 1.22 }, liquid: { e: 41999, f: 1.12 } }
+        ]
+    },
+    "NO2": {
+        idlh: 20,
+        continuous: [
+            { min: 3, gas: { e: 6633.1, f: 0.70 }, liquid: { e: 2132.9, f: 0.98 } },
+            { min: 5, gas: { e: 9221.4, f: 0.68 }, liquid: { e: 2887.0, f: 1.04 } },
+            { min: 10, gas: { e: 11965, f: 0.68 }, liquid: { e: 6194.4, f: 1.07 } },
+            { min: 20, gas: { e: 14248, f: 0.72 }, liquid: { e: 13843, f: 1.08 } },
+            { min: 40, gas: { e: 22411, f: 0.70 }, liquid: { e: 27134, f: 1.12 } },
+            { min: 60, gas: { e: 24994, f: 0.71 }, liquid: { e: 41657, f: 1.13 } }
+        ]
+    },
+    "Phosgene": {
+        idlh: 2,
+        continuous: [
+            { min: 3, gas: { e: 12902, f: 1.20 }, liquid: { e: 3414.8, f: 1.06 } },
+            { min: 5, gas: { e: 22976, f: 1.29 }, liquid: { e: 6857.1, f: 1.10 } },
+            { min: 10, gas: { e: 48985, f: 1.24 }, liquid: { e: 21215, f: 1.12 } },
+            { min: 20, gas: { e: 108298, f: 1.27 }, liquid: { e: 63361, f: 1.16 } },
+            { min: 40, gas: { e: 244670, f: 1.30 }, liquid: { e: 178841, f: 1.20 } },
+            { min: 60, gas: { e: 367877, f: 1.31 }, liquid: { e: 314608, f: 1.23 } }
+        ]
+    },
+    "TDI": {
+        continuous: [
+            { min: 3, liquid: { e: 3692.5, f: 1.06 } },
+            { min: 5, liquid: { e: 3849.2, f: 1.09 } },
+            { min: 10, liquid: { e: 4564.9, f: 1.10 } },
+            { min: 20, liquid: { e: 4777.5, f: 1.06 } },
+            { min: 40, liquid: { e: 4953.2, f: 1.06 } },
+            { min: 60, liquid: { e: 5972.1, f: 1.03 } }
+        ]
+    },
+    "EE": {
+        continuous: [
+            { min: 1.5, gas: { e: 3.819, f: 1.171 } },
+            { min: 3, gas: { e: 7.438, f: 1.181 } },
+            { min: 5, gas: { e: 17.735, f: 1.122 } },
+            { min: 10, gas: { e: 33.721, f: 1.111 }, liquid: { e: 3.081, f: 1.105 } },
+            { min: 20, gas: { e: 122.68, f: 0.971 }, liquid: { e: 16.877, f: 1.065 } },
+            { min: 40, gas: { e: 153.03, f: 0.995 }, liquid: { e: 43.292, f: 1.132 } },
+            { min: 60, gas: { e: 315.57, f: 0.899 }, liquid: { e: 105.74, f: 1.104 } }
+        ]
+    },
+    "EO": {
+        idlh: 800,
+        continuous: [
+            { min: 1.5, gas: { e: 2.083, f: 1.222 } },
+            { min: 3, gas: { e: 12.32, f: 1.207 } },
+            { min: 5, gas: { e: 31.5, f: 1.271 } },
+            { min: 10, gas: { e: 185, f: 1.2909 } },
+            { min: 20, gas: { e: 926, f: 1.2849 } },
+            { min: 40, gas: { e: 4563, f: 1.1927 } },
+            { min: 60, gas: { e: 7350, f: 1.203 } }
+        ]
+    },
+    "PO": {
+        idlh: 400,
+        continuous: [
+            { min: 3, gas: { e: 0.0019, f: 1.913 } },
+            { min: 5, gas: { e: 0.3553, f: 1.217 }, liquid: { e: 10.055, f: 1.198 } },
+            { min: 10, gas: { e: 0.7254, f: 1.2203 }, liquid: { e: 40.428, f: 1.111 } },
+            { min: 20, gas: { e: 1.7166, f: 1.2164 }, liquid: { e: 77.743, f: 1.114 } },
+            { min: 40, gas: { e: 3.9449, f: 1.2097 }, liquid: { e: 152.35, f: 1.118 } },
+            { min: 60, gas: { e: 4.9155, f: 1.2522 }, liquid: { e: 1812.8, f: 0.9855 } }
+        ]
+    }
+};

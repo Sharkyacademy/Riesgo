@@ -903,6 +903,101 @@
                         </p>
                     </div>
 
+                    <!-- STEP 4.9: Toxic Consequence -->
+                    <div id="toxic_consequence_card"
+                        class="card bg-white shadow-lg p-6 mb-6 border-l-4 border-gray-800 hidden">
+                        <h2 class="card-title text-gray-900 text-xl border-b pb-2 mb-4">
+                            4.9 Determine Toxic Consequence
+                        </h2>
+                        <!-- Toxic: Yes -->
+                        <!-- Toxic: Yes -->
+                        <div id="toxic_yes_msg" class="hidden">
+                            <div class="alert alert-info shadow-sm mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    class="stroke-current shrink-0 w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span>Toxic Consequence Analysis applicable for selected fluid.</span>
+                            </div>
+
+                            <!-- Step 4.9.5: Release Rate and Mass -->
+                            <div class="card bg-gray-50 border border-gray-200 p-4 mb-4">
+                                <h3 class="font-bold text-gray-800 text-sm border-b pb-2 mb-3">
+                                    4.9.5 Determine Toxic Release Rate and Mass
+                                </h3>
+
+                                <div class="form-control w-full max-w-ws mb-4">
+                                    <label class="label">
+                                        <span class="label-text font-semibold">Toxic Component Mass Fraction
+                                            (\(mfrac^{tox}\))</span>
+                                    </label>
+                                    <input type="number" id="input_mfrac_tox" value="1.0" min="0.0" max="1.0"
+                                        step="0.01" class="input input-bordered w-full bg-white text-gray-700" />
+                                    <label class="label">
+                                        <span class="label-text-alt">Range: 0.0 - 1.0 (1.0 for pure toxic fluid)</span>
+                                    </label>
+                                </div>
+
+                                <div class="overflow-x-auto">
+                                    <table class="table table-xs table-zebra w-full text-center">
+                                        <thead>
+                                            <tr class="text-gray-500">
+                                                <th>Hole Size</th>
+                                                <th>Toxic Rate (\(rate_n^{tox}\))<br>[lb/s]</th>
+                                                <th>Toxic Mass (\(mass_n^{tox}\))<br>[lb]</th>
+                                                <th>Toxic Area (\(CA_{inj}^{tox}\))<br>[ft²]</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="font-bold">Small</td>
+                                                <td id="val_rate_tox1">-</td>
+                                                <td id="val_mass_tox1">-</td>
+                                                <td id="val_ca_tox1" class="font-bold text-purple-700">-</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-bold">Medium</td>
+                                                <td id="val_rate_tox2">-</td>
+                                                <td id="val_mass_tox2">-</td>
+                                                <td id="val_ca_tox2" class="font-bold text-purple-700">-</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-bold">Large</td>
+                                                <td id="val_rate_tox3">-</td>
+                                                <td id="val_mass_tox3">-</td>
+                                                <td id="val_ca_tox3" class="font-bold text-purple-700">-</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-bold">Rupture</td>
+                                                <td id="val_rate_tox4">-</td>
+                                                <td id="val_mass_tox4">-</td>
+                                                <td id="val_ca_tox4" class="font-bold text-purple-700">-</td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot class="text-xs text-gray-400">
+                                            <tr>
+                                                <td colspan="3">Based on Unmitigated Release Rate (\(W_n\)) and Mass
+                                                    (\(mass_n\)). Detection/Isolation factors do NOT apply.</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Toxic: No -->
+                        <div id="toxic_no_msg" class="alert alert-success shadow-sm hidden">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>Selected fluid is <strong>NOT Toxic</strong> per API 581. Toxic Consequence is
+                                0.</span>
+                        </div>
+                    </div>
+
                     <!-- MOBILE SIDEBAR -->
                     <div class="drawer-side z-40">
                         <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
