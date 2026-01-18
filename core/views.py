@@ -8,7 +8,7 @@ from django.views.decorators.cache import never_cache
 def index(request):
 
     if request.user.is_authenticated:
-        return redirect('/formula_app/')
+        return redirect('/dashboard/')
 
     # acciones cuando el formulario es enviado.
     if request.method == "POST":
@@ -21,7 +21,7 @@ def index(request):
         user = authenticate(request, email=email, password=password)
         if user is not None:
             login(request, user)
-            return redirect("/formula_app")
+            return redirect("/dashboard/")
         else:
             messages.error(request, "Email o contraseña incorrectos.")
         

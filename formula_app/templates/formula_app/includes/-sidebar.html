@@ -1,0 +1,30 @@
+<h2 class="text-xl font-bold text-blue-950 mb-4 border-b pb-2">Probability of Failure</h2>
+<div class="flex flex-col gap-3">
+    <a href="{% url 'calculation_thinning_df' %}"
+        class="btn btn-block {% if request.resolver_match.url_name == 'calculation_thinning_df' %}bg-blue-950 text-white hover:bg-blue-800 border-none{% else %}btn-outline border-blue-950 text-blue-950 hover:bg-blue-950 hover:text-white{% endif %} hover-lift text-wrap h-auto min-h-0 py-3 text-sm">
+        Damage Factor (DF)
+    </a>
+    <a href="{% url 'gff_calculation' %}"
+        class="btn btn-block {% if request.resolver_match.url_name == 'gff_calculation' %}bg-blue-950 text-white hover:bg-blue-800 border-none{% else %}btn-outline border-blue-950 text-blue-950 hover:bg-blue-950 hover:text-white{% endif %} hover-lift text-wrap h-auto min-h-0 py-3 text-sm">
+        Generic Failure Frequency
+    </a>
+    <a href="{% url 'fms_calculation' %}"
+        class="btn btn-block {% if request.resolver_match.url_name == 'fms_calculation' %}bg-blue-950 text-white hover:bg-blue-800 border-none{% else %}btn-outline border-blue-950 text-blue-950 hover:bg-blue-950 hover:text-white{% endif %} hover-lift text-wrap h-auto min-h-0 py-3 text-sm">
+        Management Systems Factor
+    </a>
+
+    <div class="divider my-2"></div>
+
+    <a href="{% url 'pof_dashboard' %}"
+        class="btn btn-block {% if request.resolver_match.url_name == 'pof_dashboard' %}bg-linear-to-r from-blue-900 to-blue-700 text-white border-none shadow-lg{% else %}btn-ghost text-blue-900 border border-blue-100 hover:bg-blue-50{% endif %} hover-lift text-wrap h-auto min-h-0 py-4 text-sm font-bold uppercase tracking-wide">
+        Final Result (POF)
+    </a>
+</div>
+<div class="divider my-2"></div>
+<h2 class="text-lg font-bold text-blue-950 mb-4 border-b pb-2">Consecuence of Failure</h2>
+<div class="flex flex-col gap-3">
+    <a href="{% url 'COF_level_1' %}"
+        class="btn btn-block {% if request.resolver_match.url_name == 'COF_level_1' %}bg-blue-950 text-white hover:bg-blue-800 border-none{% else %}btn-outline border-blue-950 text-blue-950 hover:bg-blue-950 hover:text-white{% endif %} hover-lift text-wrap h-auto min-h-0 py-3 text-sm">
+        Level 1
+    </a>
+</div>
