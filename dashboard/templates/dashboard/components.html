@@ -35,9 +35,222 @@
                 {% include 'formula_app/includes/sidebar.html' %}
             </aside>
             <!-- END SIDEBAR -->
-            <!-- MAIN CONTENT -->
 
+            <!-- MAIN CONTENT -->
+            <div class="flex-1 overflow-y-auto p-6 bg-gray-50">
+                <div class="flex justify-between items-center mb-6">
+                    <!-- Add Component Button -->
+                    <a href="{% url 'component_create' %}"
+                        class="btn bg-blue-950 hover:bg-blue-900 text-white border-none gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        Add Component
+                    </a>
+
+                    <!-- Export Button -->
+                    <button class="btn bg-purple-600 hover:bg-purple-700 text-white border-none gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Export Components to Excel
+                    </button>
+                </div>
+
+                <!-- Components Hierarchy Table -->
+                <div class="overflow-x-auto shadow-md rounded-lg">
+                    <table class="table w-full">
+                        <!-- Head -->
+                        <thead class="bg-blue-950 text-white">
+                            <tr>
+                                <th class="w-1/4 pl-8">RBIX Equipment Type</th>
+                                <th class="w-1/4">RBIX Component Type</th>
+                                <th class="w-1/4">Component/Circuit Desc.</th>
+                                <th class="w-1/6">Rep. Pipe No.</th>
+                                <th class="w-1/6 text-right pr-8">Actions</th>
+                            </tr>
+                        </thead>
+
+                        {% for facility in facilities %}
+                        <!-- Level 1: Facility -->
+                        <tbody class="bg-white border-b border-gray-200">
+                            <tr class="bg-blue-900 hover:bg-blue-800 cursor-pointer transition-colors"
+                                onclick="toggleRow('facility-{{ facility.id }}', 'icon-fac-{{ facility.id }}')">
+                                <td colspan="5" class="font-bold text-white py-2 px-4">
+                                    <div class="flex items-center gap-2">
+                                        <svg id="icon-fac-{{ facility.id }}" xmlns="http://www.w3.org/2000/svg"
+                                            class="h-4 w-4 transform transition-transform duration-200" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                        Facility: {{ facility.name }}
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+
+                        <!-- Facility Content -->
+                        <tbody id="facility-{{ facility.id }}"
+                            class="bg-white transition-all duration-300 border-l-4 border-blue-900">
+
+                            {% for unit in facility.unit_set.all %}
+                            <!-- Level 2: Unit -->
+                            <tr class="bg-blue-50 hover:bg-blue-100 cursor-pointer border-b border-blue-100"
+                                onclick="toggleRow('unit-{{ unit.id }}', 'icon-unit-{{ unit.id }}')">
+                                <td colspan="5" class="pl-12 font-semibold text-blue-950 py-2">
+                                    <div class="flex items-center gap-2">
+                                        <svg id="icon-unit-{{ unit.id }}" xmlns="http://www.w3.org/2000/svg"
+                                            class="h-4 w-4 transform transition-transform duration-200" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                        Unit: {{ unit.name }}
+                                    </div>
+                                </td>
+                            </tr>
+
+                            {% for system in unit.system_set.all %}
+                            <!-- Level 3: System -->
+                            <tr class="unit-child-{{ unit.id }} bg-gray-50 hover:bg-gray-100 cursor-pointer border-b border-gray-50"
+                                onclick="toggleRow('system-{{ system.id }}', 'icon-sys-{{ system.id }}')">
+                                <td colspan="5" class="pl-20 font-medium text-gray-800 py-2">
+                                    <div class="flex items-center gap-2">
+                                        <svg id="icon-sys-{{ system.id }}" xmlns="http://www.w3.org/2000/svg"
+                                            class="h-4 w-4 transform transition-transform duration-200" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                        System: {{ system.name }}
+                                    </div>
+                                </td>
+                            </tr>
+
+                            {% for equipment in system.equipment_set.all %}
+                            <!-- Level 4: Equipment -->
+                            <tr class="system-child-{{ system.id }} unit-child-{{ unit.id }} bg-amber-50 hover:bg-amber-100 cursor-pointer border-b border-amber-100"
+                                onclick="toggleRow('equipment-{{ equipment.id }}', 'icon-eq-{{ equipment.id }}')">
+                                <td colspan="5" class="pl-28 font-medium text-gray-700 py-2">
+                                    <div class="flex items-center gap-2">
+                                        <svg id="icon-eq-{{ equipment.id }}" xmlns="http://www.w3.org/2000/svg"
+                                            class="h-4 w-4 transform transition-transform duration-200" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                        Equipment: {{ equipment.number }}
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Level 5: Components (Data Rows) -->
+                            {% for component in equipment.component_set.all %}
+                            <tr
+                                class="equipment-child-{{ equipment.id }} system-child-{{ system.id }} unit-child-{{ unit.id }} hover:bg-gray-50 transition-colors border-b border-gray-100">
+                                <td class="pl-40 font-medium text-gray-700 flex items-center gap-2">
+                                    <span class="text-gray-300">└</span>
+                                    {{ component.rbix_equipment_type }}
+                                </td>
+                                <td class="text-gray-600">{{ component.rbix_component_type }}</td>
+                                <td class="text-gray-600">{{ component.description|truncatewords:10 }}</td>
+                                <td class="text-gray-600">{{ component.rep_pipe_no }}</td>
+                                <td class="text-right pr-8">
+                                    <div class="flex justify-end gap-2">
+                                        <a href="{% url 'component_edit' component.pk %}"
+                                            class="btn btn-ghost btn-xs text-blue-950 hover:bg-blue-100">Edit</a>
+                                        <button
+                                            class="btn btn-ghost btn-xs text-purple-600 hover:bg-purple-50">Clone</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr
+                                class="equipment-child-{{ equipment.id }} system-child-{{ system.id }} unit-child-{{ unit.id }} bg-gray-50">
+                                <td colspan="5" class="pl-40 text-sm text-gray-400 italic py-2">No components in this
+                                    equipment</td>
+                            </tr>
+                            {% endfor %}
+
+                            {% empty %}
+                            <tr class="system-child-{{ system.id }} unit-child-{{ unit.id }} bg-gray-50">
+                                <td colspan="5" class="pl-28 text-sm text-gray-400 italic py-2">No equipment in this
+                                    system</td>
+                            </tr>
+                            {% endfor %}
+
+                            {% empty %}
+                            <tr class="unit-child-{{ unit.id }} bg-gray-50">
+                                <td colspan="5" class="pl-20 text-sm text-gray-400 italic py-2">No systems in this unit
+                                </td>
+                            </tr>
+                            {% endfor %}
+
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="pl-12 text-sm text-gray-400 italic py-2">No units in this
+                                    facility</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        {% empty %}
+                        <tbody>
+                            <tr>
+                                <td colspan="5" class="text-center py-8 text-gray-500">
+                                    No facilities found. Create a facility first.
+                                </td>
+                            </tr>
+                        </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+
+            </div>
             <!-- END MAIN CONTENT -->
+
+            <script>
+                function toggleRow(targetId, iconId) {
+                    const target = document.getElementById(targetId);
+                    const icon = document.getElementById(iconId);
+
+                    if (target) {
+                        const isCurrentlyHidden = target.classList.contains('hidden');
+                        if (isCurrentlyHidden) {
+                            target.classList.remove('hidden');
+                            if (icon) icon.style.transform = 'rotate(0deg)';
+                        } else {
+                            target.classList.add('hidden');
+                            if (icon) icon.style.transform = 'rotate(-90deg)';
+                        }
+                    } else {
+                        // Handle class-based toggles
+                        const classTypes = ['unit', 'system', 'equipment'];
+                        for (const type of classTypes) {
+                            if (targetId.startsWith(type + '-')) {
+                                const id = targetId.split('-')[1];
+                                const rows = document.querySelectorAll('.' + type + '-child-' + id);
+                                const isCurrentlyHidden = rows[0] && rows[0].classList.contains('hidden');
+
+                                rows.forEach(row => {
+                                    if (isCurrentlyHidden) {
+                                        row.classList.remove('hidden');
+                                    } else {
+                                        row.classList.add('hidden');
+                                    }
+                                });
+
+                                if (icon) icon.style.transform = isCurrentlyHidden ? 'rotate(0deg)' : 'rotate(-90deg)';
+                                break;
+                            }
+                        }
+                    }
+                }
+            </script>
+
         </main>
     </div>
 </div>
