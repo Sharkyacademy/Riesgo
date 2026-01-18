@@ -36,7 +36,101 @@
             </aside>
             <!-- END SIDEBAR -->
             <!-- MAIN CONTENT -->
+            <div class="flex-1 overflow-y-auto p-6 bg-gray-50">
+                <div class="flex justify-between items-center mb-6">
+                    <!-- Add Facility Button -->
+                    <label for="add_facility_modal"
+                        class="btn bg-blue-950 hover:bg-blue-900 text-white border-none gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        Add Facility
+                    </label>
+                </div>
 
+                <!-- Facilities Table -->
+                <div class="overflow-x-auto shadow-md rounded-lg">
+                    <table class="table w-full">
+                        <!-- Head -->
+                        <thead class="bg-blue-950 text-white">
+                            <tr>
+                                <th class="rounded-tl-lg">Company</th>
+                                <th>Location</th>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th class="rounded-tr-lg">Actions</th>
+                            </tr>
+                        </thead>
+                        <!-- Body -->
+                        <tbody class="bg-white">
+                            {% for facility in facilities %}
+                            <tr class="hover:bg-blue-50 transition-colors border-b last:border-b-0">
+                                <td class="font-medium text-gray-900">{{ facility.company }}</td>
+                                <td class="text-gray-700">{{ facility.location }}</td>
+                                <td class="text-gray-700">{{ facility.name }}</td>
+                                <td class="font-medium text-gray-900">{{ facility.facility_type }}</td>
+                                <td>
+                                    <div class="flex gap-2">
+                                        <button
+                                            class="btn btn-ghost btn-xs text-blue-950 hover:bg-blue-100">Edit</button>
+                                        <button
+                                            class="btn btn-ghost btn-xs text-red-600 hover:bg-red-50">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center py-8 text-gray-500">
+                                    No facilities found. Click "Add Facility" to create one.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Add Facility Modal -->
+                <input type="checkbox" id="add_facility_modal" class="modal-toggle" />
+                <div class="modal">
+                    <div class="modal-box relative">
+                        <label for="add_facility_modal" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
+                        <h3 class="text-lg font-bold mb-4 text-blue-950">Add New Facility</h3>
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="form-control w-full mb-4">
+                                <label class="label">
+                                    <span class="label-text text-blue-950 font-semibold">Company</span>
+                                </label>
+                                {{ form.company }}
+                            </div>
+                            <div class="form-control w-full mb-4">
+                                <label class="label">
+                                    <span class="label-text text-blue-950 font-semibold">Name</span>
+                                </label>
+                                {{ form.name }}
+                            </div>
+                            <div class="form-control w-full mb-4">
+                                <label class="label">
+                                    <span class="label-text text-blue-950 font-semibold">Location</span>
+                                </label>
+                                {{ form.location }}
+                            </div>
+                            <div class="form-control w-full mb-6">
+                                <label class="label">
+                                    <span class="label-text text-blue-950 font-semibold">Type</span>
+                                </label>
+                                {{ form.facility_type }}
+                            </div>
+                            <div class="modal-action">
+                                <button type="submit"
+                                    class="btn bg-blue-950 hover:bg-blue-900 text-white border-none w-full">Create
+                                    Facility</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
             <!-- END MAIN CONTENT -->
         </main>
     </div>
