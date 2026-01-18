@@ -12,3 +12,13 @@ class Facility(models.Model):
 
     class Meta:
         verbose_name_plural = "Facilities"
+
+class Unit(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, null=True, blank=True)
+    facility = models.ForeignKey(Facility, on_delete=models.CASCADE)
+    people_density = models.FloatField(default=0.0, verbose_name="People per Sq Ft")
+
+    def __str__(self):
+        return self.name
+

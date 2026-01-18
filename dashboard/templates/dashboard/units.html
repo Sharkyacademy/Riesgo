@@ -36,7 +36,227 @@
             </aside>
             <!-- END SIDEBAR -->
             <!-- MAIN CONTENT -->
+            <div class="flex-1 overflow-y-auto p-6 bg-gray-50">
+                <div class="flex justify-between items-center mb-6">
+                    <!-- Add Unit Button -->
+                    <label for="add_unit_modal" class="btn bg-blue-950 hover:bg-blue-900 text-white border-none gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        Add Unit
+                    </label>
+                </div>
 
+                <!-- Units Table -->
+                <div class="overflow-x-auto shadow-md rounded-lg">
+                    <table class="table w-full">
+                        <!-- Head -->
+                        <thead class="bg-blue-950 text-white">
+                            <tr>
+                                <th class="w-1/3 pl-8">Name</th>
+                                <th class="w-1/3">Description</th>
+                                <th class="w-1/6">People / Sq Ft</th>
+                                <th class="w-1/6 text-right pr-8">Actions</th>
+                            </tr>
+                        </thead>
+
+                        {% for facility in facilities %}
+                        <tbody class="bg-white border-b border-gray-200">
+                            <!-- Facility Header Row -->
+                            <tr class="bg-blue-900 hover:bg-blue-800 cursor-pointer transition-colors"
+                                onclick="toggleFacility('{{ facility.id }}')">
+                                <td colspan="4" class="font-bold text-white py-2 px-4">
+                                    <div class="flex items-center gap-2">
+                                        <svg id="icon-{{ facility.id }}" xmlns="http://www.w3.org/2000/svg"
+                                            class="h-4 w-4 transform transition-transform duration-200" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                        Facility: {{ facility.name }}
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+
+                        <!-- Units Rows (Collapsible Group) -->
+                        <tbody id="facility-rows-{{ facility.id }}"
+                            class="bg-white transition-all duration-300 border-l-4 border-blue-900">
+                            {% for unit in facility.unit_set.all %}
+                            <tr class="hover:bg-gray-50 transition-colors border-b last:border-b-0 border-gray-100">
+                                <td class="pl-16 font-medium text-gray-700 flex items-center gap-2">
+                                    <span class="text-gray-300">└</span>
+                                    {{ unit.name }}
+                                </td>
+                                <td class="text-gray-600">{{ unit.description }}</td>
+                                <td class="text-gray-600">{{ unit.people_density|floatformat:4 }}</td>
+                                <td class="text-right pr-8">
+                                    <div class="flex justify-end gap-2">
+                                        <button
+                                            class="btn btn-ghost btn-xs text-blue-950 hover:bg-blue-100">Edit</button>
+                                        <button
+                                            class="btn btn-ghost btn-xs text-red-600 hover:bg-red-50">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr class="bg-gray-50">
+                                <td colspan="4" class="pl-16 text-sm text-gray-400 italic py-2">No units in this
+                                    facility</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        {% empty %}
+                        <tbody>
+                            <tr>
+                                <td colspan="4" class="text-center py-8 text-gray-500">
+                                    No facilities found. Create a facility first.
+                                </td>
+                            </tr>
+                        </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+
+                <!-- Add Unit Modal -->
+                <input type="checkbox" id="add_unit_modal" class="modal-toggle" />
+                <div class="modal">
+                    <div class="modal-box relative max-w-2xl">
+                        <label for="add_unit_modal" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
+                        <h3 class="text-lg font-bold mb-4 text-blue-950">Add New Unit</h3>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Form Column -->
+                            <div>
+                                <h4 class="font-semibold text-gray-700 mb-2">Unit Details</h4>
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <div class="form-control w-full mb-2">
+                                        <label class="label"><span
+                                                class="label-text text-blue-950 font-semibold">Facility</span></label>
+                                        {{ form.facility }}
+                                    </div>
+                                    <div class="form-control w-full mb-2">
+                                        <label class="label"><span
+                                                class="label-text text-blue-950 font-semibold">Name</span></label>
+                                        {{ form.name }}
+                                    </div>
+                                    <div class="form-control w-full mb-2">
+                                        <label class="label"><span
+                                                class="label-text text-blue-950 font-semibold">Description</span></label>
+                                        {{ form.description }}
+                                    </div>
+                                    <div class="form-control w-full mb-4">
+                                        <label class="label"><span
+                                                class="label-text text-blue-950 font-semibold">Density (pp/sq
+                                                ft)</span></label>
+                                        {{ form.people_density }}
+                                    </div>
+                                    <div class="modal-action mt-4">
+                                        <button type="submit"
+                                            class="btn bg-blue-950 hover:bg-blue-900 text-white border-none w-full">Create
+                                            Unit</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Calculator Column -->
+                            <div class="bg-gray-100 p-4 rounded-lg">
+                                <h4 class="font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                    </svg>
+                                    Density Calculator (Imperial)
+                                </h4>
+                                <div class="form-control w-full mb-2">
+                                    <label class="label"><span class="label-text text-xs">Width (ft)</span></label>
+                                    <input type="number" id="calc_width" class="input input-bordered input-sm w-full"
+                                        placeholder="e.g. 50">
+                                </div>
+                                <div class="form-control w-full mb-2">
+                                    <label class="label"><span class="label-text text-xs">Length (ft)</span></label>
+                                    <input type="number" id="calc_length" class="input input-bordered input-sm w-full"
+                                        placeholder="e.g. 100">
+                                </div>
+                                <div class="form-control w-full mb-2">
+                                    <label class="label"><span class="label-text text-xs">People Count</span></label>
+                                    <input type="number" id="calc_people" class="input input-bordered input-sm w-full"
+                                        placeholder="e.g. 5">
+                                </div>
+
+                                <div class="divider my-2"></div>
+
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm font-semibold">Area:</span>
+                                    <span id="calc_area" class="text-sm">0 sq ft</span>
+                                </div>
+                                <div class="flex justify-between items-center mb-4">
+                                    <span class="text-sm font-semibold">Density:</span>
+                                    <span id="calc_density" class="text-sm font-bold text-blue-900">0.0000</span>
+                                </div>
+
+                                <button type="button" onclick="applyDensity()"
+                                    class="btn btn-sm btn-outline btn-primary w-full">
+                                    Use Calculated Value
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                // Form Calculator Script
+                const widthInput = document.getElementById('calc_width');
+                const lengthInput = document.getElementById('calc_length');
+                const peopleInput = document.getElementById('calc_people');
+                const areaDisplay = document.getElementById('calc_area');
+                const densityDisplay = document.getElementById('calc_density');
+                const targetInput = document.querySelector('input[name="people_density"]');
+
+                function calculate() {
+                    const w = parseFloat(widthInput.value) || 0;
+                    const l = parseFloat(lengthInput.value) || 0;
+                    const p = parseFloat(peopleInput.value) || 0;
+
+                    const area = w * l;
+                    let density = 0;
+
+                    if (area > 0) {
+                        density = p / area;
+                    }
+
+                    areaDisplay.textContent = area.toFixed(2) + ' sq ft';
+                    densityDisplay.textContent = density.toFixed(6);
+                    return density;
+                }
+
+                widthInput.addEventListener('input', calculate);
+                lengthInput.addEventListener('input', calculate);
+                peopleInput.addEventListener('input', calculate);
+
+                function applyDensity() {
+                    const density = calculate();
+                    targetInput.value = density.toFixed(6);
+                }
+
+                // Table Toggle Script
+                function toggleFacility(id) {
+                    const rows = document.getElementById('facility-rows-' + id);
+                    const icon = document.getElementById('icon-' + id);
+
+                    rows.classList.toggle('hidden');
+
+                    if (rows.classList.contains('hidden')) {
+                        icon.style.transform = 'rotate(-90deg)';
+                    } else {
+                        icon.style.transform = 'rotate(0deg)';
+                    }
+                }
+            </script>
             <!-- END MAIN CONTENT -->
         </main>
     </div>

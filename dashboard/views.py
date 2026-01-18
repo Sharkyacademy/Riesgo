@@ -34,7 +34,28 @@ def facilities(request):
 
 @login_required
 def units(request):
-    return render(request, 'dashboard/units.html')
+    from .models import Unit
+    from .forms import UnitForm
+
+    if request.method == 'POST':
+        form = UnitForm(request.user, request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Unit created successfully!')
+            return redirect('units_home')
+        else:
+            messages.error(request, 'Error creating unit.')
+    else:
+        form = UnitForm(request.user)
+
+    # Filter facilities owned by the user and prefetch their units
+    from .models import Facility
+    facilities = Facility.objects.filter(owner=request.user).prefetch_related('unit_set')
+    
+    return render(request, 'dashboard/units.html', {
+        'facilities': facilities,
+        'form': form
+    })
 
 @login_required
 def equipment(request):
