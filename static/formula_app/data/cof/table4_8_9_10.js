@@ -469,3 +469,17 @@ export const ToxicGasConstants = {
         ]
     }
 };
+
+export const AcidConstants = {
+    // For Eq 3.71, based on Pressure
+    // Continuous Only. Type 0.
+    "LP": { a: 2699.5, b: 0.2024 }, // 15 psig
+    "MP": { a: 3366.2, b: 0.2878 }, // 30 psig
+    "HP": { a: 6690.0, b: 0.2469 }  // 60 psig
+};
+
+export const SteamConstants = {
+    C5: 55.6,   // lb/s (Blending)
+    C9: 0.6,    // ft2*s/lb (Continuous)
+    C10: 63.32  // ft2 / lb^0.6384 (Instantaneous)
+};

@@ -997,17 +997,259 @@
                                 0.</span>
                         </div>
                     </div>
+                    <!-- 4.11 Final Consequence Areas -->
+                    <div id="final_consequence_areas_card"
+                        class="card bg-gray-900 text-white shadow-xl p-6 mb-6 hidden">
+                        <h2 class="card-title text-gray-900 text-xl border-b pb-2 mb-4">
+                            4.11 Final Consequence Areas Summary
+                        </h2>
 
-                    <!-- MOBILE SIDEBAR -->
-                    <div class="drawer-side z-40">
-                        <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-                        <aside class="w-64 bg-white p-4 shadow-2xl flex-shrink-0">
-                            {% include 'formula_app/includes/sidebar.html' %}
-                        </aside>
+                        <div class="stats stats-vertical lg:stats-horizontal shadow bg-gray-800 text-white w-full">
+                            <div class="stat">
+                                <div class="stat-title text-gray-400">Final Component Damage (\(CA_{cmd}^{final}\))
+                                </div>
+                                <div id="val_final_cmd_summary" class="stat-value text-red-400">-</div>
+                                <div class="stat-desc">Max(Flammable CMD)</div>
+                            </div>
+
+                            <div class="stat">
+                                <div class="stat-title text-gray-400">Final Personnel Injury (\(CA_{inj}^{final}\))
+                                </div>
+                                <div id="val_final_inj_summary" class="stat-value text-orange-400">-</div>
+                                <div class="stat-desc">Max(Flam, Tox, NonFlam)</div>
+                            </div>
+
+                            <div class="stat border-l-2 border-primary">
+                                <div class="stat-title text-primary font-bold">Overall Consequence (\(CA_f\))</div>
+                                <div id="val_final_cof_area" class="stat-value text-primary">-</div>
+                                <div class="stat-desc">Max(CMD, INJ)</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- STEP 4.12: Financial Consequence -->
+                    <div id="financial_consequence_card"
+                        class="card bg-white shadow-lg p-6 mb-6 border-l-4 border-green-500 hidden">
+                        <h2 class="card-title text-green-900 text-xl border-b pb-2 mb-4">
+                            4.12 Financial Consequence (Step 5.0)
+                        </h2>
+
+                        <!-- 4.12.2 Component Damage Inputs -->
+                        <div class="card bg-green-50 border border-green-200 p-4 mb-4">
+                            <h3 class="font-bold text-green-800 text-sm border-b pb-2 mb-3">
+                                4.12.2 Component Damage Cost (\(FC_{cmd}\)) Inputs
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="form-control w-full">
+                                    <label class="label"><span class="label-text font-semibold">Material of Construction
+                                            (Table 4.16)</span></label>
+                                    <select id="select_material_cost"
+                                        class="select select-bordered w-full bg-white text-gray-700">
+                                        <!-- Populated via JS -->
+                                    </select>
+                                </div>
+                                <div class="form-control w-full">
+                                    <label class="label"><span class="label-text font-semibold">Cost Factor (\(costfactor\))</span></label>
+                                    <input type="number" id="input_cost_factor" value="1.0" min="0.1" step="0.1"
+                                        class="input input-bordered w-full bg-white" />
+                                    <label class="label"><span class="label-text-alt">Adjustment for
+                                            inflation/experience (Default: 1.0)</span></label>
+                                </div>
+                            </div>
+                            <div class="mt-4 p-3 bg-white rounded shadow-sm flex justify-between items-center">
+                                <span class="text-sm font-semibold text-gray-600">Calculated FC_cmd:</span>
+                                <span id="val_fc_cmd" class="text-lg font-bold text-green-700">$ -</span>
+                            </div>
+                        </div>
+
+                        <!-- 4.12.3 Affected Area Cost Inputs -->
+                        <div class="card bg-green-50 border border-green-200 p-4 mb-4">
+                            <h3 class="font-bold text-green-800 text-sm border-b pb-2 mb-3">
+                                4.12.3 Affected Area Cost (\(FC_{affa}\)) Inputs
+                            </h3>
+                            <div class="form-control w-full">
+                                <label class="label"><span class="label-text font-semibold">Equipment Cost (\(equipcost\)) [$/ft²]</span></label>
+                                <input type="number" id="input_equipcost" value="0" min="0" step="100"
+                                    class="input input-bordered w-full bg-white" />
+                                <label class="label"><span class="label-text-alt">Replacement cost of surrounding
+                                        equipment per ft²</span></label>
+                            </div>
+                            <div class="mt-4 p-3 bg-white rounded shadow-sm flex justify-between items-center">
+                                <span class="text-sm font-semibold text-gray-600">Calculated FC_affa:</span>
+                                <span id="val_fc_affa" class="text-lg font-bold text-green-700">$ -</span>
+                            </div>
+                        </div>
+
+                        <!-- 4.12.4 Production Loss Mean Cost -->
+                        <div class="card bg-green-50 border border-green-200 p-4 mb-4">
+                            <h3 class="font-bold text-green-800 text-sm border-b pb-2 mb-3">
+                                4.12.4 Production Loss Mean Cost (\(FC_{prod}\)) Inputs
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="form-control w-full">
+                                    <label class="label"><span class="label-text font-semibold">Production Cost (\(prodcost\)) [$/day]</span></label>
+                                    <input type="number" id="input_prodcost" value="0" min="0" step="100"
+                                        class="input input-bordered w-full bg-white" />
+                                </div>
+                                <div class="form-control w-full">
+                                    <label class="label"><span class="label-text font-semibold">Outage Multiplier (\(Outage_{mult}\))</span></label>
+                                    <input type="number" id="input_outage_mult" value="1.0" min="0" step="0.1"
+                                        class="input input-bordered w-full bg-white" />
+                                </div>
+                            </div>
+                            <div class="mt-4 p-3 bg-white rounded shadow-sm flex justify-between items-center">
+                                <span class="text-sm font-semibold text-gray-600">Calculated FC_prod:</span>
+                                <span id="val_fc_prod" class="text-lg font-bold text-green-700">$ -</span>
+                            </div>
+                        </div>
+
+                        <!-- 4.12.5 Personnel Injury Cost -->
+                        <div class="card bg-green-50 border border-green-200 p-4 mb-4">
+                            <h3 class="font-bold text-green-800 text-sm border-b pb-2 mb-3">
+                                4.12.5 Personnel Injury Cost (\(FC_{inj}\)) Inputs
+                            </h3>
+
+                            <!-- Population Density Calculator -->
+                            <div class="bg-gray-50 p-3 rounded mb-4 border border-gray-200">
+                                <h4 class="font-bold text-xs text-gray-700 mb-2 uppercase">Population Density Calculator
+                                    (Eq 3.93, 3.94)</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
+                                    <div class="form-control w-full">
+                                        <label class="label"><span class="label-text text-xs font-semibold">Unit Area
+                                                (\(Area_n^{safety}\)) [ft²]</span></label>
+                                        <input type="number" id="input_unit_area" value="10000" min="1"
+                                            class="input input-sm input-bordered w-full bg-white" />
+                                    </div>
+                                    <div class="form-control w-full">
+                                        <label class="label"><span class="label-text text-xs font-semibold">Calculated
+                                                Density (\(popdens\))</span></label>
+                                        <input type="number" id="input_popdens" value="0.0002" readonly
+                                            class="input input-sm input-bordered w-full bg-gray-100 font-bold text-green-700" />
+                                    </div>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="table table-compact w-full text-xs">
+                                        <thead>
+                                            <tr>
+                                                <th>Activity / Shift</th>
+                                                <th>Personnel (\(Pers\#_n\))</th>
+                                                <th>Time Present (\(Present\%_n\))</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Shift 1</td>
+                                                <td><input type="number" id="input_pers_1" value="2" min="0"
+                                                        class="input input-xs input-bordered w-full" /></td>
+                                                <td><input type="number" id="input_time_1" value="100" min="0" max="100"
+                                                        class="input input-xs input-bordered w-full" /></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Shift 2</td>
+                                                <td><input type="number" id="input_pers_2" value="0" min="0"
+                                                        class="input input-xs input-bordered w-full" /></td>
+                                                <td><input type="number" id="input_time_2" value="0" min="0" max="100"
+                                                        class="input input-xs input-bordered w-full" /></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Maintenance / Other</td>
+                                                <td><input type="number" id="input_pers_3" value="0" min="0"
+                                                        class="input input-xs input-bordered w-full" /></td>
+                                                <td><input type="number" id="input_time_3" value="0" min="0" max="100"
+                                                        class="input input-xs input-bordered w-full" /></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="form-control w-full">
+                                    <label class="label"><span class="label-text font-semibold">Injury Cost (\(injcost\)) [$/person]</span></label>
+                                    <input type="number" id="input_injcost" value="0" min="0" step="1000"
+                                        class="input input-bordered w-full bg-white" />
+                                </div>
+                            </div>
+                            <div class="mt-4 p-3 bg-white rounded shadow-sm flex justify-between items-center">
+                                <span class="text-sm font-semibold text-gray-600">Calculated FC_inj:</span>
+                                <span id="val_fc_inj" class="text-lg font-bold text-green-700">$ -</span>
+                            </div>
+                        </div>
+
+                        <!-- 4.12.6 Environmental Cleanup Cost -->
+                        <div class="card bg-green-50 border border-green-200 p-4 mb-4">
+                            <h3 class="font-bold text-green-800 text-sm border-b pb-2 mb-3">
+                                4.12.6 Environmental Cleanup Cost (\(FC_{environ}\)) Inputs
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="form-control w-full">
+                                    <label class="label"><span class="label-text font-semibold">Environmental Cost (\(envcost\)) [$/bbl]</span></label>
+                                    <input type="number" id="input_envcost" value="0" min="0" step="10"
+                                        class="input input-bordered w-full bg-white" />
+                                </div>
+                                <div class="form-control w-full hidden">
+                                    <label class="label"><span class="label-text font-semibold">Message</span></label>
+                                    <div id="env_cost_msg" class="text-xs text-gray-500 italic mt-2">
+                                        Applied only if liquid spill persists (NBP > 200°F).
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4 p-3 bg-white rounded shadow-sm flex justify-between items-center">
+                                <span class="text-sm font-semibold text-gray-600">Calculated FC_environ:</span>
+                                <span id="val_fc_environ" class="text-lg font-bold text-green-700">$ -</span>
+                            </div>
+                        </div>
+
+                        <!-- 4.12.7 Final Total Financial Consequence -->
+                        <div class="card bg-green-100 border-2 border-green-500 p-4 mb-4 shadow-md">
+                            <h3 class="font-bold text-green-900 text-lg border-b border-green-300 pb-2 mb-3">
+                                4.12.7 Final Total Financial Consequence (\(FC\))
+                            </h3>
+                            <div class="mt-2 p-4 bg-white rounded shadow-sm flex flex-col items-center">
+                                <span class="text-md font-semibold text-gray-600 mb-1">Total Consequence (\(FC = FC_{cmd} + FC_{affa} + FC_{prod} + FC_{inj} + FC_{environ}\)</span>
+                                <span id="val_fc_total" class="text-3xl font-extrabold text-green-800">$ -</span>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- STEP 4.13: Safety Consequence -->
+                    <div id="safety_consequence_card"
+                        class="card bg-base-100 shadow-xl border border-warning mb-6 hidden">
+                        <div class="card-body">
+                            <h2 class="card-title text-warning">STEP 4.13: Determine Safety Consequence</h2>
+                            <div class="p-4 bg-yellow-50 rounded shadow-sm border border-yellow-200">
+                                <h3 class="font-bold text-yellow-800 text-lg mb-2">4.13.1 Final Safety Consequence
+                                    (\(C_f^{inj}\))</h3>
+                                <p class="text-sm text-gray-700 italic mb-2">Calculated as: \(C_f^{inj} = CA_{inj}^{final} \times popdens\)</p>
+
+                                <div class="flex justify-between items-center bg-white p-3 rounded">
+                                    <span class="text-md font-semibold text-gray-600">Safety Consequence (\(C_f^{inj}\)) [injuries]:</span>
+                                    <span id="val_c_f_inj" class="text-2xl font-bold text-yellow-700">-</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                {% endblock %}
 
-                {% block scripts %}
-                <script type="module" src="{% static 'formula_app/js/cof_level_1.js' %}"></script>
-                {% endblock %}
+
+            </section> <!-- /MAIN CONTENT -->
+        </main>
+    </div> <!-- /flex-1 overflow-y-auto (CONTENT SCROLLABLE) -->
+
+
+
+</div> <!-- /drawer-content -->
+
+<!-- MOBILE SIDEBAR -->
+<div class="drawer-side z-40">
+    <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+    <aside class="w-64 bg-white p-4 shadow-2xl flex-shrink-0">
+        {% include 'formula_app/includes/sidebar.html' %}
+    </aside>
+</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="module" src="{% static 'formula_app/js/cof_level_1.js' %}"></script>
+{% endblock %}
