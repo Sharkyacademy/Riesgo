@@ -1,0 +1,138 @@
+{%extends 'theme/base.html'%}
+{% load static %}
+
+{%block title%}Facilities{%endblock%}
+
+{% block nav_content %}
+<div class="flex justify-end items-center h-full">
+    <ul class="menu menu-horizontal p-0 hidden lg:flex text-white space-x-2">
+        <li><a id="logout_btn" href="{% url 'logout' %}"
+                class="btn btn-ghost text-white hover:bg-blue-800 transition duration-200">Log out</a></li>
+        <li><a href="#" class="btn btn-ghost text-white hover:bg-blue-800 transition duration-200">Account</a></li>
+    </ul>
+
+    <label for="my-drawer" class="btn btn-square btn-ghost text-white lg:hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            class="inline-block w-6 h-6 stroke-current">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+    </label>
+</div>
+{% endblock %}
+
+{%block content%}
+
+<div class="drawer h-full overflow-hidden">
+    <input id="my-drawer" type="checkbox" class="drawer-toggle" />
+
+    <div class="drawer-content flex flex-col h-full overflow-hidden">
+
+        <main class="flex flex-1 h-full overflow-hidden">
+
+            <!-- SIDEBAR -->
+            <aside
+                class="hidden lg:block w-64 bg-white p-6 shadow-xl border-r border-gray-200 flex-shrink-0 overflow-y-auto">
+                {% include 'formula_app/includes/sidebar.html' %}
+            </aside>
+            <!-- END SIDEBAR -->
+            <!-- MAIN CONTENT -->
+            <div class="flex-1 overflow-y-auto p-6 bg-gray-50">
+                <div class="flex justify-between items-center mb-6">
+                    <!-- Add Facility Button -->
+                    <label for="add_facility_modal"
+                        class="btn bg-blue-950 hover:bg-blue-900 text-white border-none gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        Add Facility
+                    </label>
+                </div>
+
+                <!-- Facilities Table -->
+                <div class="overflow-x-auto shadow-md rounded-lg">
+                    <table class="table w-full">
+                        <!-- Head -->
+                        <thead class="bg-blue-950 text-white">
+                            <tr>
+                                <th class="rounded-tl-lg">Company</th>
+                                <th>Location</th>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th class="rounded-tr-lg">Actions</th>
+                            </tr>
+                        </thead>
+                        <!-- Body -->
+                        <tbody class="bg-white">
+                            {% for facility in facilities %}
+                            <tr class="hover:bg-blue-50 transition-colors border-b last:border-b-0">
+                                <td class="font-medium text-gray-900">{{ facility.company }}</td>
+                                <td class="text-gray-700">{{ facility.location }}</td>
+                                <td class="text-gray-700">{{ facility.name }}</td>
+                                <td class="font-medium text-gray-900">{{ facility.facility_type }}</td>
+                                <td>
+                                    <div class="flex gap-2">
+                                        <button
+                                            class="btn btn-ghost btn-xs text-blue-950 hover:bg-blue-100">Edit</button>
+                                        <button
+                                            class="btn btn-ghost btn-xs text-red-600 hover:bg-red-50">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center py-8 text-gray-500">
+                                    No facilities found. Click "Add Facility" to create one.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Add Facility Modal -->
+                <input type="checkbox" id="add_facility_modal" class="modal-toggle" />
+                <div class="modal">
+                    <div class="modal-box relative">
+                        <label for="add_facility_modal" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
+                        <h3 class="text-lg font-bold mb-4 text-blue-950">Add New Facility</h3>
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="form-control w-full mb-4">
+                                <label class="label">
+                                    <span class="label-text text-blue-950 font-semibold">Company</span>
+                                </label>
+                                {{ form.company }}
+                            </div>
+                            <div class="form-control w-full mb-4">
+                                <label class="label">
+                                    <span class="label-text text-blue-950 font-semibold">Name</span>
+                                </label>
+                                {{ form.name }}
+                            </div>
+                            <div class="form-control w-full mb-4">
+                                <label class="label">
+                                    <span class="label-text text-blue-950 font-semibold">Location</span>
+                                </label>
+                                {{ form.location }}
+                            </div>
+                            <div class="form-control w-full mb-6">
+                                <label class="label">
+                                    <span class="label-text text-blue-950 font-semibold">Type</span>
+                                </label>
+                                {{ form.facility_type }}
+                            </div>
+                            <div class="modal-action">
+                                <button type="submit"
+                                    class="btn bg-blue-950 hover:bg-blue-900 text-white border-none w-full">Create
+                                    Facility</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- END MAIN CONTENT -->
+        </main>
+    </div>
+</div>
+{% endblock %}

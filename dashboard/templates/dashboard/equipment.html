@@ -1,0 +1,272 @@
+{%extends 'theme/base.html'%}
+{% load static %}
+
+{%block title%}Equipment{%endblock%}
+
+{% block nav_content %}
+<div class="flex justify-end items-center h-full">
+    <ul class="menu menu-horizontal p-0 hidden lg:flex text-white space-x-2">
+        <li><a id="logout_btn" href="{% url 'logout' %}"
+                class="btn btn-ghost text-white hover:bg-blue-800 transition duration-200">Log out</a></li>
+        <li><a href="#" class="btn btn-ghost text-white hover:bg-blue-800 transition duration-200">Account</a></li>
+    </ul>
+
+    <label for="my-drawer" class="btn btn-square btn-ghost text-white lg:hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            class="inline-block w-6 h-6 stroke-current">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+    </label>
+</div>
+{% endblock %}
+
+{%block content%}
+
+<div class="drawer h-full overflow-hidden">
+    <input id="my-drawer" type="checkbox" class="drawer-toggle" />
+
+    <div class="drawer-content flex flex-col h-full overflow-hidden">
+
+        <main class="flex flex-1 h-full overflow-hidden">
+
+            <!-- SIDEBAR -->
+            <aside
+                class="hidden lg:block w-64 bg-white p-6 shadow-xl border-r border-gray-200 flex-shrink-0 overflow-y-auto">
+                {% include 'formula_app/includes/sidebar.html' %}
+            </aside>
+            <!-- END SIDEBAR -->
+
+            <!-- MAIN CONTENT -->
+            <div class="flex-1 overflow-y-auto p-6 bg-gray-50">
+                <div class="flex justify-between items-center mb-6">
+                    <!-- Add Equipment Button -->
+                    <label for="add_equipment_modal"
+                        class="btn bg-blue-950 hover:bg-blue-900 text-white border-none gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        Add Equipment
+                    </label>
+                </div>
+
+                <!-- Equipment Hierarchy Table -->
+                <div class="overflow-x-auto shadow-md rounded-lg">
+                    <table class="table w-full">
+                        <!-- Head -->
+                        <thead class="bg-blue-950 text-white">
+                            <tr>
+                                <th class="w-1/4 pl-8">Number</th>
+                                <th class="w-1/4">Plant Equipment Type</th>
+                                <th class="w-1/4">Plant Equipment Desc.</th>
+                                <th class="w-1/4 text-right pr-8">Actions</th>
+                            </tr>
+                        </thead>
+
+                        {% for facility in facilities %}
+                        <!-- Level 1: Facility -->
+                        <tbody class="bg-white border-b border-gray-200">
+                            <tr class="bg-blue-900 hover:bg-blue-800 cursor-pointer transition-colors"
+                                onclick="toggleRow('facility-{{ facility.id }}', 'icon-fac-{{ facility.id }}')">
+                                <td colspan="4" class="font-bold text-white py-2 px-4">
+                                    <div class="flex items-center gap-2">
+                                        <svg id="icon-fac-{{ facility.id }}" xmlns="http://www.w3.org/2000/svg"
+                                            class="h-4 w-4 transform transition-transform duration-200" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                        Facility: {{ facility.name }}
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+
+                        <!-- Facility Content Wrapper (Units) -->
+                        <tbody id="facility-{{ facility.id }}"
+                            class="bg-white transition-all duration-300 border-l-4 border-blue-900">
+
+                            {% for unit in facility.unit_set.all %}
+                            <!-- Level 2: Unit -->
+                            <tr class="bg-blue-50 hover:bg-blue-100 cursor-pointer border-b border-blue-100"
+                                onclick="toggleRow('unit-{{ unit.id }}', 'icon-unit-{{ unit.id }}')">
+                                <td colspan="4" style="padding-left: 2rem;" class="font-semibold text-blue-950 py-2">
+                                    <div class="flex items-center gap-2">
+                                        <svg id="icon-unit-{{ unit.id }}" xmlns="http://www.w3.org/2000/svg"
+                                            class="h-4 w-4 transform transition-transform duration-200" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                        Unit: {{ unit.name }}
+                                    </div>
+                                </td>
+                            </tr>
+
+                            {% for system in unit.system_set.all %}
+                            <!-- Level 3: System -->
+                            <tr class="unit-child-{{ unit.id }} bg-gray-50 hover:bg-gray-100 cursor-pointer border-b border-gray-50"
+                                onclick="toggleRow('system-{{ system.id }}', 'icon-sys-{{ system.id }}')">
+                                <td colspan="4" style="padding-left: 4rem;" class="font-medium text-gray-800 py-2">
+                                    <div class="flex items-center gap-2">
+                                        <svg id="icon-sys-{{ system.id }}" xmlns="http://www.w3.org/2000/svg"
+                                            class="h-4 w-4 transform transition-transform duration-200" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                        System: {{ system.name }}
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Level 4: Equipment (Actual Data Rows) -->
+                            {% for equipment in system.equipment_set.all %}
+                            <tr
+                                class="system-child-{{ system.id }} unit-child-{{ unit.id }} hover:bg-gray-50 transition-colors border-b border-gray-100">
+                                <td style="padding-left: 7rem;"
+                                    class="font-medium text-gray-700 flex items-center gap-2">
+                                    <span class="text-gray-300">└</span>
+                                    {{ equipment.number }}
+                                </td>
+                                <td class="text-gray-600">{{ equipment.plant_equipment_type }}</td>
+                                <td class="text-gray-600">{{ equipment.plant_equipment_desc }}</td>
+                                <td class="text-right pr-8">
+                                    <div class="flex justify-end gap-2">
+                                        <button
+                                            class="btn btn-ghost btn-xs text-blue-950 hover:bg-blue-100">Edit</button>
+                                        <button
+                                            class="btn btn-ghost btn-xs text-red-600 hover:bg-red-50">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr class="system-child-{{ system.id }} unit-child-{{ unit.id }} bg-gray-50">
+                                <td colspan="4" style="padding-left: 8rem;" class="text-sm text-gray-400 italic py-2">No
+                                    equipment in this
+                                    system</td>
+                            </tr>
+                            {% endfor %}
+
+                            {% empty %}
+                            <tr class="unit-child-{{ unit.id }} bg-gray-50">
+                                <td colspan="4" style="padding-left: 5rem;" class="text-sm text-gray-400 italic py-2">No
+                                    systems in this unit
+                                </td>
+                            </tr>
+                            {% endfor %}
+
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" style="padding-left: 2rem;" class="text-sm text-gray-400 italic py-2">No
+                                    units in this
+                                    facility</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        {% empty %}
+                        <tbody>
+                            <tr>
+                                <td colspan="4" class="text-center py-8 text-gray-500">
+                                    No facilities found. Create a facility first.
+                                </td>
+                            </tr>
+                        </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+
+                <!-- Add Equipment Modal -->
+                <input type="checkbox" id="add_equipment_modal" class="modal-toggle" />
+                <div class="modal">
+                    <div class="modal-box relative">
+                        <label for="add_equipment_modal" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
+                        <h3 class="text-lg font-bold mb-4 text-blue-950">Add New Equipment</h3>
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="form-control w-full mb-4">
+                                <label class="label"><span
+                                        class="label-text text-blue-950 font-semibold">System</span></label>
+                                {{ form.system }}
+                            </div>
+                            <div class="form-control w-full mb-4">
+                                <label class="label"><span
+                                        class="label-text text-blue-950 font-semibold">Number</span></label>
+                                {{ form.number }}
+                            </div>
+                            <div class="form-control w-full mb-4">
+                                <label class="label"><span class="label-text text-blue-950 font-semibold">Plant
+                                        Equipment Type</span></label>
+                                {{ form.plant_equipment_type }}
+                            </div>
+                            <div class="form-control w-full mb-4">
+                                <label class="label"><span class="label-text text-blue-950 font-semibold">Plant
+                                        Equipment Description</span></label>
+                                {{ form.plant_equipment_desc }}
+                            </div>
+                            <div class="modal-action">
+                                <button type="submit"
+                                    class="btn bg-blue-950 hover:bg-blue-900 text-white border-none w-full">Create
+                                    Equipment</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+            <!-- END MAIN CONTENT -->
+
+            <script>
+                function toggleRow(targetId, iconId) {
+                    const target = document.getElementById(targetId);
+                    const icon = document.getElementById(iconId);
+
+                    if (target) {
+                        // Facility tbody toggle
+                        const isCurrentlyHidden = target.classList.contains('hidden');
+                        if (isCurrentlyHidden) {
+                            target.classList.remove('hidden');
+                            if (icon) icon.style.transform = 'rotate(0deg)';
+                        } else {
+                            target.classList.add('hidden');
+                            if (icon) icon.style.transform = 'rotate(-90deg)';
+                        }
+                    } else {
+                        // Check if it's a unit or system toggle (class-based)
+                        if (targetId.startsWith('unit-')) {
+                            const unitId = targetId.split('-')[1];
+                            const rows = document.querySelectorAll('.unit-child-' + unitId);
+                            const isCurrentlyHidden = rows[0] && rows[0].classList.contains('hidden');
+
+                            rows.forEach(row => {
+                                if (isCurrentlyHidden) {
+                                    row.classList.remove('hidden');
+                                } else {
+                                    row.classList.add('hidden');
+                                }
+                            });
+
+                            if (icon) icon.style.transform = isCurrentlyHidden ? 'rotate(0deg)' : 'rotate(-90deg)';
+                        } else if (targetId.startsWith('system-')) {
+                            const systemId = targetId.split('-')[1];
+                            const rows = document.querySelectorAll('.system-child-' + systemId);
+                            const isCurrentlyHidden = rows[0] && rows[0].classList.contains('hidden');
+
+                            rows.forEach(row => {
+                                if (isCurrentlyHidden) {
+                                    row.classList.remove('hidden');
+                                } else {
+                                    row.classList.add('hidden');
+                                }
+                            });
+
+                            if (icon) icon.style.transform = isCurrentlyHidden ? 'rotate(0deg)' : 'rotate(-90deg)';
+                        }
+                    }
+                }
+            </script>
+
+        </main>
+    </div>
+</div>
+{% endblock %}
