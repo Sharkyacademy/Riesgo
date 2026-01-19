@@ -90,7 +90,7 @@
                             <!-- Level 2: Unit -->
                             <tr class="bg-blue-50 hover:bg-blue-100 cursor-pointer border-b border-blue-100"
                                 onclick="toggleRow('unit-{{ unit.id }}', 'icon-unit-{{ unit.id }}')">
-                                <td colspan="4" class="pl-12 font-semibold text-blue-950 py-2">
+                                <td colspan="4" style="padding-left: 2rem;" class="font-semibold text-blue-950 py-2">
                                     <div class="flex items-center gap-2">
                                         <svg id="icon-unit-{{ unit.id }}" xmlns="http://www.w3.org/2000/svg"
                                             class="h-4 w-4 transform transition-transform duration-200" fill="none"
@@ -107,7 +107,7 @@
                             <!-- Level 3: System -->
                             <tr class="unit-child-{{ unit.id }} bg-gray-50 hover:bg-gray-100 cursor-pointer border-b border-gray-50"
                                 onclick="toggleRow('system-{{ system.id }}', 'icon-sys-{{ system.id }}')">
-                                <td colspan="4" class="pl-20 font-medium text-gray-800 py-2">
+                                <td colspan="4" style="padding-left: 4rem;" class="font-medium text-gray-800 py-2">
                                     <div class="flex items-center gap-2">
                                         <svg id="icon-sys-{{ system.id }}" xmlns="http://www.w3.org/2000/svg"
                                             class="h-4 w-4 transform transition-transform duration-200" fill="none"
@@ -124,7 +124,8 @@
                             {% for equipment in system.equipment_set.all %}
                             <tr
                                 class="system-child-{{ system.id }} unit-child-{{ unit.id }} hover:bg-gray-50 transition-colors border-b border-gray-100">
-                                <td class="pl-32 font-medium text-gray-700 flex items-center gap-2">
+                                <td style="padding-left: 7rem;"
+                                    class="font-medium text-gray-700 flex items-center gap-2">
                                     <span class="text-gray-300">└</span>
                                     {{ equipment.number }}
                                 </td>
@@ -141,21 +142,24 @@
                             </tr>
                             {% empty %}
                             <tr class="system-child-{{ system.id }} unit-child-{{ unit.id }} bg-gray-50">
-                                <td colspan="4" class="pl-32 text-sm text-gray-400 italic py-2">No equipment in this
+                                <td colspan="4" style="padding-left: 8rem;" class="text-sm text-gray-400 italic py-2">No
+                                    equipment in this
                                     system</td>
                             </tr>
                             {% endfor %}
 
                             {% empty %}
                             <tr class="unit-child-{{ unit.id }} bg-gray-50">
-                                <td colspan="4" class="pl-20 text-sm text-gray-400 italic py-2">No systems in this unit
+                                <td colspan="4" style="padding-left: 5rem;" class="text-sm text-gray-400 italic py-2">No
+                                    systems in this unit
                                 </td>
                             </tr>
                             {% endfor %}
 
                             {% empty %}
                             <tr>
-                                <td colspan="4" class="pl-12 text-sm text-gray-400 italic py-2">No units in this
+                                <td colspan="4" style="padding-left: 2rem;" class="text-sm text-gray-400 italic py-2">No
+                                    units in this
                                     facility</td>
                             </tr>
                             {% endfor %}

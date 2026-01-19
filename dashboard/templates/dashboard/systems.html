@@ -89,7 +89,7 @@
                             <!-- Level 2: Unit -->
                             <tr class="bg-blue-50 hover:bg-blue-100 cursor-pointer border-b border-blue-100"
                                 onclick="toggleRow('unit-{{ unit.id }}', 'icon-unit-{{ unit.id }}')">
-                                <td colspan="3" class="pl-12 font-semibold text-blue-950 py-2">
+                                <td colspan="3" style="padding-left: 2rem;" class="font-semibold text-blue-950 py-2">
                                     <div class="flex items-center gap-2">
                                         <svg id="icon-unit-{{ unit.id }}" xmlns="http://www.w3.org/2000/svg"
                                             class="h-4 w-4 transform transition-transform duration-200" fill="none"
@@ -106,7 +106,8 @@
                             {% for system in unit.system_set.all %}
                             <tr
                                 class="unit-child-{{ unit.id }} hover:bg-gray-50 transition-colors border-b border-gray-100">
-                                <td class="pl-24 font-medium text-gray-700 flex items-center gap-2">
+                                <td style="padding-left: 4rem;"
+                                    class="font-medium text-gray-700 flex items-center gap-2">
                                     <span class="text-gray-300">└</span>
                                     {{ system.name }}
                                 </td>
@@ -122,14 +123,16 @@
                             </tr>
                             {% empty %}
                             <tr class="unit-child-{{ unit.id }} bg-gray-50">
-                                <td colspan="3" class="pl-24 text-sm text-gray-400 italic py-2">No systems in this unit
+                                <td colspan="3" style="padding-left: 5rem;" class="text-sm text-gray-400 italic py-2">No
+                                    systems in this unit
                                 </td>
                             </tr>
                             {% endfor %}
 
                             {% empty %}
                             <tr>
-                                <td colspan="3" class="pl-8 text-sm text-gray-400 italic py-2">No units in this facility
+                                <td colspan="3" style="padding-left: 2rem;" class="text-sm text-gray-400 italic py-2">No
+                                    units in this facility
                                 </td>
                             </tr>
                             {% endfor %}

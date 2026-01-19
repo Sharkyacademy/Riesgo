@@ -85,7 +85,8 @@
                             class="bg-white transition-all duration-300 border-l-4 border-blue-900">
                             {% for unit in facility.unit_set.all %}
                             <tr class="hover:bg-gray-50 transition-colors border-b last:border-b-0 border-gray-100">
-                                <td class="pl-16 font-medium text-gray-700 flex items-center gap-2">
+                                <td style="padding-left: 2rem;"
+                                    class="font-medium text-gray-700 flex items-center gap-2">
                                     <span class="text-gray-300">└</span>
                                     {{ unit.name }}
                                 </td>
@@ -102,7 +103,8 @@
                             </tr>
                             {% empty %}
                             <tr class="bg-gray-50">
-                                <td colspan="4" class="pl-16 text-sm text-gray-400 italic py-2">No units in this
+                                <td colspan="4" style="padding-left: 2rem;" class="text-sm text-gray-400 italic py-2">No
+                                    units in this
                                     facility</td>
                             </tr>
                             {% endfor %}

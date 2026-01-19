@@ -1,0 +1,325 @@
+{%extends 'theme/base.html'%}
+{% load static %}
+
+{%block title%}{% if is_edit %}Edit Component{% else %}Create Component{% endif %}{%endblock%}
+
+{% block nav_content %}
+<div class="flex justify-end items-center h-full">
+    <ul class="menu menu-horizontal p-0 hidden lg:flex text-white space-x-2">
+        <li><a id="logout_btn" href="{% url 'logout' %}"
+                class="btn btn-ghost text-white hover:bg-blue-800 transition duration-200">Log out</a></li>
+        <li><a href="#" class="btn btn-ghost text-white hover:bg-blue-800 transition duration-200">Account</a></li>
+    </ul>
+
+    <label for="my-drawer" class="btn btn-square btn-ghost text-white lg:hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            class="inline-block w-6 h-6 stroke-current">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+    </label>
+</div>
+{% endblock %}
+
+{%block content%}
+
+<div class="drawer h-full overflow-hidden">
+    <input id="my-drawer" type="checkbox" class="drawer-toggle" />
+
+    <div class="drawer-content flex flex-col h-full overflow-hidden">
+
+        <main class="flex flex-1 h-full overflow-hidden">
+
+            <!-- SIDEBAR -->
+            <aside
+                class="hidden lg:block w-64 bg-white p-6 shadow-xl border-r border-gray-200 flex-shrink-0 overflow-y-auto">
+                {% include 'formula_app/includes/sidebar.html' %}
+            </aside>
+            <!-- END SIDEBAR -->
+
+            <!-- MAIN CONTENT -->
+            <div class="flex-1 overflow-y-auto p-6 bg-gray-50">
+                <!-- Breadcrumb -->
+                <nav class="mb-6">
+                    <ol class="flex items-center gap-2 text-sm">
+                        <li class="flex items-center">
+                            <a href="{% url 'dashboard_home' %}"
+                                class="flex items-center gap-2 px-3 py-2 rounded-md text-gray-600 hover:text-blue-950 hover:bg-blue-50 transition-all duration-200 group">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    class="w-4 h-4 stroke-current group-hover:scale-110 transition-transform">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                                    </path>
+                                </svg>
+                                <span class="font-medium">Dashboard</span>
+                            </a>
+                        </li>
+
+                        <li class="flex items-center text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5l7 7-7 7" />
+                            </svg>
+                        </li>
+
+                        <li class="flex items-center">
+                            <a href="{% url 'components_home' %}"
+                                class="flex items-center gap-2 px-3 py-2 rounded-md text-gray-600 hover:text-blue-950 hover:bg-blue-50 transition-all duration-200 group">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    class="w-4 h-4 stroke-current group-hover:scale-110 transition-transform">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
+                                    </path>
+                                </svg>
+                                <span class="font-medium">Components</span>
+                            </a>
+                        </li>
+
+                        <li class="flex items-center text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5l7 7-7 7" />
+                            </svg>
+                        </li>
+
+                        <li class="flex items-center">
+                            <span class="flex items-center gap-2 px-3 py-2 rounded-md bg-blue-950 text-white shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    class="w-4 h-4 stroke-current">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                    </path>
+                                </svg>
+                                <span class="font-semibold">{% if is_edit %}Edit{% else %}Create{% endif %}
+                                    Component</span>
+                            </span>
+                        </li>
+                    </ol>
+                </nav>
+
+                <!-- Page Header -->
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl font-bold text-blue-950">
+                        {% if is_edit %}Edit Component{% else %}Create New Component{% endif %}
+                    </h1>
+                    <div class="flex gap-2">
+                        {% if is_edit and component.equipment %}
+                        <a href="#" class="btn bg-purple-600 hover:bg-purple-700 text-white border-none">View
+                            Equipment</a>
+                        {% endif %}
+                        <a href="{% url 'components_home' %}"
+                            class="btn btn-ghost text-blue-950 hover:bg-blue-100">Cancel</a>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tabs tabs-boxed bg-white shadow-md mb-2">
+                    <a class="tab tab-active text-blue-950 font-semibold">Data</a>
+                    <a class="tab text-gray-500" disabled>Metal Loss</a>
+                    <a class="tab text-gray-500" disabled>Non-Metal Loss</a>
+                    <a class="tab text-gray-500" disabled>Probability</a>
+                    <a class="tab text-gray-500" disabled>Consequence</a>
+                    <a class="tab text-gray-500" disabled>Risk</a>
+                    <a class="tab text-gray-500" disabled>Inspection</a>
+                </div>
+
+                <!-- Styles for custom purple theme -->
+                <!-- Sub-tabs for Data section -->
+                <div class="flex gap-2 mb-6 bg-gray-100 p-2 rounded-lg border border-gray-200">
+                    <button type="button"
+                        class="btn btn-sm bg-blue-950 hover:bg-blue-900 text-white border-none shadow-md font-semibold"
+                        onclick="showSubTab('design')">Design / Installation</button>
+                    <button type="button" class="btn btn-sm bg-gray-200 hover:bg-gray-300 text-gray-700 border-none"
+                        onclick="showSubTab('operating')">Operating & Process</button>
+                    <button type="button" class="btn btn-sm bg-gray-200 hover:bg-gray-300 text-gray-700 border-none"
+                        onclick="showSubTab('inspection')">Inspection</button>
+                </div>
+
+                <!-- Design / Installation Section -->
+                <div id="design-section" class="bg-white shadow-md rounded-lg p-6">
+                    <h2
+                        class="text-lg font-bold text-blue-950 mb-6 bg-purple-600 text-white py-2 px-4 -mx-6 -mt-6 rounded-t-lg">
+                        Design / Installation</h2>
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="grid grid-cols-3 gap-6">
+                            <!-- Equipment -->
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text text-blue-950 font-semibold">Equipment</span>
+                                </label>
+                                {{ form.equipment }}
+                            </div>
+
+                            <!-- RBIX Equipment Type -->
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text text-blue-950 font-semibold">RBIX Equipment Type</span>
+                                </label>
+                                {{ form.rbix_equipment_type }}
+                            </div>
+
+                            <!-- RBIX Component Type -->
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text text-blue-950 font-semibold">RBIX Component Type</span>
+                                </label>
+                                {{ form.rbix_component_type }}
+                            </div>
+
+                            <!-- Description (full width) -->
+                            <div class="form-control col-span-3">
+                                <label class="label">
+                                    <span class="label-text text-blue-950 font-semibold">Description</span>
+                                </label>
+                                {{ form.description }}
+                            </div>
+
+                            <!-- P&ID -->
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text text-blue-950 font-semibold">P&ID</span>
+                                </label>
+                                {{ form.p_and_id }}
+                            </div>
+
+                            <!-- P&ID Other -->
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text text-blue-950 font-semibold">P&ID Other</span>
+                                </label>
+                                {{ form.p_and_id_other }}
+                            </div>
+
+                            <!-- Other Drawings -->
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text text-blue-950 font-semibold">Other Drawings</span>
+                                </label>
+                                {{ form.other_drawings }}
+                            </div>
+
+                            <!-- Commissioning Date -->
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text text-blue-950 font-semibold">Commissioning Date</span>
+                                </label>
+                                {{ form.commissioning_date }}
+                            </div>
+
+                            <!-- RBI Calculation Date -->
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text text-blue-950 font-semibold">RBI Calculation Date</span>
+                                </label>
+                                {{ form.rbi_calculation_date }}
+                            </div>
+
+                            <!-- Design Life -->
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text text-blue-950 font-semibold">Design Life (years)</span>
+                                </label>
+                                {{ form.design_life_years }}
+                            </div>
+
+                            <!-- Component Life -->
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text text-blue-950 font-semibold">Component Life (years)</span>
+                                </label>
+                                {{ form.component_life_years }}
+                            </div>
+
+                            <!-- Remaining Life -->
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text text-blue-950 font-semibold">Remaining Life (years)</span>
+                                </label>
+                                {{ form.remaining_life_years }}
+                            </div>
+
+                            <!-- External Coating Date -->
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text text-blue-950 font-semibold">External Coating Installation
+                                        Date</span>
+                                </label>
+                                {{ form.external_coating_date }}
+                            </div>
+
+                            <!-- Material -->
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text text-blue-950 font-semibold">Material</span>
+                                </label>
+                                {{ form.material }}
+                            </div>
+
+                            <!-- Rep. Pipe No. -->
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text text-blue-950 font-semibold">Rep. Pipe No.</span>
+                                </label>
+                                {{ form.rep_pipe_no }}
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="mt-8 flex justify-end gap-3">
+                            <a href="{% url 'components_home' %}" class="btn btn-ghost text-blue-950">Cancel</a>
+                            <button type="submit" class="btn bg-blue-950 hover:bg-blue-900 text-white border-none px-8">
+                                {% if is_edit %}Save Changes{% else %}Create Component{% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Operating & Process Section (Hidden by default) -->
+                <div id="operating-section" class="hidden bg-white shadow-md rounded-lg p-6">
+                    <h2
+                        class="text-lg font-bold text-blue-950 mb-6 bg-purple-600 text-white py-2 px-4 -mx-6 -mt-6 rounded-t-lg">
+                        Operating & Process</h2>
+                    <p class="text-gray-500 italic">Coming soon...</p>
+                </div>
+
+                <!-- Inspection Section (Hidden by default) -->
+                <div id="inspection-section" class="hidden bg-white shadow-md rounded-lg p-6">
+                    <h2
+                        class="text-lg font-bold text-blue-950 mb-6 bg-purple-600 text-white py-2 px-4 -mx-6 -mt-6 rounded-t-lg">
+                        Inspection</h2>
+                    <p class="text-gray-500 italic">Coming soon...</p>
+                </div>
+            </div>
+            <!-- END MAIN CONTENT -->
+
+            <script>
+                function showSubTab(tabName) {
+                    // Hide all sections
+                    document.getElementById('design-section').classList.add('hidden');
+                    document.getElementById('operating-section').classList.add('hidden');
+                    document.getElementById('inspection-section').classList.add('hidden');
+
+                    // Show selected section
+                    document.getElementById(tabName + '-section').classList.remove('hidden');
+
+                    // Update button styles
+                    const buttons = document.querySelectorAll('[onclick^="showSubTab"]');
+                    buttons.forEach(btn => {
+                        btn.classList.remove('bg-blue-950', 'hover:bg-blue-900', 'text-white', 'shadow-md', 'font-semibold');
+                        btn.classList.add('bg-gray-200', 'hover:bg-gray-300', 'text-gray-700');
+                    });
+
+                    // Highlight active button
+                    event.target.classList.remove('bg-gray-200', 'hover:bg-gray-300', 'text-gray-700');
+                    event.target.classList.add('bg-blue-950', 'hover:bg-blue-900', 'text-white', 'shadow-md', 'font-semibold');
+                }
+            </script>
+
+        </main>
+    </div>
+</div>
+{% endblock %}
