@@ -144,132 +144,307 @@
                     </div>
 
                     <!-- Design / Installation Section -->
+
                     <div id="design-section" class="bg-white shadow-md rounded-lg p-6">
                         <h2
-                            class="text-lg font-bold text-blue-950 mb-6 bg-purple-600 text-white py-2 px-4 -mx-6 -mt-6 rounded-t-lg">
+                            class="text-lg font-bold mb-6 bg-purple-600 text-blue-950 py-2 px-4 -mx-6 -mt-6 rounded-t-lg">
                             Design / Installation</h2>
 
-                        <div class="grid grid-cols-3 gap-6">
-                            <!-- Equipment -->
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text text-blue-950 font-semibold">Equipment</span>
-                                </label>
-                                {{ form.equipment }}
+                        <div class="space-y-4">
+                            <!-- Row 1: Equipment -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="form-control md:col-span-2">
+                                    <label class="label"><span
+                                            class="label-text font-semibold text-gray-700">Equipment</span></label>
+                                    {{ form.equipment }}
+                                </div>
                             </div>
 
-                            <!-- RBIX Equipment Type -->
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text text-blue-950 font-semibold">RBIX Equipment Type</span>
-                                </label>
-                                {{ form.rbix_equipment_type }}
+                            <!-- Row 2: Equipment Type & Component Type -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text font-semibold text-gray-700">RBIX
+                                            Equipment Type</span></label>
+                                    {{ form.rbix_equipment_type }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text font-semibold text-gray-700">RBIX
+                                            Component Type</span></label>
+                                    {{ form.rbix_component_type }}
+                                </div>
                             </div>
 
-                            <!-- RBIX Component Type -->
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text text-blue-950 font-semibold">RBIX Component Type</span>
-                                </label>
-                                {{ form.rbix_component_type }}
-                            </div>
-
-                            <!-- Description (full width) -->
-                            <div class="form-control col-span-3">
-                                <label class="label">
-                                    <span class="label-text text-blue-950 font-semibold">Description</span>
-                                </label>
+                            <!-- Row 3: Description -->
+                            <div class="form-control w-full">
+                                <label class="label"><span
+                                        class="label-text font-semibold text-gray-700">Description</span></label>
                                 {{ form.description }}
                             </div>
 
-                            <!-- P&ID -->
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text text-blue-950 font-semibold">P&ID</span>
-                                </label>
-                                {{ form.p_and_id }}
+                            <!-- Row 4: PFD, P&ID, Other Drawings -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="form-control">
+                                    <label class="label"><span
+                                            class="label-text font-semibold text-gray-700">PFD</span></label>
+                                    {{ form.pfd_no }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label"><span
+                                            class="label-text font-semibold text-gray-700">P&ID</span></label>
+                                    {{ form.p_and_id }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text font-semibold text-gray-700">Other
+                                            Drawings</span></label>
+                                    {{ form.other_drawings }}
+                                </div>
                             </div>
 
-                            <!-- P&ID Other -->
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text text-blue-950 font-semibold">P&ID Other</span>
-                                </label>
-                                {{ form.p_and_id_other }}
+                            <!-- Row 5: Dates and Lives Setup -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="form-control">
+                                    <label class="label"><span
+                                            class="label-text font-semibold text-gray-700">Commissioning
+                                            Date</span></label>
+                                    {{ form.commissioning_date }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text font-semibold text-gray-700">RBI
+                                            Calculation Date</span></label>
+                                    {{ form.rbi_calculation_date }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text font-semibold text-gray-700">Design
+                                            Life (years)</span></label>
+                                    {{ form.design_life_years }}
+                                </div>
                             </div>
 
-                            <!-- Other Drawings -->
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text text-blue-950 font-semibold">Other Drawings</span>
-                                </label>
-                                {{ form.other_drawings }}
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text font-semibold text-gray-700">Component
+                                            Life
+                                            (years)</span></label>
+                                    {{ form.component_life_years }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text font-semibold text-gray-700">Remaining
+                                            Life
+                                            (years)</span></label>
+                                    {{ form.remaining_life_years }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text font-semibold text-gray-700">External
+                                            Coating
+                                            Installation Date</span></label>
+                                    {{ form.external_coating_date }}
+                                </div>
                             </div>
 
-                            <!-- Commissioning Date -->
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text text-blue-950 font-semibold">Commissioning Date</span>
-                                </label>
-                                {{ form.commissioning_date }}
+                            <!-- Material Section -->
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                                <div class="form-control">
+                                    <label class="label"><span
+                                            class="label-text font-semibold text-gray-700">Material</span></label>
+                                    {{ form.material }}
+                                </div>
+                                <div class="form-control">
+                                    <button type="button"
+                                        class="btn bg-blue-950 text-white hover:bg-blue-900 btn-block">Select
+                                        Material</button>
+                                </div>
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text font-semibold text-blue-950">RBIX
+                                            Material</span></label>
+                                    <input type="text" class="input input-bordered bg-gray-100" readonly
+                                        value="Carbon steel">
+                                </div>
+                                <div class="form-control">
+                                    <input type="text" class="input input-bordered bg-gray-100" readonly
+                                        value="Carbon Steel A 516">
+                                </div>
                             </div>
 
-                            <!-- RBI Calculation Date -->
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text text-blue-950 font-semibold">RBI Calculation Date</span>
-                                </label>
-                                {{ form.rbi_calculation_date }}
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text font-semibold text-purple-700">RBIX
+                                            Material Nominal Composition</span></label>
+                                    {{ form.material_nominal_composition }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text font-semibold text-purple-700">RBIX
+                                            Material Specification No</span></label>
+                                    {{ form.material_specification_no }}
+                                </div>
+                                <div class="form-control flex flex-row items-center gap-2 pt-8">
+                                    <label class="label cursor-pointer justify-start gap-4">
+                                        <span class="label-text font-semibold text-gray-700">Sulphur Bearing
+                                            Compounds</span>
+                                        {{ form.sulphur_bearing_compounds }}
+                                    </label>
+                                </div>
                             </div>
 
-                            <!-- Design Life -->
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text text-blue-950 font-semibold">Design Life (years)</span>
-                                </label>
-                                {{ form.design_life_years }}
+                            <!-- Design Conditions -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text font-semibold text-gray-700">Design
+                                            Pressure (psi)</span></label>
+                                    {{ form.design_pressure_psi }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text font-semibold text-gray-700">Design
+                                            Temp. (deg F)</span></label>
+                                    {{ form.design_temp_f }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text font-semibold text-gray-700">MDMT
+                                            (deg F)</span></label>
+                                    {{ form.mdmt_f }}
+                                </div>
                             </div>
 
-                            <!-- Component Life -->
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text text-blue-950 font-semibold">Component Life (years)</span>
-                                </label>
-                                {{ form.component_life_years }}
+                            <!-- Stress / Strength -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                                <div class="form-control flex flex-row items-center gap-2">
+                                    <label class="label cursor-pointer justify-start gap-4">
+                                        <span class="label-text font-semibold text-purple-700">Stress / Strength
+                                            Known</span>
+                                        {{ form.stress_strength_known }}
+                                    </label>
+                                </div>
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text font-semibold text-gray-700">Allowable
+                                            Stress
+                                            (psi)</span></label>
+                                    {{ form.allowable_stress_psi }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text font-semibold text-gray-700">SMYS
+                                            (Yield)(psi)</span></label>
+                                    {{ form.smys_yield_psi }}
+                                </div>
                             </div>
 
-                            <!-- Remaining Life -->
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text text-blue-950 font-semibold">Remaining Life (years)</span>
-                                </label>
-                                {{ form.remaining_life_years }}
+                            <!-- Dimensions: Diameter -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text font-semibold text-gray-700">Size Diameter (Rating)</span></label>
+                                    {{ form.size_diameter_rating }}
+                                </div>
+                                <!-- Note: Reusing existing component_diameter for the "inches" field shown in mockup -->
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text font-semibold text-purple-700">Size
+                                            Diameter (inches)</span></label>
+                                    {{ form.component_diameter }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text font-semibold text-gray-700">Size
+                                            Diameter (mm)</span></label>
+                                    <input type="text" class="input input-bordered bg-gray-100" readonly value="">
+                                </div>
                             </div>
 
-                            <!-- External Coating Date -->
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text text-blue-950 font-semibold">External Coating Installation
-                                        Date</span>
-                                </label>
-                                {{ form.external_coating_date }}
+                            <!-- Dimensions: Thickness -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                                <div class="form-control flex flex-row items-center gap-2">
+                                    <label class="label cursor-pointer justify-start gap-4">
+                                        <span class="label-text font-semibold text-purple-700">Nominal Thickness
+                                            Known</span>
+                                        {{ form.nominal_thickness_known }}
+                                    </label>
+                                </div>
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text font-semibold text-gray-700">NT
+                                            (inch)</span></label>
+                                    {{ form.nominal_thickness_in }}
+                                </div>
+                                <div></div>
                             </div>
 
-                            <!-- Material -->
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text text-blue-950 font-semibold">Material</span>
-                                </label>
-                                {{ form.material }}
+                            <!-- Dimensions: OD/ID/Safety -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text font-semibold text-gray-700">Outside
+                                            Diameter(in)</span></label>
+                                    {{ form.diameter_outside_in }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text font-semibold text-gray-700">Inside Diameter(in)</span></label>
+                                    {{ form.diameter_inside_in }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text font-semibold text-gray-700">Safety Factor</span></label>
+                                    {{ form.safety_factor }}
+                                </div>
                             </div>
 
-                            <!-- Rep. Pipe No. -->
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text text-blue-950 font-semibold">Rep. Pipe No.</span>
-                                </label>
-                                {{ form.rep_pipe_no }}
+                            <!-- Codes -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text font-semibold text-purple-700">Design Code</span></label>
+                                    {{ form.design_code }}
+                                </div>
+                                <div class="form-control flex flex-row items-center gap-2 mb-3">
+                                    <label class="label cursor-pointer justify-start gap-4">
+                                        <span class="label-text font-semibold text-purple-700">PWHT</span>
+                                        {{ form.pwht }}
+                                    </label>
+                                </div>
+                                <div class="form-control flex flex-row items-center gap-2 mb-3">
+                                    <label class="label cursor-pointer justify-start gap-4">
+                                        <span class="label-text font-semibold text-purple-700">Heat Traced</span>
+                                        {{ form.heat_traced }}
+                                    </label>
+                                </div>
                             </div>
+
+                            <!-- Corrosion/Insulation -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text font-semibold text-gray-700">Atmosphere Corrosivity</span></label>
+                                    {{ form.atmosphere_corrosivity }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text font-semibold text-gray-700">Joint Efficiency (0 to 1)</span></label>
+                                    {{ form.joint_efficiency }}
+                                </div>
+                                <div class="form-control flex flex-row items-center gap-2 mb-3">
+                                    <label class="label cursor-pointer justify-start gap-4">
+                                        <span class="label-text font-semibold text-purple-700">Internal
+                                            Cladding</span>
+                                        {{ form.internal_cladding }}
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="form-control flex flex-row items-center gap-2">
+                                    <label class="label cursor-pointer justify-start gap-4">
+                                        <span class="label-text font-semibold text-purple-700">Internal
+                                            Lining</span>
+                                        {{ form.internal_lining }}
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                                <div class="form-control flex flex-row items-center gap-2 mb-3">
+                                    <label class="label cursor-pointer justify-start gap-4">
+                                        <span class="label-text font-semibold text-gray-700">Insulated</span>
+                                        {{ form.insulated }}
+                                    </label>
+                                </div>
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text font-semibold text-gray-700">Insulation Type</span></label>
+                                    {{ form.insulation_type }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text font-semibold text-gray-700">Other Insulation</span></label>
+                                    {{ form.other_insulation }}
+                                </div>
+                            </div>
+
                         </div>
 
                         <!-- 4.12 Financial Consequence -->
@@ -352,7 +527,8 @@
                                 <div class="grid grid-cols-2 gap-6 mb-4">
                                     <div class="form-control">
                                         <label class="label">
-                                            <span class="label-text text-blue-950 font-semibold">Unit Area (ft²)</span>
+                                            <span class="label-text text-blue-950 font-semibold">Unit Area
+                                                (ft²)</span>
                                         </label>
                                         {{ form.unit_area_safety }}
                                     </div>
@@ -367,12 +543,14 @@
 
                                 <!-- Personnel Shifts Table -->
                                 <div class="bg-gray-50 p-4 rounded border border-gray-200">
-                                    <h5 class="font-semibold text-sm text-gray-700 mb-3">Personnel Density Calculator
+                                    <h5 class="font-semibold text-sm text-gray-700 mb-3">Personnel Density
+                                        Calculator
                                     </h5>
                                     <div class="grid grid-cols-2 gap-4">
                                         <div class="form-control">
                                             <label class="label">
-                                                <span class="label-text text-sm font-semibold">Shift 1 Personnel</span>
+                                                <span class="label-text text-sm font-semibold">Shift 1
+                                                    Personnel</span>
                                             </label>
                                             {{ form.personnel_shift_1 }}
                                         </div>
@@ -385,7 +563,8 @@
                                         </div>
                                         <div class="form-control">
                                             <label class="label">
-                                                <span class="label-text text-sm font-semibold">Shift 2 Personnel</span>
+                                                <span class="label-text text-sm font-semibold">Shift 2
+                                                    Personnel</span>
                                             </label>
                                             {{ form.personnel_shift_2 }}
                                         </div>
@@ -405,7 +584,8 @@
                                         </div>
                                         <div class="form-control">
                                             <label class="label">
-                                                <span class="label-text text-sm font-semibold">Maintenance Time Present
+                                                <span class="label-text text-sm font-semibold">Maintenance Time
+                                                    Present
                                                     (%)</span>
                                             </label>
                                             {{ form.time_present_maintenance }}
@@ -448,7 +628,8 @@
                             <div class="grid grid-cols-3 gap-6">
                                 <div class="form-control">
                                     <label class="label">
-                                        <span class="label-text text-blue-950 font-semibold">Representative Fluid</span>
+                                        <span class="label-text text-blue-950 font-semibold">Representative
+                                            Fluid</span>
                                     </label>
                                     {{ form.representative_fluid }}
                                 </div>
@@ -479,7 +660,8 @@
                                     </label>
                                     {{ form.component_diameter }}
                                     <label class="label">
-                                        <span class="label-text-alt text-gray-400">Component diameter for release hole
+                                        <span class="label-text-alt text-gray-400">Component diameter for release
+                                            hole
                                             calculation</span>
                                     </label>
                                 </div>
@@ -502,7 +684,8 @@
                                 </div>
                                 <div class="form-control">
                                     <label class="label">
-                                        <span class="label-text text-blue-950 font-semibold">Atmospheric Pressure (Patm)
+                                        <span class="label-text text-blue-950 font-semibold">Atmospheric Pressure
+                                            (Patm)
                                             [psi]</span>
                                     </label>
                                     {{ form.atm_pressure }}
@@ -666,69 +849,69 @@
                             </div>
                         </div>
                     </div>
+
+
+                </form>
             </div>
-
-            </form>
     </div>
-</div>
-<!-- END MAIN CONTENT -->
+    <!-- END MAIN CONTENT -->
 
-<script>
-    function showSubTab(tabName, clickedButton) {
-        // Hide all sections
-        document.getElementById('design-section').classList.add('hidden');
-        document.getElementById('operating-section').classList.add('hidden');
-        document.getElementById('inspection-section').classList.add('hidden');
+    <script>
+        function showSubTab(tabName, clickedButton) {
+            // Hide all sections
+            document.getElementById('design-section').classList.add('hidden');
+            document.getElementById('operating-section').classList.add('hidden');
+            document.getElementById('inspection-section').classList.add('hidden');
 
-        // Show selected section
-        document.getElementById(tabName + '-section').classList.remove('hidden');
+            // Show selected section
+            document.getElementById(tabName + '-section').classList.remove('hidden');
 
-        // Update button styles
-        const buttons = document.querySelectorAll('[onclick^="showSubTab"]');
-        buttons.forEach(btn => {
-            btn.classList.remove('bg-blue-950', 'hover:bg-blue-900', 'text-white', 'shadow-md', 'font-semibold');
-            btn.classList.add('bg-gray-200', 'hover:bg-gray-300', 'text-gray-700');
-        });
+            // Update button styles
+            const buttons = document.querySelectorAll('[onclick^="showSubTab"]');
+            buttons.forEach(btn => {
+                btn.classList.remove('bg-blue-950', 'hover:bg-blue-900', 'text-white', 'shadow-md', 'font-semibold');
+                btn.classList.add('bg-gray-200', 'hover:bg-gray-300', 'text-gray-700');
+            });
 
-        // Highlight clicked button
-        if (clickedButton) {
-            clickedButton.classList.remove('bg-gray-200', 'hover:bg-gray-300', 'text-gray-700');
-            clickedButton.classList.add('bg-blue-950', 'hover:bg-blue-900', 'text-white', 'shadow-md', 'font-semibold');
-        }
-    }
-
-    // Toggle Liquid/Vapor Release Rate sections based on Stored Phase
-    document.addEventListener('DOMContentLoaded', function () {
-        const storedPhaseSelect = document.getElementById('id_stored_phase');
-        const liquidSection = document.getElementById('liquid-release-section');
-        const vaporSection = document.getElementById('vapor-release-section');
-
-        function toggleReleaseRateSections() {
-            const selectedPhase = storedPhaseSelect.value;
-
-            if (selectedPhase === 'Liquid') {
-                liquidSection.classList.remove('hidden');
-                vaporSection.classList.add('hidden');
-            } else if (selectedPhase === 'Vapor') {
-                vaporSection.classList.remove('hidden');
-                liquidSection.classList.add('hidden');
-            } else {
-                liquidSection.classList.add('hidden');
-                vaporSection.classList.add('hidden');
+            // Highlight clicked button
+            if (clickedButton) {
+                clickedButton.classList.remove('bg-gray-200', 'hover:bg-gray-300', 'text-gray-700');
+                clickedButton.classList.add('bg-blue-950', 'hover:bg-blue-900', 'text-white', 'shadow-md', 'font-semibold');
             }
         }
 
-        // Initial check on page load
-        if (storedPhaseSelect) {
-            toggleReleaseRateSections();
+        // Toggle Liquid/Vapor Release Rate sections based on Stored Phase
+        document.addEventListener('DOMContentLoaded', function () {
+            const storedPhaseSelect = document.getElementById('id_stored_phase');
+            const liquidSection = document.getElementById('liquid-release-section');
+            const vaporSection = document.getElementById('vapor-release-section');
 
-            // Add event listener for changes
-            storedPhaseSelect.addEventListener('change', toggleReleaseRateSections);
-        }
-    });
-</script>
+            function toggleReleaseRateSections() {
+                const selectedPhase = storedPhaseSelect.value;
 
-</main>
+                if (selectedPhase === 'Liquid') {
+                    liquidSection.classList.remove('hidden');
+                    vaporSection.classList.add('hidden');
+                } else if (selectedPhase === 'Vapor') {
+                    vaporSection.classList.remove('hidden');
+                    liquidSection.classList.add('hidden');
+                } else {
+                    liquidSection.classList.add('hidden');
+                    vaporSection.classList.add('hidden');
+                }
+            }
+
+            // Initial check on page load
+            if (storedPhaseSelect) {
+                toggleReleaseRateSections();
+
+                // Add event listener for changes
+                storedPhaseSelect.addEventListener('change', toggleReleaseRateSections);
+            }
+        });
+    </script>
+
+    </main>
 </div>
 </div>
 {% endblock %}

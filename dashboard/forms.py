@@ -76,7 +76,17 @@ class ComponentForm(forms.ModelForm):
             'equipment_cost_per_sqft', 'production_cost_per_day', 'outage_multiplier',
             'unit_area_safety', 'personnel_shift_1', 'time_present_shift_1',
             'personnel_shift_2', 'time_present_shift_2', 'personnel_maintenance',
-            'time_present_maintenance', 'injury_cost_per_person', 'environmental_cost_per_bbl'
+            'time_present_maintenance', 'injury_cost_per_person', 'environmental_cost_per_bbl',
+            
+            # New Design Fields (Imperial)
+            'pfd_no', 'material_nominal_composition', 'material_specification_no', 'sulphur_bearing_compounds',
+            'design_pressure_psi', 'design_temp_f', 'mdmt_f',
+            'stress_strength_known', 'allowable_stress_psi', 'smys_yield_psi',
+            'size_diameter_rating', 'nominal_thickness_known', 'nominal_thickness_in',
+            'diameter_outside_in', 'diameter_inside_in',
+            'safety_factor', 'design_code', 'joint_efficiency', 'pwht', 'heat_traced',
+            'atmosphere_corrosivity', 'internal_cladding', 'internal_lining',
+            'insulated', 'insulation_type', 'other_insulation'
         ]
         widgets = {
             # Original widgets
@@ -137,6 +147,39 @@ class ComponentForm(forms.ModelForm):
             'injury_cost_per_person': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': '$/person'}),
             
             'environmental_cost_per_bbl': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': '$/bbl'}),
+            
+            # New Design Fields (Imperial)
+            'pfd_no': forms.TextInput(attrs={'class': 'input input-bordered w-full', 'placeholder': 'PFD'}),
+            'material_nominal_composition': forms.TextInput(attrs={'class': 'input input-bordered w-full', 'placeholder': 'CS'}),
+            'material_specification_no': forms.TextInput(attrs={'class': 'input input-bordered w-full', 'placeholder': 'A 516'}),
+            'sulphur_bearing_compounds': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            
+            'design_pressure_psi': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': 'psi'}),
+            'design_temp_f': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': '°F'}),
+            'mdmt_f': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': '°F'}),
+            
+            'stress_strength_known': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'allowable_stress_psi': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': 'psi'}),
+            'smys_yield_psi': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': 'psi'}),
+            
+            'size_diameter_rating': forms.Select(attrs={'class': 'select select-bordered w-full'}),
+            'nominal_thickness_known': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'nominal_thickness_in': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.0001', 'placeholder': 'inch'}),
+            'diameter_outside_in': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.0001', 'placeholder': 'inch'}),
+            'diameter_inside_in': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.0001', 'placeholder': 'inch'}),
+            
+            'safety_factor': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': '0.6'}),
+            'design_code': forms.Select(attrs={'class': 'select select-bordered w-full'}),
+            'joint_efficiency': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': '0.85'}),
+            'pwht': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'heat_traced': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            
+            'atmosphere_corrosivity': forms.Select(attrs={'class': 'select select-bordered w-full'}),
+            'internal_cladding': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'internal_lining': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'insulated': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'insulation_type': forms.Select(attrs={'class': 'select select-bordered w-full'}),
+            'other_insulation': forms.TextInput(attrs={'class': 'input input-bordered w-full', 'placeholder': 'Other'}),
         }
 
     def __init__(self, user, *args, **kwargs):

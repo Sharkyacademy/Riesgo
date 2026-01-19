@@ -173,3 +173,98 @@ def systems(request):
         'form': form
     })
 
+@login_required
+def component_delete(request, pk):
+    from .models import Component
+    from django.urls import reverse
+    from django.shortcuts import get_object_or_404
+    
+    component = get_object_or_404(Component, pk=pk, equipment__system__unit__facility__owner=request.user)
+    
+    if request.method == 'POST':
+        component.delete()
+        messages.success(request, 'Component deleted successfully!')
+        return redirect('components_home')
+    
+    return render(request, 'dashboard/confirm_delete.html', {
+        'object_type': 'Component',
+        'object_name': component.rbix_component_type,
+        'cancel_url': reverse('components_home')
+    })
+
+@login_required
+def equipment_delete(request, pk):
+    from .models import Equipment
+    from django.urls import reverse
+    from django.shortcuts import get_object_or_404
+    
+    equipment = get_object_or_404(Equipment, pk=pk, system__unit__facility__owner=request.user)
+    
+    if request.method == 'POST':
+        equipment.delete()
+        messages.success(request, 'Equipment deleted successfully!')
+        return redirect('equipment_home')
+    
+    return render(request, 'dashboard/confirm_delete.html', {
+        'object_type': 'Equipment',
+        'object_name': equipment.number,
+        'cancel_url': reverse('equipment_home')
+    })
+
+@login_required
+def system_delete(request, pk):
+    from .models import System
+    from django.urls import reverse
+    from django.shortcuts import get_object_or_404
+    
+    system = get_object_or_404(System, pk=pk, unit__facility__owner=request.user)
+    
+    if request.method == 'POST':
+        system.delete()
+        messages.success(request, 'System deleted successfully!')
+        return redirect('systems_home')
+    
+    return render(request, 'dashboard/confirm_delete.html', {
+        'object_type': 'System',
+        'object_name': system.name,
+        'cancel_url': reverse('systems_home')
+    })
+
+@login_required
+def unit_delete(request, pk):
+    from .models import Unit
+    from django.urls import reverse
+    from django.shortcuts import get_object_or_404
+    
+    unit = get_object_or_404(Unit, pk=pk, facility__owner=request.user)
+    
+    if request.method == 'POST':
+        unit.delete()
+        messages.success(request, 'Unit deleted successfully!')
+        return redirect('units_home')
+    
+    return render(request, 'dashboard/confirm_delete.html', {
+        'object_type': 'Unit',
+        'object_name': unit.name,
+        'cancel_url': reverse('units_home')
+    })
+
+@login_required
+def facility_delete(request, pk):
+    from .models import Facility
+    from django.urls import reverse
+    from django.shortcuts import get_object_or_404
+    
+    facility = get_object_or_404(Facility, pk=pk, owner=request.user)
+    
+    if request.method == 'POST':
+        facility.delete()
+        messages.success(request, 'Facility deleted successfully!')
+        return redirect('facilities_home')
+    
+    return render(request, 'dashboard/confirm_delete.html', {
+        'object_type': 'Facility',
+        'object_name': facility.name,
+        'cancel_url': reverse('facilities_home')
+    })
+

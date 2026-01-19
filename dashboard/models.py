@@ -130,6 +130,54 @@ class Component(models.Model):
     # 4.12.6 Environmental Cost
     environmental_cost_per_bbl = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True, default=0, verbose_name="Environmental Cost ($/bbl)")
 
+    
+    # New Design / Installation Fields (User Request 2026-01-19) - Imperial Units
+    
+    # General ID
+    pfd_no = models.CharField(max_length=255, null=True, blank=True, verbose_name="PFD No")
+    
+    # Material Details
+    material_nominal_composition = models.CharField(max_length=255, null=True, blank=True, verbose_name="Material Nominal Composition")
+    material_specification_no = models.CharField(max_length=255, null=True, blank=True, verbose_name="Material Specification No")
+    sulphur_bearing_compounds = models.BooleanField(default=False, verbose_name="Sulphur Bearing Compounds")
+    
+    # Design Conditions
+    design_pressure_psi = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Design Pressure (psi)")
+    design_temp_f = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Design Temp. (°F)")
+    mdmt_f = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="MDMT (°F)")
+    
+    # Stress / Strength
+    stress_strength_known = models.BooleanField(default=False, verbose_name="Stress / Strength Known")
+    allowable_stress_psi = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Allowable Stress (psi)")
+    smys_yield_psi = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="SMYS (Yield) (psi)")
+    
+    # Dimensions
+    size_diameter_rating = models.CharField(max_length=255, null=True, blank=True, verbose_name="Size Diameter Rating", 
+                                          choices=[('Under 20', 'Under 20'), ('Over 20', 'Over 20')])
+    nominal_thickness_known = models.BooleanField(default=False, verbose_name="Nominal Thickness Known")
+    nominal_thickness_in = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, verbose_name="NT (inch)")
+    diameter_outside_in = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, verbose_name="Outside Diameter (inch)")
+    diameter_inside_in = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, verbose_name="Inside Diameter (inch)")
+    
+    # Codes & Factors
+    safety_factor = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, verbose_name="Safety Factor")
+    design_code = models.CharField(max_length=255, null=True, blank=True, verbose_name="Design Code", 
+                                 choices=[('ASME VIII Div 1', 'ASME VIII Div 1'), ('ASME VIII Div 2', 'ASME VIII Div 2'), ('API 650', 'API 650')])
+    joint_efficiency = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, default=1.0, verbose_name="Joint Efficiency")
+    pwht = models.BooleanField(default=False, verbose_name="PWHT")
+    heat_traced = models.BooleanField(default=False, verbose_name="Heat Traced")
+    
+    # Corrosion & Insulation
+    atmosphere_corrosivity = models.CharField(max_length=255, null=True, blank=True, verbose_name="Atmosphere Corrosivity",
+                                            choices=[('Low', 'Low'), ('Medium', 'Medium'), ('High', 'High')])
+    internal_cladding = models.BooleanField(default=False, verbose_name="Internal Cladding")
+    internal_lining = models.BooleanField(default=False, verbose_name="Internal Lining")
+    insulated = models.BooleanField(default=False, verbose_name="Insulated")
+    insulation_type = models.CharField(max_length=255, null=True, blank=True, verbose_name="Insulation Type",
+                                     choices=[('Calcium Silicate', 'Calcium Silicate'), ('Mineral Wool', 'Mineral Wool'), 
+                                             ('Fiberglass', 'Fiberglass'), ('Foam Glass', 'Foam Glass'), ('Other', 'Other')])
+    other_insulation = models.CharField(max_length=255, null=True, blank=True, verbose_name="Other Insulation")
+
     def __str__(self):
         return f"{self.rbix_component_type} - {self.equipment.number}"
 
