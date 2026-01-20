@@ -130,6 +130,70 @@ class Component(models.Model):
     # 4.12.6 Environmental Cost
     environmental_cost_per_bbl = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True, default=0, verbose_name="Environmental Cost ($/bbl)")
 
+    # Operating & Process Section Fields (Imperial Units Only)
+    
+    # Operating Temperature
+    operating_temp_f = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Operating Temperature (deg F)")
+    component_may_operate_below_mdmt = models.BooleanField(default=False, verbose_name="Component may operate at or below the MDMT")
+    
+    # Operating Pressure  
+    operating_pressure_psia = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Operating Pressure (psia)")
+    
+    # Flow Properties
+    flow_velocity_fts = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Flow Velocity (ft/s)")
+    inhibitor_efficiency_percent = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, verbose_name="Inhibitor Efficiency (%)")
+    
+    # Fluid Information
+    fluid_name = models.CharField(max_length=255, null=True, blank=True, verbose_name="Fluid Name")
+    fluid_description = models.TextField(null=True, blank=True, verbose_name="Fluid Description")
+    rbix_fluid = models.CharField(max_length=255, null=True, blank=True, verbose_name="RBIX Fluid")
+    operational_fluid_phase = models.CharField(max_length=50, null=True, blank=True, verbose_name="Operational Fluid Phase",
+                                               choices=[('Gas', 'Gas'), ('Liquid', 'Liquid'), ('Two-Phase', 'Two-Phase')])
+    component_fluid_mass_lb = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True, verbose_name="Component Fluid Mass (lb)")
+    component_group_fluid_mass_lb = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True, verbose_name="Component Group Fluid Mass (lb)")
+    
+    # Safety Systems Effectiveness
+    fluid_release_reduction_safety_effectiveness = models.CharField(max_length=50, null=True, blank=True, 
+                                                                    verbose_name="Fluid Release Reduction Safety Systems Effectiveness",
+                                                                    choices=[('None', 'None'), ('Low', 'Low'), ('Medium', 'Medium'), ('High', 'High')])
+    fire_reduction_safety_effectiveness = models.CharField(max_length=50, null=True, blank=True,
+                                                           verbose_name="Fire Reduction Safety Systems Effectiveness", 
+                                                           choices=[('None', 'None'), ('Low', 'Low'), ('Medium', 'Medium'), ('High', 'High')])
+    
+    # Chemical Properties
+    ph_value = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True, verbose_name="pH")
+    contains_water = models.BooleanField(default=False, verbose_name="Water")
+    contains_h2s = models.BooleanField(default=False, verbose_name="H₂S")
+    contains_co2 = models.BooleanField(default=False, verbose_name="CO₂")
+    contains_h2so4 = models.BooleanField(default=False, verbose_name="H₂SO₄")
+    contains_hf = models.BooleanField(default=False, verbose_name="HF")
+    contains_amine = models.BooleanField(default=False, verbose_name="Amine")
+    contains_hcl = models.BooleanField(default=False, verbose_name="HCl")
+    contains_oxygen = models.BooleanField(default=False, verbose_name="Oxygen")
+    contains_sulphur = models.BooleanField(default=False, verbose_name="Sulphur")
+    contains_chloride = models.BooleanField(default=False, verbose_name="Chloride")
+    contains_hydrogen = models.BooleanField(default=False, verbose_name="Hydrogen")
+    high_hydrogen_partial_pressure = models.BooleanField(default=False, verbose_name="Hydrogen partial pressure > 0.032 MPa [50 psi]")
+    contains_oil = models.BooleanField(default=False, verbose_name="Oil")
+    contains_caustic = models.BooleanField(default=False, verbose_name="Caustic")
+    underground = models.BooleanField(default=False, verbose_name="Underground")
+    cooling_water_service = models.BooleanField(default=False, verbose_name="Cooling Water Service")
+    
+    # Chemical Concentrations (Weight %)
+    h2s_concentration_wpercent = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True, verbose_name="H₂S (Hydrogen sulfide)(W%)")
+    nh3_concentration_wpercent = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True, verbose_name="NH₃, Ammonia (W%)")
+    co2_concentration_wpercent = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True, verbose_name="CO₂ Carbon Monoxide (W%)")
+    hno3_concentration_wpercent = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True, verbose_name="HNO₃, Nitric Acid (W%)")
+    h2o2_concentration_wpercent = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True, verbose_name="H₂O₂, Nitrogen Dioxide (W%)")
+    cocl2_concentration_wpercent = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True, verbose_name="COCl₂, Phosphine (W%)")
+    c2h4o3_concentration_wpercent = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True, verbose_name="C₂H₄O₃, Ethylene Oxide (EO) (W%)")
+    c3h6o2_concentration_wpercent = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True, verbose_name="C₃H₆O₂, Propylene Oxide (PO) (W%)")
+    toluene_diisocynate_wpercent = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True, verbose_name="Toluene Diisocynate (TDI) (W%)")
+    c3h8o2_concentration_wpercent = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True, verbose_name="C₃H₈O₂, Ethylene Glycol Monomethyl Ether (EE) (W%)")
+    alcl3_concentration_wpercent = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True, verbose_name="AlCl₃, Aluminum Chloride (W%)")
+    toxic_mass_fraction_wpercent = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True, verbose_name="Toxic Mass Fraction")
+
+
     
     # New Design / Installation Fields (User Request 2026-01-19) - Imperial Units
     

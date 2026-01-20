@@ -147,7 +147,7 @@
 
                     <div id="design-section" class="bg-white shadow-md rounded-lg p-6">
                         <h2
-                            class="text-lg font-bold mb-6 bg-purple-600 text-blue-950 py-2 px-4 -mx-6 -mt-6 rounded-t-lg">
+                            class="text-lg font-bold mb-6 bg-blue-950 text-white py-2 px-4 -mx-6 -mt-6 rounded-t-lg">
                             Design / Installation</h2>
 
                         <div class="space-y-4">
@@ -625,196 +625,331 @@
 
                     <!-- Operating & Process Section (Hidden by default) -->
                     <div id="operating-section" class="hidden bg-white shadow-md rounded-lg p-6">
-                        <h2
-                            class="text-lg font-bold text-blue-950 mb-6 bg-purple-600 text-white py-2 px-4 -mx-6 -mt-6 rounded-t-lg">
+                        <h2 class="text-lg font-bold mb-6 bg-blue-950 text-white py-2 px-4 -mx-6 -mt-6 rounded-t-lg">
                             Operating & Process</h2>
 
-                        <!-- 4.1 Representative Fluids & Properties -->
+                        <!-- Operating Temperature -->
                         <div class="mb-8">
-                            <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Representative Fluids &
-                                Properties</h3>
-                            <div class="grid grid-cols-3 gap-6">
+                            <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Operating Temperature</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <div class="form-control">
                                     <label class="label">
-                                        <span class="label-text text-blue-950 font-semibold">Representative
-                                            Fluid</span>
+                                        <span class="label-text text-blue-950 font-semibold">Operating Temperature (deg
+                                            F)</span>
                                     </label>
-                                    {{ form.representative_fluid }}
+                                    {{ form.operating_temp_f }}
                                 </div>
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-blue-950 font-semibold">Stored Phase</span>
+                                <div class="form-control md:col-span-2 flex flex-row items-center gap-2 pt-8">
+                                    <label class="label cursor-pointer justify-start gap-4">
+                                        <span class="label-text text-gray-700">Component may operate at or below the
+                                            MDMT</span>
+                                        {{ form.component_may_operate_below_mdmt }}
                                     </label>
-                                    {{ form.stored_phase }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-blue-950 font-semibold">Temperature (°F)</span>
-                                    </label>
-                                    {{ form.fluid_temperature }}
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 4.2 Release Hole Size -->
+                        <!-- Operating Pressure -->
                         <div class="mb-8">
-                            <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Release Hole Size & GFF
+                            <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Operating Pressure</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text text-blue-950 font-semibold">Operating Pressure
+                                            (psia)</span>
+                                    </label>
+                                    {{ form.operating_pressure_psia }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Flow Properties -->
+                        <div class="mb-8">
+                            <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Flow Properties</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text text-blue-950 font-semibold">Flow Velocity (ft/s)</span>
+                                    </label>
+                                    {{ form.flow_velocity_fts }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text text-blue-950 font-semibold">Inhibitor Efficiency
+                                            (%)</span>
+                                    </label>
+                                    {{ form.inhibitor_efficiency_percent }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fluid Information -->
+                        <div class="mb-8">
+                            <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Fluid Information</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text text-blue-950 font-semibold">Fluid Name</span>
+                                    </label>
+                                    {{ form.fluid_name }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text text-blue-950 font-semibold">Fluid Description</span>
+                                    </label>
+                                    {{ form.fluid_description }}
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text text-blue-950 font-semibold">RBIX Fluid</span>
+                                    </label>
+                                    {{ form.rbix_fluid }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text text-blue-950 font-semibold">Operational Fluid
+                                            Phase</span>
+                                    </label>
+                                    {{ form.operational_fluid_phase }}
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text text-blue-950 font-semibold">Component Fluid Mass
+                                            (lb)</span>
+                                    </label>
+                                    {{ form.component_fluid_mass_lb }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text text-blue-950 font-semibold">Component Group Fluid Mass
+                                            (lb)</span>
+                                    </label>
+                                    {{ form.component_group_fluid_mass_lb }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Safety Systems Effectiveness -->
+                        <div class="mb-8">
+                            <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Safety Systems Effectiveness
                             </h3>
-                            <div class="form-control max-w-md">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div class="form-control">
                                     <label class="label">
-                                        <span class="label-text text-blue-950 font-semibold">Component Diameter
-                                            (inches)</span>
+                                        <span class="label-text text-blue-950 font-semibold">Fluid Release Reduction
+                                            Safety Systems Effectiveness</span>
                                     </label>
-                                    {{ form.component_diameter }}
+                                    {{ form.fluid_release_reduction_safety_effectiveness }}
+                                </div>
+                                <div class="form-control">
                                     <label class="label">
-                                        <span class="label-text-alt text-gray-400">Component diameter for release
-                                            hole
-                                            calculation</span>
+                                        <span class="label-text text-blue-950 font-semibold">Fire Reduction Safety
+                                            Systems Effectiveness</span>
                                     </label>
+                                    {{ form.fire_reduction_safety_effectiveness }}
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 4.3 Shared Release Rate Parameters -->
+                        <!-- Chemical Properties -->
                         <div class="mb-8">
-                            <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Release Rate Parameters
-                                (Shared)</h3>
-                            <p class="text-xs text-gray-500 mb-4">Common parameters for both liquid and vapor
-                                calculations</p>
-                            <div class="grid grid-cols-3 gap-6">
+                            <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Chemical Properties</h3>
+                            <div class="form-control max-w-xs mb-6">
+                                <label class="label">
+                                    <span class="label-text text-blue-950 font-semibold">pH</span>
+                                </label>
+                                {{ form.ph_value }}
+                            </div>
+
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div class="form-control flex flex-row items-center gap-2">
+                                    <label class="label cursor-pointer justify-start gap-3">
+                                        {{ form.contains_water }}
+                                        <span class="label-text text-gray-700">Water</span>
+                                    </label>
+                                </div>
+                                <div class="form-control flex flex-row items-center gap-2">
+                                    <label class="label cursor-pointer justify-start gap-3">
+                                        {{ form.contains_h2s }}
+                                        <span class="label-text text-gray-700">H₂S</span>
+                                    </label>
+                                </div>
+                                <div class="form-control flex flex-row items-center gap-2">
+                                    <label class="label cursor-pointer justify-start gap-3">
+                                        {{ form.contains_co2 }}
+                                        <span class="label-text text-gray-700">CO₂</span>
+                                    </label>
+                                </div>
+                                <div class="form-control flex flex-row items-center gap-2">
+                                    <label class="label cursor-pointer justify-start gap-3">
+                                        {{ form.contains_h2so4 }}
+                                        <span class="label-text text-gray-700">H₂SO₄</span>
+                                    </label>
+                                </div>
+                                <div class="form-control flex flex-row items-center gap-2">
+                                    <label class="label cursor-pointer justify-start gap-3">
+                                        {{ form.contains_hf }}
+                                        <span class="label-text text-gray-700">HF</span>
+                                    </label>
+                                </div>
+                                <div class="form-control flex flex-row items-center gap-2">
+                                    <label class="label cursor-pointer justify-start gap-3">
+                                        {{ form.contains_amine }}
+                                        <span class="label-text text-gray-700">Amine</span>
+                                    </label>
+                                </div>
+                                <div class="form-control flex flex-row items-center gap-2">
+                                    <label class="label cursor-pointer justify-start gap-3">
+                                        {{ form.contains_hcl }}
+                                        <span class="label-text text-gray-700">HCl</span>
+                                    </label>
+                                </div>
+                                <div class="form-control flex flex-row items-center gap-2">
+                                    <label class="label cursor-pointer justify-start gap-3">
+                                        {{ form.contains_oxygen }}
+                                        <span class="label-text text-gray-700">Oxygen</span>
+                                    </label>
+                                </div>
+                                <div class="form-control flex flex-row items-center gap-2">
+                                    <label class="label cursor-pointer justify-start gap-3">
+                                        {{ form.contains_sulphur }}
+                                        <span class="label-text text-gray-700">Sulphur</span>
+                                    </label>
+                                </div>
+                                <div class="form-control flex flex-row items-center gap-2">
+                                    <label class="label cursor-pointer justify-start gap-3">
+                                        {{ form.contains_chloride }}
+                                        <span class="label-text text-gray-700">Chloride</span>
+                                    </label>
+                                </div>
+                                <div class="form-control flex flex-row items-center gap-2">
+                                    <label class="label cursor-pointer justify-start gap-3">
+                                        {{ form.contains_hydrogen }}
+                                        <span class="label-text text-gray-700">Hydrogen</span>
+                                    </label>
+                                </div>
+                                <div class="form-control flex flex-row items-center gap-2">
+                                    <label class="label cursor-pointer justify-start gap-3">
+                                        {{ form.high_hydrogen_partial_pressure }}
+                                        <span class="label-text text-gray-700">Hydrogen partial pressure > 0.032 MPa [50
+                                            psi]</span>
+                                    </label>
+                                </div>
+                                <div class="form-control flex flex-row items-center gap-2">
+                                    <label class="label cursor-pointer justify-start gap-3">
+                                        {{ form.contains_oil }}
+                                        <span class="label-text text-gray-700">Oil</span>
+                                    </label>
+                                </div>
+                                <div class="form-control flex flex-row items-center gap-2">
+                                    <label class="label cursor-pointer justify-start gap-3">
+                                        {{ form.contains_caustic }}
+                                        <span class="label-text text-gray-700">Caustic</span>
+                                    </label>
+                                </div>
+                                <div class="form-control flex flex-row items-center gap-2">
+                                    <label class="label cursor-pointer justify-start gap-3">
+                                        {{ form.underground }}
+                                        <span class="label-text text-gray-700">Underground</span>
+                                    </label>
+                                </div>
+                                <div class="form-control flex flex-row items-center gap-2">
+                                    <label class="label cursor-pointer justify-start gap-3">
+                                        {{ form.cooling_water_service }}
+                                        <span class="label-text text-gray-700">Cooling Water Service</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Chemical Concentrations (W%) -->
+                            <h4 class="text-sm font-bold text-blue-950 mb-4 mt-6">Chemical Concentrations (W%)</h4>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                                 <div class="form-control">
                                     <label class="label">
-                                        <span class="label-text text-blue-950 font-semibold">Storage Pressure (Ps)
-                                            [psia]</span>
+                                        <span class="label-text text-gray-700">H₂S (Hydrogen sulfide)(W%)</span>
                                     </label>
-                                    {{ form.storage_pressure }}
+                                    {{ form.h2s_concentration_wpercent }}
                                 </div>
                                 <div class="form-control">
                                     <label class="label">
-                                        <span class="label-text text-blue-950 font-semibold">Atmospheric Pressure
-                                            (Patm)
-                                            [psi]</span>
+                                        <span class="label-text text-gray-700">NH₃, Ammonia (W%)</span>
                                     </label>
-                                    {{ form.atm_pressure }}
-                                    <label class="label">
-                                        <span class="label-text-alt text-gray-400">Default: 14.7</span>
-                                    </label>
+                                    {{ form.nh3_concentration_wpercent }}
                                 </div>
                                 <div class="form-control">
                                     <label class="label">
-                                        <span class="label-text text-blue-950 font-semibold">Discharge Coefficient
-                                            (Cd)</span>
+                                        <span class="label-text text-gray-700">CO₂ Carbon Monoxide (W%)</span>
                                     </label>
-                                    {{ form.discharge_coeff }}
-                                    <label class="label">
-                                        <span class="label-text-alt text-gray-400">Range: 0.60-1.0</span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 4.3.2 Liquid Release Rate (Conditional) -->
-                        <div id="liquid-release-section" class="mb-8 hidden">
-                            <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Liquid Release Rate -
-                                Specific Parameters
-                            </h3>
-                            <p class="text-xs text-gray-500 mb-4">Only applicable when stored phase is Liquid</p>
-                            <div class="form-control max-w-md">
-                                <label class="label">
-                                    <span class="label-text text-blue-950 font-semibold">Viscosity Correction
-                                        (Kvn)</span>
-                                </label>
-                                {{ form.viscosity_correction }}
-                                <label class="label">
-                                    <span class="label-text-alt text-gray-400">Recommended: 1.0</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- 4.3.3 Vapor Release Rate (Conditional) -->
-                        <div id="vapor-release-section" class="mb-8 hidden">
-                            <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Vapor Release Rate -
-                                Specific Parameters</h3>
-                            <p class="text-xs text-gray-500 mb-4">Only applicable when stored phase is Vapor/Gas
-                            </p>
-                            <div class="form-control max-w-md">
-                                <label class="label">
-                                    <span class="label-text text-blue-950 font-semibold">Conversion Factor
-                                        (C2)</span>
-                                </label>
-                                {{ form.conversion_factor_c2 }}
-                                <label class="label">
-                                    <span class="label-text-alt text-gray-400">Default: 1</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- 4.4 Fluid Inventory -->
-                        <div class="mb-8">
-                            <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Fluid Inventory
-                            </h3>
-                            <div class="grid grid-cols-2 gap-6">
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-blue-950 font-semibold">Inventory Group
-                                            Mass
-                                            [lb]</span>
-                                    </label>
-                                    {{ form.inventory_group_mass }}
+                                    {{ form.co2_concentration_wpercent }}
                                 </div>
                                 <div class="form-control">
                                     <label class="label">
-                                        <span class="label-text text-blue-950 font-semibold">Component Mass
-                                            [lb]</span>
+                                        <span class="label-text text-gray-700">HNO₃, Nitric Acid (W%)</span>
                                     </label>
-                                    {{ form.component_mass }}
+                                    {{ form.hno3_concentration_wpercent }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text text-gray-700">H₂O₂, Nitrogen Dioxide (W%)</span>
+                                    </label>
+                                    {{ form.h2o2_concentration_wpercent }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text text-gray-700">COCl₂, Phosphine (W%)</span>
+                                    </label>
+                                    {{ form.cocl2_concentration_wpercent }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text text-gray-700">C₂H₄O₃, Ethylene Oxide (EO) (W%)</span>
+                                    </label>
+                                    {{ form.c2h4o3_concentration_wpercent }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text text-gray-700">C₃H₆O₂, Propylene Oxide (PO) (W%)</span>
+                                    </label>
+                                    {{ form.c3h6o2_concentration_wpercent }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text text-gray-700">Toluene Diisocynate (TDI) (W%)</span>
+                                    </label>
+                                    {{ form.toluene_diisocynate_wpercent }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text text-gray-700">C₃H₈O₂, Ethylene Glycol Monomethyl Ether
+                                            (EE) (W%)</span>
+                                    </label>
+                                    {{ form.c3h8o2_concentration_wpercent }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text text-gray-700">AlCl₃, Aluminum Chloride (W%)</span>
+                                    </label>
+                                    {{ form.alcl3_concentration_wpercent }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text text-gray-700">Toxic Mass Fraction</span>
+                                    </label>
+                                    {{ form.toxic_mass_fraction_wpercent }}
                                 </div>
                             </div>
                         </div>
-
-                        <!-- 4.8 Flammable Consequence -->
-                        <div class="mb-8">
-                            <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Flammable
-                                Consequence
-                            </h3>
-                            <div class="form-control max-w-md">
-                                <label class="label">
-                                    <span class="label-text text-blue-950 font-semibold">Mitigation System
-                                        (Table
-                                        4.10)</span>
-                                </label>
-                                {{ form.mitigation_system }}
-                            </div>
-                        </div>
-
-                        <!-- 4.9 Toxic Consequence -->
-                        <div class="mb-8">
-                            <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Toxic Consequence
-                            </h3>
-                            <p class="text-xs text-gray-500 mb-4">Only applicable if fluid is toxic</p>
-                            <div class="form-control max-w-md">
-                                <label class="label">
-                                    <span class="label-text text-blue-950 font-semibold">Toxic Component Mass
-                                        Fraction</span>
-                                </label>
-                                {{ form.toxic_mass_fraction }}
-                                <label class="label">
-                                    <span class="label-text-alt text-gray-400">Range: 0.0-1.0 (1.0 for pure
-                                        toxic
-                                        fluid)</span>
-                                </label>
-                            </div>
-                        </div>
-
 
                     </div>
 
+
                     <!-- Inspection Section (Hidden by default) -->
                     <div id="inspection-section" class="hidden bg-white shadow-md rounded-lg p-6">
-                        <h2
-                            class="text-lg font-bold text-blue-950 mb-6 bg-purple-600 text-white py-2 px-4 -mx-6 -mt-6 rounded-t-lg">
-                            Inspection</h2>
+                        <h2 class="text-lg font-bold mb-6 bg-blue-950 text-white py-2 px-4 -mx-6 -mt-6 rounded-t-lg">Inspection</h2>
 
                         <!-- 4.6 Detection & Isolation Systems -->
                         <div class="mb-8">
