@@ -75,6 +75,16 @@
                                                 d="M19 9l-7 7-7-7" />
                                         </svg>
                                         Facility: {{ facility.name }}
+                                        <button
+                                            onclick="event.stopPropagation(); openEditFacilityModal('{{ facility.id|escapejs }}', '{{ facility.name|escapejs }}', '{{ facility.location|escapejs }}', '{{ facility.facility_type|escapejs }}', '{% if facility.company %}{{ facility.company|escapejs }}{% endif %}')"
+                                            class="btn btn-ghost btn-xs text-white hover:bg-blue-700 ml-2 tooltip tooltip-right"
+                                            data-tip="Edit Facility">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                            </svg>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -95,6 +105,7 @@
                                 <td class="text-right pr-8">
                                     <div class="flex justify-end gap-2">
                                         <button
+                                            onclick="openEditUnitModal('{{ unit.id|escapejs }}', '{{ facility.id|escapejs }}', '{{ unit.name|escapejs }}', '{% if unit.description %}{{ unit.description|escapejs }}{% endif %}', '{{ unit.people_density|default:0.0|escapejs }}')"
                                             class="btn btn-ghost btn-xs text-blue-950 hover:bg-blue-100">Edit</button>
                                         <a href="{% url 'unit_delete' unit.pk %}"
                                             class="btn btn-ghost btn-xs text-red-600 hover:bg-red-50">Delete</a>
@@ -124,7 +135,7 @@
                 <!-- Add Unit Modal -->
                 <input type="checkbox" id="add_unit_modal" class="modal-toggle" />
                 <div class="modal">
-                    <div class="modal-box relative max-w-2xl">
+                    <div class="modal-box relative max-w-2xl pt-6">
                         <label for="add_unit_modal" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
                         <h3 class="text-lg font-bold mb-4 text-blue-950">Add New Unit</h3>
 
@@ -261,6 +272,8 @@
             </script>
             <!-- END MAIN CONTENT -->
         </main>
+        {% include 'dashboard/includes/edit_facility_modal.html' %}
+        {% include 'dashboard/includes/edit_unit_modal.html' %}
     </div>
 </div>
 {% endblock %}

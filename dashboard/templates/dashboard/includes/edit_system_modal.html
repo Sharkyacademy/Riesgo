@@ -1,0 +1,51 @@
+<!-- Edit System Modal -->
+<input type="checkbox" id="edit_system_modal" class="modal-toggle" />
+<div class="modal">
+    <div class="modal-box relative pt-6">
+        <label for="edit_system_modal" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
+        <h3 class="text-lg font-bold mb-4 text-blue-950">Edit System</h3>
+        <form method="post" id="edit_system_form" action="">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+
+            <div class="form-control w-full mb-4">
+                <label class="label"><span class="label-text text-blue-950 font-semibold">Unit</span></label>
+                {{ form.unit }}
+            </div>
+            <div class="form-control w-full mb-4">
+                <label class="label"><span class="label-text text-blue-950 font-semibold">System Name</span></label>
+                <input type="text" name="name" id="edit_system_name" class="input input-bordered w-full" required>
+            </div>
+            <div class="form-control w-full mb-4">
+                <label class="label"><span class="label-text text-blue-950 font-semibold">Description</span></label>
+                <input type="text" name="description" id="edit_system_description" class="input input-bordered w-full">
+            </div>
+
+            <div class="modal-action">
+                <button type="submit" class="btn bg-blue-950 hover:bg-blue-900 text-white border-none w-full">Save
+                    Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openEditSystemModal(id, unitId, name, description) {
+        // Set form action dynamically
+        const form = document.getElementById('edit_system_form');
+        form.action = `/dashboard/system/${id}/edit/`;
+
+        // Pre-fill values
+        document.getElementById('edit_system_name').value = name;
+        document.getElementById('edit_system_description').value = description || '';
+
+        // Set unit select value if it exists in the form
+        const unitSelect = form.querySelector('select[name="unit"]');
+        if (unitSelect) {
+            unitSelect.value = unitId;
+        }
+
+        // Open modal
+        document.getElementById('edit_system_modal').checked = true;
+    }
+</script>

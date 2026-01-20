@@ -1,0 +1,58 @@
+<!-- Edit Unit Modal -->
+<input type="checkbox" id="edit_unit_modal" class="modal-toggle" />
+<div class="modal">
+    <div class="modal-box relative pt-6">
+        <label for="edit_unit_modal" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
+        <h3 class="text-lg font-bold mb-4 text-blue-950">Edit Unit</h3>
+        <form method="post" id="edit_unit_form" action="">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+
+            <div class="form-control w-full mb-4">
+                <label class="label"><span class="label-text text-blue-950 font-semibold">Facility</span></label>
+                {{ form.facility }}
+            </div>
+            <div class="form-control w-full mb-4">
+                <label class="label"><span class="label-text text-blue-950 font-semibold">Unit Name</span></label>
+                <input type="text" name="name" id="edit_unit_name" class="input input-bordered w-full" required>
+            </div>
+            <div class="form-control w-full mb-4">
+                <label class="label"><span class="label-text text-blue-950 font-semibold">Description</span></label>
+                <input type="text" name="description" id="edit_unit_description" class="input input-bordered w-full">
+            </div>
+            <div class="form-control w-full mb-4">
+                <label class="label"><span class="label-text text-blue-950 font-semibold">Density (pp/sq
+                        ft)</span></label>
+                <input type="number" step="0.0001" name="people_density" id="edit_unit_density"
+                    class="input input-bordered w-full" placeholder="0.0">
+            </div>
+
+            <div class="modal-action">
+                <button type="submit" class="btn bg-blue-950 hover:bg-blue-900 text-white border-none w-full">Save
+                    Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openEditUnitModal(id, facilityId, name, description, density) {
+        // Set form action dynamically
+        const form = document.getElementById('edit_unit_form');
+        form.action = `/dashboard/unit/${id}/edit/`;
+
+        // Pre-fill values
+        document.getElementById('edit_unit_name').value = name;
+        document.getElementById('edit_unit_description').value = description || '';
+        document.getElementById('edit_unit_density').value = density || '0.0';
+
+        // Set facility select value if it exists in the form
+        const facilitySelect = form.querySelector('select[name="facility"]');
+        if (facilitySelect) {
+            facilitySelect.value = facilityId;
+        }
+
+        // Open modal
+        document.getElementById('edit_unit_modal').checked = true;
+    }
+</script>

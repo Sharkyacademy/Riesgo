@@ -1,0 +1,64 @@
+<!-- Edit Equipment Modal -->
+<input type="checkbox" id="edit_equipment_modal" class="modal-toggle" />
+<div class="modal">
+    <div class="modal-box relative pt-6">
+        <label for="edit_equipment_modal" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
+        <h3 class="text-lg font-bold mb-4 text-blue-950">Edit Equipment</h3>
+        <form method="post" id="edit_equipment_form" action="">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+
+            <div class="form-control w-full mb-4">
+                <label class="label"><span class="label-text text-blue-950 font-semibold">System</span></label>
+                {{ form.system }}
+            </div>
+            <div class="form-control w-full mb-4">
+                <label class="label"><span class="label-text text-blue-950 font-semibold">Equipment
+                        Number</span></label>
+                <input type="text" name="number" id="edit_equipment_number" class="input input-bordered w-full"
+                    required>
+            </div>
+            <div class="form-control w-full mb-4">
+                <label class="label"><span class="label-text text-blue-950 font-semibold">Equipment Type</span></label>
+                {{ form.plant_equipment_type }}
+            </div>
+            <div class="form-control w-full mb-4">
+                <label class="label"><span class="label-text text-blue-950 font-semibold">Description</span></label>
+                <input type="text" name="plant_equipment_desc" id="edit_equipment_desc"
+                    class="input input-bordered w-full">
+            </div>
+
+            <div class="modal-action">
+                <button type="submit" class="btn bg-blue-950 hover:bg-blue-900 text-white border-none w-full">Save
+                    Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openEditEquipmentModal(id, systemId, number, type, desc) {
+        // Set form action dynamically
+        const form = document.getElementById('edit_equipment_form');
+        form.action = `/dashboard/equipment/${id}/edit/`;
+
+        // Pre-fill values
+        document.getElementById('edit_equipment_number').value = number;
+        document.getElementById('edit_equipment_desc').value = desc || '';
+
+        // Set system select value
+        const systemSelect = form.querySelector('select[name="system"]');
+        if (systemSelect) {
+            systemSelect.value = systemId;
+        }
+
+        // Set type select value
+        const typeSelect = form.querySelector('select[name="plant_equipment_type"]');
+        if (typeSelect) {
+            typeSelect.value = type;
+        }
+
+        // Open modal
+        document.getElementById('edit_equipment_modal').checked = true;
+    }
+</script>

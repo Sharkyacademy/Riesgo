@@ -268,3 +268,97 @@ def facility_delete(request, pk):
         'cancel_url': reverse('facilities_home')
     })
 
+@login_required
+def facility_edit(request, pk):
+    from .models import Facility
+    from .forms import FacilityForm
+    from django.shortcuts import get_object_or_404
+    
+    facility = get_object_or_404(Facility, pk=pk, owner=request.user)
+    
+    if request.method == 'POST':
+        form = FacilityForm(request.POST, instance=facility)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Facility updated successfully!')
+            # Redirect back to the page they came from, if possible
+            next_url = request.POST.get('next')
+            if next_url:
+                return redirect(next_url)
+            return redirect(request.META.get('HTTP_REFERER', 'facilities_home'))
+        else:
+            messages.error(request, 'Error updating facility.')
+            return redirect(request.META.get('HTTP_REFERER', 'facilities_home'))
+    
+    return redirect('facilities_home')
+
+@login_required
+def unit_edit(request, pk):
+    from .models import Unit
+    from .forms import UnitForm
+    from django.shortcuts import get_object_or_404
+    
+    unit = get_object_or_404(Unit, pk=pk, facility__owner=request.user)
+    
+    if request.method == 'POST':
+        form = UnitForm(request.user, request.POST, instance=unit)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Unit updated successfully!')
+            next_url = request.POST.get('next')
+            if next_url:
+                return redirect(next_url)
+            return redirect(request.META.get('HTTP_REFERER', 'units_home'))
+        else:
+            messages.error(request, 'Error updating unit.')
+            return redirect(request.META.get('HTTP_REFERER', 'units_home'))
+            
+    return redirect('units_home')
+
+@login_required
+def system_edit(request, pk):
+    from .models import System
+    from .forms import SystemForm
+    from django.shortcuts import get_object_or_404
+    
+    system = get_object_or_404(System, pk=pk, unit__facility__owner=request.user)
+    
+    if request.method == 'POST':
+        form = SystemForm(request.user, request.POST, instance=system)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'System updated successfully!')
+            next_url = request.POST.get('next')
+            if next_url:
+                return redirect(next_url)
+            return redirect(request.META.get('HTTP_REFERER', 'systems_home'))
+        else:
+            messages.error(request, 'Error updating system.')
+            return redirect(request.META.get('HTTP_REFERER', 'systems_home'))
+            
+    return redirect('systems_home')
+
+@login_required
+def equipment_edit(request, pk):
+    from .models import Equipment
+    from .forms import EquipmentForm
+    from django.shortcuts import get_object_or_404
+    
+    equipment = get_object_or_404(Equipment, pk=pk, system__unit__facility__owner=request.user)
+    
+    if request.method == 'POST':
+        form = EquipmentForm(request.user, request.POST, instance=equipment)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Equipment updated successfully!')
+            next_url = request.POST.get('next')
+            if next_url:
+                return redirect(next_url)
+            return redirect(request.META.get('HTTP_REFERER', 'equipment_home'))
+        else:
+            messages.error(request, 'Error updating equipment.')
+            return redirect(request.META.get('HTTP_REFERER', 'equipment_home'))
+            
+    return redirect('equipment_home')
+
+

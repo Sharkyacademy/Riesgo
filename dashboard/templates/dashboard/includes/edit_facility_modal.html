@@ -1,0 +1,58 @@
+<!-- Edit Facility Modal -->
+<input type="checkbox" id="edit_facility_modal" class="modal-toggle" />
+<div class="modal">
+    <div class="modal-box relative pt-6">
+        <label for="edit_facility_modal" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
+        <h3 class="text-lg font-bold mb-4 text-blue-950">Edit Facility</h3>
+        <form method="post" id="edit_facility_form" action="">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+
+            <div class="form-control w-full mb-4">
+                <label class="label"><span class="label-text text-blue-950 font-semibold">Company</span></label>
+                {{ form.company }}
+                <!-- Note: You might need to manually render fields if 'form' isn't the FacilityForm in context -->
+            </div>
+            <div class="form-control w-full mb-4">
+                <label class="label"><span class="label-text text-blue-950 font-semibold">Facility Name</span></label>
+                <input type="text" name="name" id="edit_facility_name" class="input input-bordered w-full" required>
+            </div>
+            <div class="form-control w-full mb-4">
+                <label class="label"><span class="label-text text-blue-950 font-semibold">Location</span></label>
+                <input type="text" name="location" id="edit_facility_location" class="input input-bordered w-full"
+                    required>
+            </div>
+            <div class="form-control w-full mb-4">
+                <label class="label"><span class="label-text text-blue-950 font-semibold">Type</span></label>
+                <input type="text" name="facility_type" id="edit_facility_type" class="input input-bordered w-full"
+                    required>
+            </div>
+            <div class="form-control w-full mb-4">
+                <label class="label"><span class="label-text text-blue-950 font-semibold">Company</span></label>
+                <input type="text" name="company" id="edit_facility_company" class="input input-bordered w-full">
+            </div>
+
+            <div class="modal-action">
+                <button type="submit" class="btn bg-blue-950 hover:bg-blue-900 text-white border-none w-full">Save
+                    Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openEditFacilityModal(id, name, location, type, company) {
+        // Set form action dynamically
+        const form = document.getElementById('edit_facility_form');
+        form.action = `/dashboard/facility/${id}/edit/`;
+
+        // Pre-fill values
+        document.getElementById('edit_facility_name').value = name;
+        document.getElementById('edit_facility_location').value = location;
+        document.getElementById('edit_facility_type').value = type;
+        document.getElementById('edit_facility_company').value = company || '';
+
+        // Open modal
+        document.getElementById('edit_facility_modal').checked = true;
+    }
+</script>
