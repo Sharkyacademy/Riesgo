@@ -32,7 +32,7 @@
             <!-- SIDEBAR -->
             <aside
                 class="hidden lg:block w-64 bg-white p-6 shadow-xl border-r border-gray-200 flex-shrink-0 overflow-y-auto">
-                {% include 'formula_app/includes/sidebar.html' %}
+                {% include 'dashboard/includes/sidebar.html' %}
             </aside>
 
             <!-- END SIDEBAR -->
@@ -98,7 +98,7 @@
 
                     <!-- SECTION: Damage Mechanism Selection (Step 0) -->
                     {% include 'formula_app/includes/modules/damage_mech_selection.html' %}
-                    
+
                     <!-- SECTION: Dynamic Navigation Bar (Hidden initially) -->
                     <div id="module_nav_container" class="hidden mb-6 animate-fade-in">
                         <div class="tabs tabs-boxed bg-gray-200 p-1 rounded-lg">
@@ -132,7 +132,7 @@
     <div class="drawer-side z-40">
         <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
         <aside class="w-64 bg-white p-4 shadow-2xl flex-shrink-0">
-            {% include 'formula_app/includes/sidebar.html' %}
+            {% include 'dashboard/includes/sidebar.html' %}
         </aside>
     </div>
 </div>
@@ -168,8 +168,10 @@
 <script type="module" src="{% static 'formula_app/js/modules/scc/interactions.js' %}?v=37"></script>
 <script src="{% static 'formula_app/js/modules/external_damage/interactions.js' %}?v=5"></script>
 <script type="module" src="{% static 'formula_app/js/modules/htha/interactions.js' %}"></script>
-<script type="module" src="{% static 'formula_app/js/modules/external_damage/components/external_corrosion_ferritic/main.js' %}"></script>
+<script type="module"
+    src="{% static 'formula_app/js/modules/external_damage/components/external_corrosion_ferritic/main.js' %}"></script>
 <script src="{% static 'formula_app/js/modules/external_damage/components/cui_ferritic.js' %}?v=5"></script>
-<script type="module" src="{% static 'formula_app/js/modules/external_damage/components/external_clscc_austenitic.js' %}"></script>
+<script type="module"
+    src="{% static 'formula_app/js/modules/external_damage/components/external_clscc_austenitic.js' %}"></script>
 <script type="module" src="{% static 'formula_app/js/modules/brittle_fracture/main.js' %}"></script>
 {% endblock %}

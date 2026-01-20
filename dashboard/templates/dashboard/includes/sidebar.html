@@ -1,0 +1,25 @@
+<a href="{% url 'dashboard_home' %}">
+    <h2 class="text-xl font-bold text-blue-950 mb-4 border-b pb-2">Dashboard</h2>
+</a>
+<div class="flex flex-col gap-3">
+    <a href="{% url 'facilities_home' %}"
+        class="btn btn-block {% if request.resolver_match.url_name == 'facilities_home' %}bg-blue-950 text-white hover:bg-blue-800 border-none{% else %}btn-outline border-blue-950 text-blue-950 hover:bg-blue-950 hover:text-white{% endif %} hover-lift text-wrap h-auto min-h-0 py-3 text-sm">
+        Facilities
+    </a>
+    <a href="{% url 'units_home' %}"
+        class="btn btn-block {% if request.resolver_match.url_name == 'units_home' %}bg-blue-950 text-white hover:bg-blue-800 border-none{% else %}btn-outline border-blue-950 text-blue-950 hover:bg-blue-950 hover:text-white{% endif %} hover-lift text-wrap h-auto min-h-0 py-3 text-sm">
+        Units
+    </a>
+    <a href="{% url 'systems_home' %}"
+        class="btn btn-block {% if request.resolver_match.url_name == 'systems_home' %}bg-blue-950 text-white hover:bg-blue-800 border-none{% else %}btn-outline border-blue-950 text-blue-950 hover:bg-blue-950 hover:text-white{% endif %} hover-lift text-wrap h-auto min-h-0 py-3 text-sm">
+        Systems
+    </a>
+    <a href="{% url 'equipment_home' %}"
+        class="btn btn-block {% if request.resolver_match.url_name == 'equipment_home' %}bg-blue-950 text-white hover:bg-blue-800 border-none{% else %}btn-outline border-blue-950 text-blue-950 hover:bg-blue-950 hover:text-white{% endif %} hover-lift text-wrap h-auto min-h-0 py-3 text-sm">
+        Equipment
+    </a>
+    <a href="{% url 'components_home' %}"
+        class="btn btn-block {% if request.resolver_match.url_name == 'components_home' %}bg-blue-950 text-white hover:bg-blue-800 border-none{% else %}btn-outline border-blue-950 text-blue-950 hover:bg-blue-950 hover:text-white{% endif %} hover-lift text-wrap h-auto min-h-0 py-3 text-sm">
+        Components
+    </a>
+</div>
