@@ -362,3 +362,82 @@ def equipment_edit(request, pk):
     return redirect('equipment_home')
 
 
+@login_required
+def add_inspection_history(request):
+    from .models import Component, InspectionHistory
+    from django.http import JsonResponse
+    import json
+    
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            component_id = data.get('component_id')
+            
+            if not component_id:
+                 return JsonResponse({'success': False, 'error': 'Component ID required. Please save component first.'}, status=400)
+
+            component = get_object_or_404(Component, pk=component_id, equipment__system__unit__facility__owner=request.user)
+            
+            history = InspectionHistory.objects.create(
+                component=component,
+                inspection_type=data.get('inspection_type'),
+                date=data.get('date'),
+                lining_quality=data.get('lining_quality'),
+                general_condition=data.get('general_condition'),
+                crack_finding_capability=data.get('crack_finding_capability'),
+                corrosion_finding_capability=data.get('corrosion_finding_capability'),
+                comments=data.get('comments')
+            )
+            
+            return JsonResponse({
+                'success': True,
+                'id': history.id,
+                'date': history.date,
+                'method': history.inspection_type
+            })
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=400)
+    
+    return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=405)
+
+@login_required
+def delete_inspection_history(request, pk):
+    from .models import InspectionHistory
+    from django.http import JsonResponse
+    
+    if request.method == 'POST':
+        history = get_object_or_404(InspectionHistory, pk=pk, component__equipment__system__unit__facility__owner=request.user)
+        history.delete()
+        return JsonResponse({'success': True})
+    
+    return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=405)
+
+@login_required
+def get_inspection_history(request, component_id):
+    from .models import InspectionHistory
+    from django.http import JsonResponse
+    
+    try:
+        histories = InspectionHistory.objects.filter(
+            component_id=component_id,
+            component__equipment__system__unit__facility__owner=request.user
+        ).order_by('-date')
+        
+        data = []
+        for h in histories:
+            data.append({
+                'id': h.id,
+                'inspection_type': h.inspection_type,
+                'date': h.date,
+                'lining_quality': h.lining_quality,
+                'general_condition': h.general_condition,
+                'crack_finding_capability': h.crack_finding_capability,
+                'corrosion_finding_capability': h.corrosion_finding_capability,
+                'comments': h.comments
+            })
+            
+        return JsonResponse({'success': True, 'data': data})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=400)
+
+

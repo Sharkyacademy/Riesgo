@@ -93,6 +93,14 @@ class ComponentForm(forms.ModelForm):
             'c2h4o3_concentration_wpercent', 'c3h6o2_concentration_wpercent', 'toluene_diisocynate_wpercent',
             'c3h8o2_concentration_wpercent', 'alcl3_concentration_wpercent', 'toxic_mass_fraction_wpercent',
             
+            # Inspection Fields
+            'int_inspection_vol_mil', 'last_int_visual_inspection_date', 'service_years_since_last_int_visual_insp',
+            'internal_lining_quality', 'internal_cracks_present', 'internal_crack_finding_capability',
+            'internal_corrosion_finding_capability', 'ext_inspection_vol_mil', 'last_ext_visual_inspection_date',
+            'service_years_since_last_ext_visual_insp', 'external_coating_quality', 'external_crack_finding_capability',
+            'external_corrosion_finding_capability', 'thickness_nominal_mm', 'thickness_minimum_required_mm',
+            'thickness_measured_mm', 'corrosion_rate_mm_year', 'inspection_summary',
+            
             # New Design Fields (Imperial)
             'pfd_no', 'material_nominal_composition', 'material_specification_no', 'sulphur_bearing_compounds',
             'design_pressure_psi', 'design_temp_f', 'mdmt_f',
@@ -206,6 +214,26 @@ class ComponentForm(forms.ModelForm):
             'c3h8o2_concentration_wpercent': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.0001', 'placeholder': 'W%'}),
             'alcl3_concentration_wpercent': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.0001', 'placeholder': 'W%'}),
             'toxic_mass_fraction_wpercent': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.0001', 'placeholder': 'W%'}),
+            
+            # Inspection Fields
+            'int_inspection_vol_mil': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': 'Mil'}),
+            'last_int_visual_inspection_date': forms.DateInput(attrs={'class': 'input input-bordered w-full', 'type': 'date'}),
+            'service_years_since_last_int_visual_insp': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': 'Years'}),
+            'internal_lining_quality': forms.Select(attrs={'class': 'select select-bordered w-full'}),
+            'internal_cracks_present': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'internal_crack_finding_capability': forms.Select(attrs={'class': 'select select-bordered w-full'}),
+            'internal_corrosion_finding_capability': forms.Select(attrs={'class': 'select select-bordered w-full'}),
+            'ext_inspection_vol_mil': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': 'Mil'}),
+            'last_ext_visual_inspection_date': forms.DateInput(attrs={'class': 'input input-bordered w-full', 'type': 'date'}),
+            'service_years_since_last_ext_visual_insp': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': 'Years'}),
+            'external_coating_quality': forms.Select(attrs={'class': 'select select-bordered w-full'}),
+            'external_crack_finding_capability': forms.Select(attrs={'class': 'select select-bordered w-full'}),
+            'external_corrosion_finding_capability': forms.Select(attrs={'class': 'select select-bordered w-full'}),
+            'thickness_nominal_mm': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': 'mm'}),
+            'thickness_minimum_required_mm': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': 'mm'}),
+            'thickness_measured_mm': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': 'mm'}),
+            'corrosion_rate_mm_year': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.0001', 'placeholder': 'mm/year'}),
+            'inspection_summary': forms.Textarea(attrs={'class': 'textarea textarea-bordered w-full', 'rows': 6, 'placeholder': 'Inspection summary...'}),
             
             # New Design Fields (Imperial)
             'pfd_no': forms.TextInput(attrs={'class': 'input input-bordered w-full', 'placeholder': 'PFD'}),

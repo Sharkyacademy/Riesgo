@@ -129,8 +129,31 @@
                 </div>
 
                 <!-- Styles for custom purple theme -->
-                <form method="post" id="component-form">
+                <form method="post" id="component-form" novalidate>
                     {% csrf_token %}
+
+                    {% if form.errors %}
+                    <div class="alert alert-error mb-4 shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <div class="flex flex-col">
+                            <span class="font-bold">Please correct the errors below:</span>
+                            <ul class="list-disc list-inside text-sm mt-1">
+                                {% for field in form %}
+                                {% for error in field.errors %}
+                                <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                                {% endfor %}
+                                {% endfor %}
+                                {% for error in form.non_field_errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    {% endif %}
 
                     <!-- Sub-tabs for Data section -->
                     <div class="flex gap-2 mb-6 bg-gray-100 p-2 rounded-lg border border-gray-200">
@@ -146,8 +169,7 @@
                     <!-- Design / Installation Section -->
 
                     <div id="design-section" class="bg-white shadow-md rounded-lg p-6">
-                        <h2
-                            class="text-lg font-bold mb-6 bg-blue-950 text-white py-2 px-4 -mx-6 -mt-6 rounded-t-lg">
+                        <h2 class="text-lg font-bold mb-6 bg-blue-950 text-white py-2 px-4 -mx-6 -mt-6 rounded-t-lg">
                             Design / Installation</h2>
 
                         <div class="space-y-4">
@@ -550,55 +572,27 @@
                                 </div>
 
                                 <!-- Personnel Shifts Table -->
+                                <!-- Personnel Density Display (Refactored) -->
                                 <div class="bg-gray-50 p-4 rounded border border-gray-200">
-                                    <h5 class="font-semibold text-sm text-gray-700 mb-3">Personnel Density
-                                        Calculator
-                                    </h5>
-                                    <div class="grid grid-cols-2 gap-4">
-                                        <div class="form-control">
-                                            <label class="label">
-                                                <span class="label-text text-sm font-semibold">Shift 1
-                                                    Personnel</span>
-                                            </label>
-                                            {{ form.personnel_shift_1 }}
+                                    <h5 class="font-semibold text-sm text-gray-700 mb-3">Personnel Density</h5>
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-sm font-semibold text-blue-950">Unit People
+                                                Density (People/ft²)</span>
+                                        </label>
+                                        <div class="input input-bordered flex items-center bg-gray-100 text-gray-700">
+                                            {% if component %}
+                                            {{ component.equipment.system.unit.people_density }}
+                                            {% else %}
+                                            -
+                                            {% endif %}
                                         </div>
-                                        <div class="form-control">
-                                            <label class="label">
-                                                <span class="label-text text-sm font-semibold">Shift 1 Time Present
-                                                    (%)</span>
-                                            </label>
-                                            {{ form.time_present_shift_1 }}
-                                        </div>
-                                        <div class="form-control">
-                                            <label class="label">
-                                                <span class="label-text text-sm font-semibold">Shift 2
-                                                    Personnel</span>
-                                            </label>
-                                            {{ form.personnel_shift_2 }}
-                                        </div>
-                                        <div class="form-control">
-                                            <label class="label">
-                                                <span class="label-text text-sm font-semibold">Shift 2 Time Present
-                                                    (%)</span>
-                                            </label>
-                                            {{ form.time_present_shift_2 }}
-                                        </div>
-                                        <div class="form-control">
-                                            <label class="label">
-                                                <span class="label-text text-sm font-semibold">Maintenance
-                                                    Personnel</span>
-                                            </label>
-                                            {{ form.personnel_maintenance }}
-                                        </div>
-                                        <div class="form-control">
-                                            <label class="label">
-                                                <span class="label-text text-sm font-semibold">Maintenance Time
-                                                    Present
-                                                    (%)</span>
-                                            </label>
-                                            {{ form.time_present_maintenance }}
-                                        </div>
+                                        <label class="label">
+                                            <span class="label-text-alt text-gray-500">Value inherited from Facility
+                                                Unit configuration</span>
+                                        </label>
                                     </div>
+                                    <!-- Hidden fields for deprecated calculator inputs to prevent potential view errors if they are referenced elsewhere, though they are nullable models -->
                                 </div>
                             </div>
 
@@ -659,6 +653,33 @@
                                             (psia)</span>
                                     </label>
                                     {{ form.operating_pressure_psia }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Release Rate Parameters -->
+                        <div class="mb-8">
+                            <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Release Rate Parameters</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text text-blue-950 font-semibold">Storage Pressure Ps
+                                            (psia)</span>
+                                    </label>
+                                    {{ form.storage_pressure }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text text-blue-950 font-semibold">Atm. Pressure (psi)</span>
+                                    </label>
+                                    {{ form.atm_pressure }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text text-blue-950 font-semibold">Discharge Coeff.
+                                            (Cd)</span>
+                                    </label>
+                                    {{ form.discharge_coeff }}
                                 </div>
                             </div>
                         </div>
@@ -947,48 +968,232 @@
                     </div>
 
 
+
                     <!-- Inspection Section (Hidden by default) -->
                     <div id="inspection-section" class="hidden bg-white shadow-md rounded-lg p-6">
-                        <h2 class="text-lg font-bold mb-6 bg-blue-950 text-white py-2 px-4 -mx-6 -mt-6 rounded-t-lg">Inspection</h2>
+                        <h2 class="text-lg font-bold mb-6 bg-blue-950 text-white py-2 px-4 -mx-6 -mt-6 rounded-t-lg">
+                            Inspection</h2>
 
-                        <!-- 4.6 Detection & Isolation Systems -->
-                        <div class="mb-8">
-                            <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Detection &
-                                Isolation
-                                Systems</h3>
-                            <p class="text-xs text-gray-500 mb-4">Assess impact of detection and isolation
-                                systems on
-                                release magnitude and duration (Tables 4.5, 4.6, 4.7)</p>
+                        <!-- Sub-tabs for Inspection -->
+                        <div class="flex gap-2 mb-6 border-b pb-2">
+                            <button type="button" onclick="showInspectionTab('internal', this)"
+                                class="px-4 py-2 rounded-t bg-blue-950 text-white font-semibold">Internal
+                                Inspection</button>
+                            <button type="button" onclick="showInspectionTab('external', this)"
+                                class="px-4 py-2 rounded-t bg-gray-200 text-gray-700 hover:bg-gray-300">External
+                                Inspection</button>
+                            <button type="button" onclick="showInspectionTab('thickness', this)"
+                                class="px-4 py-2 rounded-t bg-gray-200 text-gray-700 hover:bg-gray-300">Thickness</button>
+                        </div>
 
-                            <div class="grid grid-cols-2 gap-6">
+                        <!-- Internal Inspection Tab -->
+                        <div id="internal-inspection-tab" class="inspection-tab">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                                 <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-blue-950 font-semibold">Detection
-                                            Classification
-                                            (Table 4.5)</span>
-                                    </label>
-                                    {{ form.detection_class }}
-                                    <label class="label">
-                                        <span class="label-text-alt text-gray-400">
-                                            A: Instrumentation (Auto) | B: Detectors (Remote) | C:
-                                            Visual/Marginal
-                                        </span>
+                                    <label class="label"><span class="label-text text-blue-950 font-semibold">Int.
+                                            Inspection (vol, Mil)</span></label>
+                                    {{ form.int_inspection_vol_mil }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text text-blue-950 font-semibold">Last Int.
+                                            Visual Inspection Date</span></label>
+                                    {{ form.last_int_visual_inspection_date }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text text-blue-950 font-semibold">Service
+                                            Years Since Last Int. Visual Insp.</span></label>
+                                    {{ form.service_years_since_last_int_visual_insp }}
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text text-blue-950 font-semibold">Internal
+                                            Lining Quality</span></label>
+                                    {{ form.internal_lining_quality }}
+                                </div>
+                                <div class="form-control flex flex-row items-center gap-2 pt-8">
+                                    <label class="label cursor-pointer justify-start gap-4">
+                                        {{ form.internal_cracks_present }}
+                                        <span class="label-text text-gray-700">Internal Cracks Present</span>
                                     </label>
                                 </div>
+                            </div>
 
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                                 <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-blue-950 font-semibold">Isolation
-                                            Classification
-                                            (Table 4.5)</span>
-                                    </label>
-                                    {{ form.isolation_class }}
-                                    <label class="label">
-                                        <span class="label-text-alt text-gray-400">
-                                            A: Auto Isolation | B: Remote Manual | C: Manual Valves
-                                        </span>
-                                    </label>
+                                    <label class="label"><span class="label-text text-blue-950 font-semibold">Internal
+                                            Crack Finding Capability</span></label>
+                                    {{ form.internal_crack_finding_capability }}
                                 </div>
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text text-blue-950 font-semibold">Internal
+                                            Corrosion Finding Capability</span></label>
+                                    {{ form.internal_corrosion_finding_capability }}
+                                </div>
+                            </div>
+
+                            <!-- Internal Inspection History Table -->
+                            <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Internal Inspection History
+                            </h3>
+                            <div class="mb-4 flex justify-between items-center">
+                                <button type="button" class="btn btn-sm bg-blue-950 text-white hover:bg-blue-900"
+                                    onclick="showAddInspectionModal('Internal')">
+                                    <span class="text-lg">+</span> Add Internal Inspection
+                                </button>
+                                <div class="flex gap-2">
+                                    <button type="button" class="btn btn-sm bg-blue-950 text-white hover:bg-blue-900">
+                                        ✓ Save changes
+                                    </button>
+                                    <button type="button"
+                                        class="btn btn-sm bg-gray-300 text-gray-700 hover:bg-gray-400">
+                                        ⊘ Cancel changes
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="overflow-x-auto">
+                                <table class="table w-full">
+                                    <thead class="bg-blue-950 text-white">
+                                        <tr>
+                                            <th>Method</th>
+                                            <th>Date</th>
+                                            <th>Lining Quality</th>
+                                            <th>General Condition</th>
+                                            <th>Crack Finding Capability</th>
+                                            <th>Corrosion Finding Capability</th>
+                                            <th>Comments</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="internal-history-tbody">
+                                        <!-- Dynamic rows will be added here -->
+                                        <tr class="text-gray-400 text-center">
+                                            <td colspan="8">No inspection history records yet</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- External Inspection Tab -->
+                        <div id="external-inspection-tab" class="inspection-tab hidden">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text text-blue-950 font-semibold">External
+                                            Inspection (vol, Mil)</span></label>
+                                    {{ form.ext_inspection_vol_mil }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text text-blue-950 font-semibold">Last Ext.
+                                            Visual Inspection Date</span></label>
+                                    {{ form.last_ext_visual_inspection_date }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text text-blue-950 font-semibold">Service
+                                            Years Since Last Ext. Visual Insp.</span></label>
+                                    {{ form.service_years_since_last_ext_visual_insp }}
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text text-blue-950 font-semibold">External
+                                            Coating Quality</span></label>
+                                    {{ form.external_coating_quality }}
+                                </div>
+                                <div></div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text text-blue-950 font-semibold">External
+                                            Crack Finding Capability</span></label>
+                                    {{ form.external_crack_finding_capability }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text text-blue-950 font-semibold">External
+                                            Corrosion Finding Capability</span></label>
+                                    {{ form.external_corrosion_finding_capability }}
+                                </div>
+                            </div>
+
+                            <!-- External Inspection History Table -->
+                            <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">External Inspection History
+                            </h3>
+                            <div class="mb-4 flex justify-between items-center">
+                                <button type="button" class="btn btn-sm bg-blue-950 text-white hover:bg-blue-900"
+                                    onclick="showAddInspectionModal('External')">
+                                    <span class="text-lg">+</span> Add External Inspection
+                                </button>
+                                <div class="flex gap-2">
+                                    <button type="button" class="btn btn-sm bg-blue-950 text-white hover:bg-blue-900">
+                                        ✓ Save changes
+                                    </button>
+                                    <button type="button"
+                                        class="btn btn-sm bg-gray-300 text-gray-700 hover:bg-gray-400">
+                                        ⊘ Cancel changes
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="overflow-x-auto">
+                                <table class="table w-full">
+                                    <thead class="bg-blue-950 text-white">
+                                        <tr>
+                                            <th>Method</th>
+                                            <th>Date</th>
+                                            <th>General Condition</th>
+                                            <th>Crack Finding Capability</th>
+                                            <th>Corrosion Finding Capability</th>
+                                            <th>Comments</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="external-history-tbody">
+                                        <!-- Dynamic rows will be added here -->
+                                        <tr class="text-gray-400 text-center">
+                                            <td colspan="7">No inspection history records yet</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Thickness Tab -->
+                        <div id="thickness-inspection-tab" class="inspection-tab hidden">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text text-blue-950 font-semibold">Nominal
+                                            Thickness (mm)</span></label>
+                                    {{ form.thickness_nominal_mm }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text text-blue-950 font-semibold">Minimum
+                                            Required Thickness (mm)</span></label>
+                                    {{ form.thickness_minimum_required_mm }}
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text text-blue-950 font-semibold">Measured
+                                            Thickness (mm)</span></label>
+                                    {{ form.thickness_measured_mm }}
+                                </div>
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text text-blue-950 font-semibold">Corrosion
+                                            Rate (mm/year)</span></label>
+                                    {{ form.corrosion_rate_mm_year }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Inspection Summary (visible on all tabs) -->
+                        <div class="mt-8 pt-8 border-t-2 border-gray-200">
+                            <h3 class="text-md font-bold text-blue-950 mb-4">Inspection Summary</h3>
+                            <div class="form-control">
+                                {{ form.inspection_summary }}
                             </div>
                         </div>
                     </div>
@@ -997,7 +1202,212 @@
                 </form>
             </div>
     </div>
+
+    <!-- Inspection History Modal -->
+    <dialog id="inspection_modal" class="modal">
+        <form method="dialog" class="modal-box w-11/12 max-w-5xl bg-white text-blue-950">
+            <h3 class="font-bold text-lg mb-4">Add Inspection Record</h3>
+
+            <input type="hidden" id="modal_inspection_type" name="inspection_type">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div class="form-control">
+                    <label class="label"><span class="label-text">Date</span></label>
+                    <input type="date" id="modal_date" class="input input-bordered w-full" required>
+                </div>
+                <div class="form-control">
+                    <label class="label"><span class="label-text">Method</span></label>
+                    <input type="text" id="modal_method" class="input input-bordered w-full" readonly>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div class="form-control">
+                    <label class="label"><span class="label-text">Lining Quality / External Coating
+                            Quality</span></label>
+                    <select id="modal_lining_quality" class="select select-bordered w-full">
+                        <option value="">-- Select --</option>
+                        <option value="Poor">Poor</option>
+                        <option value="Fair">Fair</option>
+                        <option value="Good">Good</option>
+                        <option value="Excellent">Excellent</option>
+                        <option value="Average">Average</option>
+                    </select>
+                </div>
+                <div class="form-control">
+                    <label class="label"><span class="label-text">General Condition</span></label>
+                    <select id="modal_general_condition" class="select select-bordered w-full">
+                        <option value="Poor">Poor</option>
+                        <option value="Fair">Fair</option>
+                        <option value="Good">Good</option>
+                        <option value="Excellent">Excellent</option>
+                        <option value="Average">Average</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div class="form-control">
+                    <label class="label"><span class="label-text">Crack Finding Capability</span></label>
+                    <select id="modal_crack_finding" class="select select-bordered w-full">
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                    </select>
+                </div>
+                <div class="form-control">
+                    <label class="label"><span class="label-text">Corrosion Finding Capability</span></label>
+                    <select id="modal_corrosion_finding" class="select select-bordered w-full">
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Medium-High">Medium-High</option>
+                        <option value="High">High</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-control mb-6">
+                <label class="label"><span class="label-text">Comments</span></label>
+                <textarea id="modal_comments" class="textarea textarea-bordered h-24"></textarea>
+            </div>
+
+            <div class="modal-action">
+                <button type="button" class="btn btn-ghost"
+                    onclick="document.getElementById('inspection_modal').close()">Cancel</button>
+                <button type="button" class="btn bg-blue-950 text-white hover:bg-blue-900"
+                    onclick="saveInspectionHistory()">Save</button>
+            </div>
+        </form>
+    </dialog>
+
+    <script>
+        // Store component ID for AJAX requests
+        const COMPONENT_ID = "{{ component.id|default:'' }}";
+
+        // Show modal for adding inspection
+        function showAddInspectionModal(type) {
+            if (!COMPONENT_ID) {
+                alert("Please save the component before adding inspection history.");
+                return;
+            }
+
+            document.getElementById('modal_inspection_type').value = type;
+            document.getElementById('modal_method').value = type + ' Visual'; // Default description
+            document.getElementById('modal_date').valueAsDate = new Date();
+
+            document.getElementById('inspection_modal').showModal();
+        }
+
+        // Save inspection history via AJAX
+        function saveInspectionHistory() {
+            const data = {
+                component_id: COMPONENT_ID,
+                inspection_type: document.getElementById('modal_method').value,
+                date: document.getElementById('modal_date').value,
+                lining_quality: document.getElementById('modal_lining_quality').value,
+                general_condition: document.getElementById('modal_general_condition').value,
+                crack_finding_capability: document.getElementById('modal_crack_finding').value,
+                corrosion_finding_capability: document.getElementById('modal_corrosion_finding').value,
+                comments: document.getElementById('modal_comments').value
+            };
+
+            fetch("{% url 'add_inspection_history' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        document.getElementById('inspection_modal').close();
+                        loadInspectionHistory(); // Reload tables
+                    } else {
+                        alert('Error saving inspection: ' + result.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while saving.');
+                });
+        }
+
+        // Delete inspection history via AJAX
+        function deleteInspectionHistory(id) {
+            if (!confirm('Are you sure you want to delete this inspection record?')) return;
+
+            fetch(`/dashboard/components/inspection-history/${id}/delete/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        loadInspectionHistory();
+                    } else {
+                        alert('Error deleting record.');
+                    }
+                });
+        }
+
+        // Load inspection history
+        function loadInspectionHistory() {
+            if (!COMPONENT_ID) return;
+
+            fetch(`/dashboard/components/${COMPONENT_ID}/inspection-history/`)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        const internalTbody = document.getElementById('internal-history-tbody');
+                        const externalTbody = document.getElementById('external-history-tbody');
+
+                        internalTbody.innerHTML = '';
+                        externalTbody.innerHTML = '';
+
+                        let internalCount = 0;
+                        let externalCount = 0;
+
+                        result.data.forEach(item => {
+                            const row = `
+                            <tr class="hover">
+                                <td>${item.inspection_type}</td>
+                                <td>${item.date}</td>
+                                <td>${item.lining_quality || '-'}</td>
+                                <td>${item.general_condition}</td>
+                                <td>${item.crack_finding_capability}</td>
+                                <td>${item.corrosion_finding_capability}</td>
+                                <td class="truncate max-w-xs" title="${item.comments || ''}">${item.comments || '-'}</td>
+                                <td>
+                                    <button type="button" class="btn btn-xs btn-error text-white" onclick="deleteInspectionHistory(${item.id})">Delete</button>
+                                </td>
+                            </tr>
+                        `;
+
+                            if (item.inspection_type.includes('Internal')) {
+                                internalTbody.innerHTML += row;
+                                internalCount++;
+                            } else {
+                                externalTbody.innerHTML += row;
+                                externalCount++;
+                            }
+                        });
+
+                        if (internalCount === 0) internalTbody.innerHTML = '<tr><td colspan="8" class="text-center text-gray-400">No records found</td></tr>';
+                        if (externalCount === 0) externalTbody.innerHTML = '<tr><td colspan="7" class="text-center text-gray-400">No records found</td></tr>';
+                    }
+                });
+        }
+
+        // Load history on page load
+        document.addEventListener('DOMContentLoaded', loadInspectionHistory);
+    </script>
+
     <!-- END MAIN CONTENT -->
+
 
     <script>
         function showSubTab(tabName, clickedButton) {
@@ -1021,6 +1431,29 @@
                 clickedButton.classList.remove('bg-gray-200', 'hover:bg-gray-300', 'text-gray-700');
                 clickedButton.classList.add('bg-blue-950', 'hover:bg-blue-900', 'text-white', 'shadow-md', 'font-semibold');
             }
+        }
+
+        function showInspectionTab(tabName, clickedButton) {
+            // Hide all inspection tabs
+            document.querySelectorAll('.inspection-tab').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName + '-inspection-tab').classList.remove('hidden');
+
+            // Update button styles within the inspection section
+            const container = clickedButton.parentElement;
+            const buttons = container.querySelectorAll('button');
+
+            buttons.forEach(btn => {
+                btn.classList.remove('bg-blue-950', 'text-white', 'font-semibold');
+                btn.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+            });
+
+            // Highlight clicked button
+            clickedButton.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+            clickedButton.classList.add('bg-blue-950', 'text-white', 'font-semibold');
         }
 
         // Toggle Liquid/Vapor Release Rate sections based on Stored Phase

@@ -19,4 +19,9 @@ urlpatterns = [
     path('equipment/<int:pk>/edit/', views.equipment_edit, name='equipment_edit'),
     path('systems', views.systems, name='systems_home'),
     path('systems/<int:pk>/delete/', views.system_delete, name='system_delete'),
+    
+    # Inspection History AJAX URLs
+    path('components/inspection-history/add/', views.add_inspection_history, name='add_inspection_history'),
+    path('components/inspection-history/<int:pk>/delete/', views.delete_inspection_history, name='delete_inspection_history'),
+    path('components/<int:component_id>/inspection-history/', views.get_inspection_history, name='get_inspection_history'),
 ]

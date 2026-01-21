@@ -242,7 +242,68 @@ class Component(models.Model):
                                              ('Fiberglass', 'Fiberglass'), ('Foam Glass', 'Foam Glass'), ('Other', 'Other')])
     other_insulation = models.CharField(max_length=255, null=True, blank=True, verbose_name="Other Insulation")
 
+    # Inspection Section Fields
+    
+    # Internal Inspection
+    int_inspection_vol_mil = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Int. Inspection (vol, Mil)")
+    last_int_visual_inspection_date = models.DateField(null=True, blank=True, verbose_name="Last Int. Visual Inspection Date")
+    service_years_since_last_int_visual_insp = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Service Years Since Last Int. Visual Insp.")
+    internal_lining_quality = models.CharField(max_length=50, null=True, blank=True, verbose_name="Internal Lining Quality",
+                                               choices=[('', '-- Select Quality --'), ('Poor', 'Poor'), ('Fair', 'Fair'), ('Good', 'Good'), ('Excellent', 'Excellent')])
+    internal_cracks_present = models.BooleanField(default=False, verbose_name="Internal Cracks Present")
+    internal_crack_finding_capability = models.CharField(max_length=50, null=True, blank=True, verbose_name="Internal Crack Finding Capability",
+                                                         choices=[('Low', 'Low'), ('Medium', 'Medium'), ('High', 'High')])
+    internal_corrosion_finding_capability = models.CharField(max_length=50, null=True, blank=True, verbose_name="Internal Corrosion Finding Capability",
+                                                             choices=[('Low', 'Low'), ('Medium', 'Medium'), ('Medium-High', 'Medium-High'), ('High', 'High')])
+    
+    # External Inspection
+    ext_inspection_vol_mil = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="External Inspection (vol, Mil)")
+    last_ext_visual_inspection_date = models.DateField(null=True, blank=True, verbose_name="Last Ext. Visual Inspection Date")
+    service_years_since_last_ext_visual_insp = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Service Years Since Last Ext. Visual Insp.")
+    external_coating_quality = models.CharField(max_length=50, null=True, blank=True, verbose_name="External Coating Quality",
+                                                choices=[('', '-- Select Quality --'), ('Poor', 'Poor'), ('Fair', 'Fair'), ('Good', 'Good'), ('Excellent', 'Excellent')])
+    external_crack_finding_capability = models.CharField(max_length=50, null=True, blank=True, verbose_name="External Crack Finding Capability",
+                                                         choices=[('Low', 'Low'), ('Medium', 'Medium'), ('High', 'High')])
+    external_corrosion_finding_capability = models.CharField(max_length=50, null=True, blank=True, verbose_name="External Corrosion Finding Capability",
+                                                             choices=[('Low', 'Low'), ('Medium', 'Medium'), ('Medium-High', 'Medium-High'), ('High', 'High')])
+    
+    # Thickness Inspection
+    thickness_nominal_mm = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Nominal Thickness (mm)")
+    thickness_minimum_required_mm = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Minimum Required Thickness (mm)")
+    thickness_measured_mm = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Measured Thickness (mm)")
+    corrosion_rate_mm_year = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, verbose_name="Corrosion Rate (mm/year)")
+    
+    # Inspection Summary
+    inspection_summary = models.TextField(null=True, blank=True, verbose_name="Inspection Summary")
+
+
     def __str__(self):
         return f"{self.rbix_component_type} - {self.equipment.number}"
+
+
+class InspectionHistory(models.Model):
+    """Model for tracking inspection history records"""
+    component = models.ForeignKey(Component, on_delete=models.CASCADE, related_name='inspection_history')
+    inspection_type = models.CharField(max_length=20, verbose_name="Method", 
+                                       choices=[('Internal Visual', 'Internal Visual'), ('External Visual', 'External Visual')])
+    date = models.DateField(verbose_name="Date")
+    lining_quality = models.CharField(max_length=50, null=True, blank=True, verbose_name="Lining Quality",
+                                      choices=[('Poor', 'Poor'), ('Fair', 'Fair'), ('Good', 'Good'), ('Excellent', 'Excellent'), ('Average', 'Average')])
+    general_condition = models.CharField(max_length=50, verbose_name="General Condition",
+                                        choices=[('Poor', 'Poor'), ('Fair', 'Fair'), ('Good', 'Good'), ('Excellent', 'Excellent'), ('Average', 'Average')])
+    crack_finding_capability = models.CharField(max_length=50, verbose_name="Crack Finding Capability",
+                                               choices=[('Low', 'Low'), ('Medium', 'Medium'), ('High', 'High')])
+    corrosion_finding_capability = models.CharField(max_length=50, verbose_name="Corrosion Finding Capability",
+                                                   choices=[('Low', 'Low'), ('Medium', 'Medium'), ('Medium-High', 'Medium-High'), ('High', 'High')])
+    comments = models.TextField(null=True, blank=True, verbose_name="Comments")
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-date']
+        verbose_name = "Inspection History"
+        verbose_name_plural = "Inspection Histories"
+    
+    def __str__(self):
+        return f"{self.inspection_type} - {self.component} - {self.date}"
 
 
