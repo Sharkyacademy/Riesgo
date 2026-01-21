@@ -119,13 +119,14 @@
 
                 <!-- Tabs -->
                 <div class="tabs tabs-boxed bg-white shadow-md mb-2">
-                    <a class="tab tab-active text-blue-950 font-semibold">Data</a>
+                    <a class="tab tab-active text-blue-950 font-semibold" onclick="openMainTab(event, 'data')">Data</a>
                     <a class="tab text-gray-500" disabled>Metal Loss</a>
                     <a class="tab text-gray-500" disabled>Non-Metal Loss</a>
                     <a class="tab text-gray-500" disabled>Probability</a>
-                    <a class="tab text-gray-500" disabled>Consequence</a>
-                    <a class="tab text-gray-500" disabled>Risk</a>
-                    <a class="tab text-gray-500" disabled>Inspection</a>
+                    <a class="tab text-gray-500" onclick="openMainTab(event, 'consequence')">Consequence</a>
+                    <!-- Placeholders for future -->
+                    <a class="tab text-gray-500 text-opacity-50 cursor-not-allowed">Risk</a>
+                    <a class="tab text-gray-500 text-opacity-50 cursor-not-allowed">Inspection</a>
                 </div>
 
                 <!-- Styles for custom purple theme -->
@@ -155,1049 +156,1112 @@
                     </div>
                     {% endif %}
 
-                    <!-- Sub-tabs for Data section -->
-                    <div class="flex gap-2 mb-6 bg-gray-100 p-2 rounded-lg border border-gray-200">
-                        <button type="button"
-                            class="btn btn-sm bg-blue-950 hover:bg-blue-900 text-white border-none shadow-md font-semibold"
-                            onclick="showSubTab('design', this)">Design / Installation</button>
-                        <button type="button" class="btn btn-sm bg-gray-200 hover:bg-gray-300 text-gray-700 border-none"
-                            onclick="showSubTab('operating', this)">Operating & Process</button>
-                        <button type="button" class="btn btn-sm bg-gray-200 hover:bg-gray-300 text-gray-700 border-none"
-                            onclick="showSubTab('inspection', this)">Inspection</button>
-                    </div>
+                    <!-- DATA TAB CONTENT -->
+                    <div id="data-tab-content">
 
-                    <!-- Design / Installation Section -->
+                        <!-- Sub-tabs for Data section -->
+                        <div class="flex gap-2 mb-6 bg-gray-100 p-2 rounded-lg border border-gray-200">
+                            <button type="button"
+                                class="btn btn-sm bg-blue-950 hover:bg-blue-900 text-white border-none shadow-md font-semibold"
+                                onclick="showSubTab('design', this)">Design / Installation</button>
+                            <button type="button"
+                                class="btn btn-sm bg-gray-200 hover:bg-gray-300 text-gray-700 border-none"
+                                onclick="showSubTab('operating', this)">Operating & Process</button>
+                            <button type="button"
+                                class="btn btn-sm bg-gray-200 hover:bg-gray-300 text-gray-700 border-none"
+                                onclick="showSubTab('inspection', this)">Inspection</button>
+                        </div>
 
-                    <div id="design-section" class="bg-white shadow-md rounded-lg p-6">
-                        <h2 class="text-lg font-bold mb-6 bg-blue-950 text-white py-2 px-4 -mx-6 -mt-6 rounded-t-lg">
-                            Design / Installation</h2>
+                        <!-- Design / Installation Section -->
 
-                        <div class="space-y-4">
-                            <!-- Row 1: Equipment -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div class="form-control md:col-span-2">
+                        <div id="design-section" class="bg-white shadow-md rounded-lg p-6">
+                            <h2
+                                class="text-lg font-bold mb-6 bg-blue-950 text-white py-2 px-4 -mx-6 -mt-6 rounded-t-lg">
+                                Design / Installation</h2>
+
+                            <div class="space-y-4">
+                                <!-- Row 1: Equipment -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="form-control md:col-span-2">
+                                        <label class="label"><span
+                                                class="label-text font-semibold text-gray-700">Equipment</span></label>
+                                        {{ form.equipment }}
+                                    </div>
+                                </div>
+
+                                <!-- Row 2: Equipment Type & Component Type -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="form-control">
+                                        <label class="label"><span class="label-text font-semibold text-gray-700">RBIX
+                                                Equipment Type</span></label>
+                                        {{ form.rbix_equipment_type }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label"><span class="label-text font-semibold text-gray-700">RBIX
+                                                Component Type</span></label>
+                                        {{ form.rbix_component_type }}
+                                    </div>
+                                </div>
+
+                                <!-- Row 3: Description -->
+                                <div class="form-control w-full">
                                     <label class="label"><span
-                                            class="label-text font-semibold text-gray-700">Equipment</span></label>
-                                    {{ form.equipment }}
+                                            class="label-text font-semibold text-gray-700">Description</span></label>
+                                    {{ form.description }}
+                                </div>
+
+                                <!-- Row 4: PFD, P&ID, Other Drawings -->
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div class="form-control">
+                                        <label class="label"><span
+                                                class="label-text font-semibold text-gray-700">PFD</span></label>
+                                        {{ form.pfd_no }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label"><span
+                                                class="label-text font-semibold text-gray-700">P&ID</span></label>
+                                        {{ form.p_and_id }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label"><span class="label-text font-semibold text-gray-700">Other
+                                                Drawings</span></label>
+                                        {{ form.other_drawings }}
+                                    </div>
+                                </div>
+
+                                <!-- Row 5: Dates and Lives Setup -->
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div class="form-control">
+                                        <label class="label"><span
+                                                class="label-text font-semibold text-gray-700">Commissioning
+                                                Date</span></label>
+                                        {{ form.commissioning_date }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label"><span class="label-text font-semibold text-gray-700">RBI
+                                                Calculation Date</span></label>
+                                        {{ form.rbi_calculation_date }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label"><span class="label-text font-semibold text-gray-700">Design
+                                                Life (years)</span></label>
+                                        {{ form.design_life_years }}
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div class="form-control">
+                                        <label class="label"><span
+                                                class="label-text font-semibold text-gray-700">Component
+                                                Life
+                                                (years)</span></label>
+                                        {{ form.component_life_years }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label"><span
+                                                class="label-text font-semibold text-gray-700">Remaining
+                                                Life
+                                                (years)</span></label>
+                                        {{ form.remaining_life_years }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label"><span
+                                                class="label-text font-semibold text-gray-700">External
+                                                Coating
+                                                Installation Date</span></label>
+                                        {{ form.external_coating_date }}
+                                    </div>
+                                </div>
+
+                                <!-- Material Section -->
+                                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                                    <div class="form-control">
+                                        <label class="label"><span
+                                                class="label-text font-semibold text-gray-700">Material</span></label>
+                                        {{ form.material }}
+                                    </div>
+                                    <div class="form-control">
+                                        <button type="button"
+                                            class="btn bg-blue-950 text-white hover:bg-blue-900 btn-block">Select
+                                            Material</button>
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label"><span class="label-text font-semibold text-blue-950">RBIX
+                                                Material</span></label>
+                                        <input type="text" class="input input-bordered bg-gray-100" readonly
+                                            value="Carbon steel">
+                                    </div>
+                                    <div class="form-control">
+                                        <input type="text" class="input input-bordered bg-gray-100" readonly
+                                            value="Carbon Steel A 516">
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div class="form-control">
+                                        <label class="label"><span class="label-text font-semibold text-purple-700">RBIX
+                                                Material Nominal Composition</span></label>
+                                        {{ form.material_nominal_composition }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label"><span class="label-text font-semibold text-purple-700">RBIX
+                                                Material Specification No</span></label>
+                                        {{ form.material_specification_no }}
+                                    </div>
+                                    <div class="form-control flex flex-row items-center gap-2 pt-8">
+                                        <label class="label cursor-pointer justify-start gap-4">
+                                            <span class="label-text font-semibold text-gray-700">Sulphur Bearing
+                                                Compounds</span>
+                                            {{ form.sulphur_bearing_compounds }}
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Design Conditions -->
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div class="form-control">
+                                        <label class="label"><span class="label-text font-semibold text-gray-700">Design
+                                                Pressure (psi)</span></label>
+                                        {{ form.design_pressure_psi }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label"><span class="label-text font-semibold text-gray-700">Design
+                                                Temp. (deg F)</span></label>
+                                        {{ form.design_temp_f }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label"><span class="label-text font-semibold text-gray-700">MDMT
+                                                (deg F)</span></label>
+                                        {{ form.mdmt_f }}
+                                    </div>
+                                </div>
+
+                                <!-- Stress / Strength -->
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                                    <div class="form-control flex flex-row items-center gap-2">
+                                        <label class="label cursor-pointer justify-start gap-4">
+                                            <span class="label-text font-semibold text-purple-700">Stress / Strength
+                                                Known</span>
+                                            {{ form.stress_strength_known }}
+                                        </label>
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label"><span
+                                                class="label-text font-semibold text-gray-700">Allowable
+                                                Stress
+                                                (psi)</span></label>
+                                        {{ form.allowable_stress_psi }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label"><span class="label-text font-semibold text-gray-700">SMYS
+                                                (Yield)(psi)</span></label>
+                                        {{ form.smys_yield_psi }}
+                                    </div>
+                                </div>
+
+                                <!-- Dimensions: Diameter -->
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div class="form-control">
+                                        <label class="label"><span class="label-text font-semibold text-gray-700">Size
+                                                Diameter (Rating)</span></label>
+                                        {{ form.size_diameter_rating }}
+                                    </div>
+                                    <!-- Note: Reusing existing component_diameter for the "inches" field shown in mockup -->
+                                    <div class="form-control">
+                                        <label class="label"><span class="label-text font-semibold text-purple-700">Size
+                                                Diameter (inches)</span></label>
+                                        {{ form.component_diameter }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label"><span class="label-text font-semibold text-gray-700">Size
+                                                Diameter (mm)</span></label>
+                                        <input type="text" class="input input-bordered bg-gray-100" readonly value="">
+                                    </div>
+                                </div>
+
+                                <!-- Dimensions: Thickness -->
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                                    <div class="form-control flex flex-row items-center gap-2">
+                                        <label class="label cursor-pointer justify-start gap-4">
+                                            <span class="label-text font-semibold text-purple-700">Nominal Thickness
+                                                Known</span>
+                                            {{ form.nominal_thickness_known }}
+                                        </label>
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label"><span class="label-text font-semibold text-gray-700">NT
+                                                (inch)</span></label>
+                                        {{ form.nominal_thickness_in }}
+                                    </div>
+                                    <div></div>
+                                </div>
+
+                                <!-- Dimensions: OD/ID/Safety -->
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div class="form-control">
+                                        <label class="label"><span
+                                                class="label-text font-semibold text-gray-700">Outside
+                                                Diameter(in)</span></label>
+                                        {{ form.diameter_outside_in }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label"><span class="label-text font-semibold text-gray-700">Inside
+                                                Diameter(in)</span></label>
+                                        {{ form.diameter_inside_in }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label"><span class="label-text font-semibold text-gray-700">Safety
+                                                Factor</span></label>
+                                        {{ form.safety_factor }}
+                                    </div>
+                                </div>
+
+                                <!-- Codes -->
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                                    <div class="form-control">
+                                        <label class="label"><span
+                                                class="label-text font-semibold text-purple-700">Design
+                                                Code</span></label>
+                                        {{ form.design_code }}
+                                    </div>
+                                    <div class="form-control flex flex-row items-center gap-2 mb-3">
+                                        <label class="label cursor-pointer justify-start gap-4">
+                                            <span class="label-text font-semibold text-purple-700">PWHT</span>
+                                            {{ form.pwht }}
+                                        </label>
+                                    </div>
+                                    <div class="form-control flex flex-row items-center gap-2 mb-3">
+                                        <label class="label cursor-pointer justify-start gap-4">
+                                            <span class="label-text font-semibold text-purple-700">Heat Traced</span>
+                                            {{ form.heat_traced }}
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Corrosion/Insulation -->
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                                    <div class="form-control">
+                                        <label class="label"><span
+                                                class="label-text font-semibold text-gray-700">Atmosphere
+                                                Corrosivity</span></label>
+                                        {{ form.atmosphere_corrosivity }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label"><span class="label-text font-semibold text-gray-700">Joint
+                                                Efficiency (0 to 1)</span></label>
+                                        {{ form.joint_efficiency }}
+                                    </div>
+                                    <div class="form-control flex flex-row items-center gap-2 mb-3">
+                                        <label class="label cursor-pointer justify-start gap-4">
+                                            <span class="label-text font-semibold text-purple-700">Internal
+                                                Cladding</span>
+                                            {{ form.internal_cladding }}
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div class="form-control flex flex-row items-center gap-2">
+                                        <label class="label cursor-pointer justify-start gap-4">
+                                            <span class="label-text font-semibold text-purple-700">Internal
+                                                Lining</span>
+                                            {{ form.internal_lining }}
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                                    <div class="form-control flex flex-row items-center gap-2 mb-3">
+                                        <label class="label cursor-pointer justify-start gap-4">
+                                            <span class="label-text font-semibold text-gray-700">Insulated</span>
+                                            {{ form.insulated }}
+                                        </label>
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label"><span
+                                                class="label-text font-semibold text-gray-700">Insulation
+                                                Type</span></label>
+                                        {{ form.insulation_type }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label"><span class="label-text font-semibold text-gray-700">Other
+                                                Insulation</span></label>
+                                        {{ form.other_insulation }}
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- 4.12 Financial Consequence (Moved to Consequence Tab) -->
+                            <!-- Section removed to prevent duplicate field IDs -->
+
+
+                        </div>
+
+                        <!-- Operating & Process Section (Hidden by default) -->
+                        <div id="operating-section" class="hidden bg-white shadow-md rounded-lg p-6">
+                            <h2
+                                class="text-lg font-bold mb-6 bg-blue-950 text-white py-2 px-4 -mx-6 -mt-6 rounded-t-lg">
+                                Operating & Process</h2>
+
+                            <!-- Operating Temperature -->
+                            <div class="mb-8">
+                                <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Operating Temperature
+                                </h3>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-blue-950 font-semibold">Operating Temperature
+                                                (deg
+                                                F)</span>
+                                        </label>
+                                        {{ form.operating_temp_f }}
+                                    </div>
+                                    <div class="form-control md:col-span-2 flex flex-row items-center gap-2 pt-8">
+                                        <label class="label cursor-pointer justify-start gap-4">
+                                            <span class="label-text text-gray-700">Component may operate at or below the
+                                                MDMT</span>
+                                            {{ form.component_may_operate_below_mdmt }}
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
 
-                            <!-- Row 2: Equipment Type & Component Type -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text font-semibold text-gray-700">RBIX
-                                            Equipment Type</span></label>
-                                    {{ form.rbix_equipment_type }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text font-semibold text-gray-700">RBIX
-                                            Component Type</span></label>
-                                    {{ form.rbix_component_type }}
-                                </div>
-                            </div>
-
-                            <!-- Row 3: Description -->
-                            <div class="form-control w-full">
-                                <label class="label"><span
-                                        class="label-text font-semibold text-gray-700">Description</span></label>
-                                {{ form.description }}
-                            </div>
-
-                            <!-- Row 4: PFD, P&ID, Other Drawings -->
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div class="form-control">
-                                    <label class="label"><span
-                                            class="label-text font-semibold text-gray-700">PFD</span></label>
-                                    {{ form.pfd_no }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label"><span
-                                            class="label-text font-semibold text-gray-700">P&ID</span></label>
-                                    {{ form.p_and_id }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text font-semibold text-gray-700">Other
-                                            Drawings</span></label>
-                                    {{ form.other_drawings }}
+                            <!-- Operating Pressure -->
+                            <div class="mb-8">
+                                <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Operating Pressure</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-blue-950 font-semibold">Operating Pressure
+                                                (psia)</span>
+                                        </label>
+                                        {{ form.operating_pressure_psia }}
+                                    </div>
                                 </div>
                             </div>
 
-                            <!-- Row 5: Dates and Lives Setup -->
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div class="form-control">
-                                    <label class="label"><span
-                                            class="label-text font-semibold text-gray-700">Commissioning
-                                            Date</span></label>
-                                    {{ form.commissioning_date }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text font-semibold text-gray-700">RBI
-                                            Calculation Date</span></label>
-                                    {{ form.rbi_calculation_date }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text font-semibold text-gray-700">Design
-                                            Life (years)</span></label>
-                                    {{ form.design_life_years }}
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text font-semibold text-gray-700">Component
-                                            Life
-                                            (years)</span></label>
-                                    {{ form.component_life_years }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text font-semibold text-gray-700">Remaining
-                                            Life
-                                            (years)</span></label>
-                                    {{ form.remaining_life_years }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text font-semibold text-gray-700">External
-                                            Coating
-                                            Installation Date</span></label>
-                                    {{ form.external_coating_date }}
+                            <!-- Release Rate Parameters -->
+                            <div class="mb-8">
+                                <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Release Rate Parameters
+                                </h3>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-blue-950 font-semibold">Storage Pressure Ps
+                                                (psia)</span>
+                                        </label>
+                                        {{ form.storage_pressure }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-blue-950 font-semibold">Atm. Pressure
+                                                (psi)</span>
+                                        </label>
+                                        {{ form.atm_pressure }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-blue-950 font-semibold">Discharge Coeff.
+                                                (Cd)</span>
+                                        </label>
+                                        {{ form.discharge_coeff }}
+                                    </div>
                                 </div>
                             </div>
 
-                            <!-- Material Section -->
-                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                                <div class="form-control">
-                                    <label class="label"><span
-                                            class="label-text font-semibold text-gray-700">Material</span></label>
-                                    {{ form.material }}
-                                </div>
-                                <div class="form-control">
-                                    <button type="button"
-                                        class="btn bg-blue-950 text-white hover:bg-blue-900 btn-block">Select
-                                        Material</button>
-                                </div>
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text font-semibold text-blue-950">RBIX
-                                            Material</span></label>
-                                    <input type="text" class="input input-bordered bg-gray-100" readonly
-                                        value="Carbon steel">
-                                </div>
-                                <div class="form-control">
-                                    <input type="text" class="input input-bordered bg-gray-100" readonly
-                                        value="Carbon Steel A 516">
+                            <!-- Flow Properties -->
+                            <div class="mb-8">
+                                <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Flow Properties</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-blue-950 font-semibold">Flow Velocity
+                                                (ft/s)</span>
+                                        </label>
+                                        {{ form.flow_velocity_fts }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-blue-950 font-semibold">Inhibitor Efficiency
+                                                (%)</span>
+                                        </label>
+                                        {{ form.inhibitor_efficiency_percent }}
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text font-semibold text-purple-700">RBIX
-                                            Material Nominal Composition</span></label>
-                                    {{ form.material_nominal_composition }}
+                            <!-- Fluid Information -->
+                            <div class="mb-8">
+                                <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Fluid Information</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-blue-950 font-semibold">Fluid Name</span>
+                                        </label>
+                                        {{ form.fluid_name }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-blue-950 font-semibold">Fluid
+                                                Description</span>
+                                        </label>
+                                        {{ form.fluid_description }}
+                                    </div>
                                 </div>
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text font-semibold text-purple-700">RBIX
-                                            Material Specification No</span></label>
-                                    {{ form.material_specification_no }}
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-blue-950 font-semibold">RBIX Fluid</span>
+                                        </label>
+                                        {{ form.rbix_fluid }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-blue-950 font-semibold">Operational Fluid
+                                                Phase</span>
+                                        </label>
+                                        {{ form.operational_fluid_phase }}
+                                    </div>
                                 </div>
-                                <div class="form-control flex flex-row items-center gap-2 pt-8">
-                                    <label class="label cursor-pointer justify-start gap-4">
-                                        <span class="label-text font-semibold text-gray-700">Sulphur Bearing
-                                            Compounds</span>
-                                        {{ form.sulphur_bearing_compounds }}
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-blue-950 font-semibold">Component Fluid Mass
+                                                (lb)</span>
+                                        </label>
+                                        {{ form.component_fluid_mass_lb }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-blue-950 font-semibold">Component Group Fluid
+                                                Mass
+                                                (lb)</span>
+                                        </label>
+                                        {{ form.component_group_fluid_mass_lb }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Safety Systems Effectiveness -->
+                            <div class="mb-8">
+                                <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Safety Systems
+                                    Effectiveness
+                                </h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-blue-950 font-semibold">Fluid Release Reduction
+                                                Safety Systems Effectiveness</span>
+                                        </label>
+                                        {{ form.fluid_release_reduction_safety_effectiveness }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-blue-950 font-semibold">Fire Reduction Safety
+                                                Systems Effectiveness</span>
+                                        </label>
+                                        {{ form.fire_reduction_safety_effectiveness }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Chemical Properties -->
+                            <div class="mb-8">
+                                <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Chemical Properties</h3>
+                                <div class="form-control max-w-xs mb-6">
+                                    <label class="label">
+                                        <span class="label-text text-blue-950 font-semibold">pH</span>
                                     </label>
+                                    {{ form.ph_value }}
                                 </div>
-                            </div>
 
-                            <!-- Design Conditions -->
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text font-semibold text-gray-700">Design
-                                            Pressure (psi)</span></label>
-                                    {{ form.design_pressure_psi }}
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    <div class="form-control flex flex-row items-center gap-2">
+                                        <label class="label cursor-pointer justify-start gap-3">
+                                            {{ form.contains_water }}
+                                            <span class="label-text text-gray-700">Water</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-control flex flex-row items-center gap-2">
+                                        <label class="label cursor-pointer justify-start gap-3">
+                                            {{ form.contains_h2s }}
+                                            <span class="label-text text-gray-700">H₂S</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-control flex flex-row items-center gap-2">
+                                        <label class="label cursor-pointer justify-start gap-3">
+                                            {{ form.contains_co2 }}
+                                            <span class="label-text text-gray-700">CO₂</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-control flex flex-row items-center gap-2">
+                                        <label class="label cursor-pointer justify-start gap-3">
+                                            {{ form.contains_h2so4 }}
+                                            <span class="label-text text-gray-700">H₂SO₄</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-control flex flex-row items-center gap-2">
+                                        <label class="label cursor-pointer justify-start gap-3">
+                                            {{ form.contains_hf }}
+                                            <span class="label-text text-gray-700">HF</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-control flex flex-row items-center gap-2">
+                                        <label class="label cursor-pointer justify-start gap-3">
+                                            {{ form.contains_amine }}
+                                            <span class="label-text text-gray-700">Amine</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-control flex flex-row items-center gap-2">
+                                        <label class="label cursor-pointer justify-start gap-3">
+                                            {{ form.contains_hcl }}
+                                            <span class="label-text text-gray-700">HCl</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-control flex flex-row items-center gap-2">
+                                        <label class="label cursor-pointer justify-start gap-3">
+                                            {{ form.contains_oxygen }}
+                                            <span class="label-text text-gray-700">Oxygen</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-control flex flex-row items-center gap-2">
+                                        <label class="label cursor-pointer justify-start gap-3">
+                                            {{ form.contains_sulphur }}
+                                            <span class="label-text text-gray-700">Sulphur</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-control flex flex-row items-center gap-2">
+                                        <label class="label cursor-pointer justify-start gap-3">
+                                            {{ form.contains_chloride }}
+                                            <span class="label-text text-gray-700">Chloride</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-control flex flex-row items-center gap-2">
+                                        <label class="label cursor-pointer justify-start gap-3">
+                                            {{ form.contains_hydrogen }}
+                                            <span class="label-text text-gray-700">Hydrogen</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-control flex flex-row items-center gap-2">
+                                        <label class="label cursor-pointer justify-start gap-3">
+                                            {{ form.high_hydrogen_partial_pressure }}
+                                            <span class="label-text text-gray-700">Hydrogen partial pressure > 0.032 MPa
+                                                [50
+                                                psi]</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-control flex flex-row items-center gap-2">
+                                        <label class="label cursor-pointer justify-start gap-3">
+                                            {{ form.contains_oil }}
+                                            <span class="label-text text-gray-700">Oil</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-control flex flex-row items-center gap-2">
+                                        <label class="label cursor-pointer justify-start gap-3">
+                                            {{ form.contains_caustic }}
+                                            <span class="label-text text-gray-700">Caustic</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-control flex flex-row items-center gap-2">
+                                        <label class="label cursor-pointer justify-start gap-3">
+                                            {{ form.underground }}
+                                            <span class="label-text text-gray-700">Underground</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-control flex flex-row items-center gap-2">
+                                        <label class="label cursor-pointer justify-start gap-3">
+                                            {{ form.cooling_water_service }}
+                                            <span class="label-text text-gray-700">Cooling Water Service</span>
+                                        </label>
+                                    </div>
                                 </div>
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text font-semibold text-gray-700">Design
-                                            Temp. (deg F)</span></label>
-                                    {{ form.design_temp_f }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text font-semibold text-gray-700">MDMT
-                                            (deg F)</span></label>
-                                    {{ form.mdmt_f }}
-                                </div>
-                            </div>
 
-                            <!-- Stress / Strength -->
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-                                <div class="form-control flex flex-row items-center gap-2">
-                                    <label class="label cursor-pointer justify-start gap-4">
-                                        <span class="label-text font-semibold text-purple-700">Stress / Strength
-                                            Known</span>
-                                        {{ form.stress_strength_known }}
-                                    </label>
-                                </div>
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text font-semibold text-gray-700">Allowable
-                                            Stress
-                                            (psi)</span></label>
-                                    {{ form.allowable_stress_psi }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text font-semibold text-gray-700">SMYS
-                                            (Yield)(psi)</span></label>
-                                    {{ form.smys_yield_psi }}
-                                </div>
-                            </div>
-
-                            <!-- Dimensions: Diameter -->
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text font-semibold text-gray-700">Size
-                                            Diameter (Rating)</span></label>
-                                    {{ form.size_diameter_rating }}
-                                </div>
-                                <!-- Note: Reusing existing component_diameter for the "inches" field shown in mockup -->
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text font-semibold text-purple-700">Size
-                                            Diameter (inches)</span></label>
-                                    {{ form.component_diameter }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text font-semibold text-gray-700">Size
-                                            Diameter (mm)</span></label>
-                                    <input type="text" class="input input-bordered bg-gray-100" readonly value="">
-                                </div>
-                            </div>
-
-                            <!-- Dimensions: Thickness -->
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-                                <div class="form-control flex flex-row items-center gap-2">
-                                    <label class="label cursor-pointer justify-start gap-4">
-                                        <span class="label-text font-semibold text-purple-700">Nominal Thickness
-                                            Known</span>
-                                        {{ form.nominal_thickness_known }}
-                                    </label>
-                                </div>
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text font-semibold text-gray-700">NT
-                                            (inch)</span></label>
-                                    {{ form.nominal_thickness_in }}
-                                </div>
-                                <div></div>
-                            </div>
-
-                            <!-- Dimensions: OD/ID/Safety -->
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text font-semibold text-gray-700">Outside
-                                            Diameter(in)</span></label>
-                                    {{ form.diameter_outside_in }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text font-semibold text-gray-700">Inside
-                                            Diameter(in)</span></label>
-                                    {{ form.diameter_inside_in }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text font-semibold text-gray-700">Safety
-                                            Factor</span></label>
-                                    {{ form.safety_factor }}
-                                </div>
-                            </div>
-
-                            <!-- Codes -->
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text font-semibold text-purple-700">Design
-                                            Code</span></label>
-                                    {{ form.design_code }}
-                                </div>
-                                <div class="form-control flex flex-row items-center gap-2 mb-3">
-                                    <label class="label cursor-pointer justify-start gap-4">
-                                        <span class="label-text font-semibold text-purple-700">PWHT</span>
-                                        {{ form.pwht }}
-                                    </label>
-                                </div>
-                                <div class="form-control flex flex-row items-center gap-2 mb-3">
-                                    <label class="label cursor-pointer justify-start gap-4">
-                                        <span class="label-text font-semibold text-purple-700">Heat Traced</span>
-                                        {{ form.heat_traced }}
-                                    </label>
-                                </div>
-                            </div>
-
-                            <!-- Corrosion/Insulation -->
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text font-semibold text-gray-700">Atmosphere
-                                            Corrosivity</span></label>
-                                    {{ form.atmosphere_corrosivity }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text font-semibold text-gray-700">Joint
-                                            Efficiency (0 to 1)</span></label>
-                                    {{ form.joint_efficiency }}
-                                </div>
-                                <div class="form-control flex flex-row items-center gap-2 mb-3">
-                                    <label class="label cursor-pointer justify-start gap-4">
-                                        <span class="label-text font-semibold text-purple-700">Internal
-                                            Cladding</span>
-                                        {{ form.internal_cladding }}
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div class="form-control flex flex-row items-center gap-2">
-                                    <label class="label cursor-pointer justify-start gap-4">
-                                        <span class="label-text font-semibold text-purple-700">Internal
-                                            Lining</span>
-                                        {{ form.internal_lining }}
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                                <div class="form-control flex flex-row items-center gap-2 mb-3">
-                                    <label class="label cursor-pointer justify-start gap-4">
-                                        <span class="label-text font-semibold text-gray-700">Insulated</span>
-                                        {{ form.insulated }}
-                                    </label>
-                                </div>
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text font-semibold text-gray-700">Insulation
-                                            Type</span></label>
-                                    {{ form.insulation_type }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text font-semibold text-gray-700">Other
-                                            Insulation</span></label>
-                                    {{ form.other_insulation }}
+                                <!-- Chemical Concentrations (W%) -->
+                                <h4 class="text-sm font-bold text-blue-950 mb-4 mt-6">Chemical Concentrations (W%)</h4>
+                                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-gray-700">H₂S (Hydrogen sulfide)(W%)</span>
+                                        </label>
+                                        {{ form.h2s_concentration_wpercent }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-gray-700">NH₃, Ammonia (W%)</span>
+                                        </label>
+                                        {{ form.nh3_concentration_wpercent }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-gray-700">CO₂ Carbon Monoxide (W%)</span>
+                                        </label>
+                                        {{ form.co2_concentration_wpercent }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-gray-700">HNO₃, Nitric Acid (W%)</span>
+                                        </label>
+                                        {{ form.hno3_concentration_wpercent }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-gray-700">H₂O₂, Nitrogen Dioxide (W%)</span>
+                                        </label>
+                                        {{ form.h2o2_concentration_wpercent }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-gray-700">COCl₂, Phosphine (W%)</span>
+                                        </label>
+                                        {{ form.cocl2_concentration_wpercent }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-gray-700">C₂H₄O₃, Ethylene Oxide (EO)
+                                                (W%)</span>
+                                        </label>
+                                        {{ form.c2h4o3_concentration_wpercent }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-gray-700">C₃H₆O₂, Propylene Oxide (PO)
+                                                (W%)</span>
+                                        </label>
+                                        {{ form.c3h6o2_concentration_wpercent }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-gray-700">Toluene Diisocynate (TDI) (W%)</span>
+                                        </label>
+                                        {{ form.toluene_diisocynate_wpercent }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-gray-700">C₃H₈O₂, Ethylene Glycol Monomethyl
+                                                Ether
+                                                (EE) (W%)</span>
+                                        </label>
+                                        {{ form.c3h8o2_concentration_wpercent }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-gray-700">AlCl₃, Aluminum Chloride (W%)</span>
+                                        </label>
+                                        {{ form.alcl3_concentration_wpercent }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-gray-700">Toxic Mass Fraction</span>
+                                        </label>
+                                        {{ form.toxic_mass_fraction_wpercent }}
+                                    </div>
                                 </div>
                             </div>
 
                         </div>
 
-                        <!-- 4.12 Financial Consequence -->
-                        <div class="mt-8 pt-8 border-t-2 border-gray-200">
-                            <h3 class="text-lg font-bold text-blue-950 mb-6 bg-green-50 py-3 px-4 -mx-6 rounded">
-                                Financial Consequence
-                            </h3>
 
-                            <!-- 4.12.2 Component Damage Cost -->
-                            <div class="mb-8">
-                                <h4 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Component Damage
-                                    Cost</h4>
-                                <div class="grid grid-cols-2 gap-6">
+
+                        <!-- Inspection Section (Hidden by default) -->
+                        <div id="inspection-section" class="hidden bg-white shadow-md rounded-lg p-6">
+                            <h2
+                                class="text-lg font-bold mb-6 bg-blue-950 text-white py-2 px-4 -mx-6 -mt-6 rounded-t-lg">
+                                Inspection</h2>
+
+                            <!-- Sub-tabs for Inspection -->
+                            <div class="flex gap-2 mb-6 border-b pb-2">
+                                <button type="button" onclick="showInspectionTab('internal', this)"
+                                    class="px-4 py-2 rounded-t bg-blue-950 text-white font-semibold">Internal
+                                    Inspection</button>
+                                <button type="button" onclick="showInspectionTab('external', this)"
+                                    class="px-4 py-2 rounded-t bg-gray-200 text-gray-700 hover:bg-gray-300">External
+                                    Inspection</button>
+                                <button type="button" onclick="showInspectionTab('thickness', this)"
+                                    class="px-4 py-2 rounded-t bg-gray-200 text-gray-700 hover:bg-gray-300">Thickness</button>
+                            </div>
+
+                            <!-- Internal Inspection Tab -->
+                            <div id="internal-inspection-tab" class="inspection-tab">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                                     <div class="form-control">
-                                        <label class="label">
-                                            <span class="label-text text-blue-950 font-semibold">Material of
-                                                Construction (Table 4.16)</span>
-                                        </label>
-                                        {{ form.material_construction }}
+                                        <label class="label"><span class="label-text text-blue-950 font-semibold">Int.
+                                                Inspection (vol, Mil)</span></label>
+                                        {{ form.int_inspection_vol_mil }}
                                     </div>
                                     <div class="form-control">
-                                        <label class="label">
-                                            <span class="label-text text-blue-950 font-semibold">Cost Factor</span>
+                                        <label class="label"><span class="label-text text-blue-950 font-semibold">Last
+                                                Int.
+                                                Visual Inspection Date</span></label>
+                                        {{ form.last_int_visual_inspection_date }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label"><span
+                                                class="label-text text-blue-950 font-semibold">Service
+                                                Years Since Last Int. Visual Insp.</span></label>
+                                        {{ form.service_years_since_last_int_visual_insp }}
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                    <div class="form-control">
+                                        <label class="label"><span
+                                                class="label-text text-blue-950 font-semibold">Internal
+                                                Lining Quality</span></label>
+                                        {{ form.internal_lining_quality }}
+                                    </div>
+                                    <div class="form-control flex flex-row items-center gap-2 pt-8">
+                                        <label class="label cursor-pointer justify-start gap-4">
+                                            {{ form.internal_cracks_present }}
+                                            <span class="label-text text-gray-700">Internal Cracks Present</span>
                                         </label>
-                                        {{ form.cost_factor }}
-                                        <label class="label">
-                                            <span class="label-text-alt text-gray-400">Adjustment for
-                                                inflation/experience (Default: 1.0)</span>
-                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                                    <div class="form-control">
+                                        <label class="label"><span
+                                                class="label-text text-blue-950 font-semibold">Internal
+                                                Crack Finding Capability</span></label>
+                                        {{ form.internal_crack_finding_capability }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label"><span
+                                                class="label-text text-blue-950 font-semibold">Internal
+                                                Corrosion Finding Capability</span></label>
+                                        {{ form.internal_corrosion_finding_capability }}
+                                    </div>
+                                </div>
+
+                                <!-- Internal Inspection History Table -->
+                                <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Internal Inspection
+                                    History
+                                </h3>
+                                <div class="mb-4 flex justify-between items-center">
+                                    <button type="button" class="btn btn-sm bg-blue-950 text-white hover:bg-blue-900"
+                                        onclick="showAddInspectionModal('Internal')">
+                                        <span class="text-lg">+</span> Add Internal Inspection
+                                    </button>
+                                    <div class="flex gap-2">
+                                        <button type="button"
+                                            class="btn btn-sm bg-blue-950 text-white hover:bg-blue-900">
+                                            ✓ Save changes
+                                        </button>
+                                        <button type="button"
+                                            class="btn btn-sm bg-gray-300 text-gray-700 hover:bg-gray-400">
+                                            ⊘ Cancel changes
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="overflow-x-auto">
+                                    <table class="table w-full">
+                                        <thead class="bg-blue-950 text-white">
+                                            <tr>
+                                                <th>Method</th>
+                                                <th>Date</th>
+                                                <th>Lining Quality</th>
+                                                <th>General Condition</th>
+                                                <th>Crack Finding Capability</th>
+                                                <th>Corrosion Finding Capability</th>
+                                                <th>Comments</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="internal-history-tbody">
+                                            <!-- Dynamic rows will be added here -->
+                                            <tr class="text-gray-400 text-center">
+                                                <td colspan="8">No inspection history records yet</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- External Inspection Tab -->
+                            <div id="external-inspection-tab" class="inspection-tab hidden">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                                    <div class="form-control">
+                                        <label class="label"><span
+                                                class="label-text text-blue-950 font-semibold">External
+                                                Inspection (vol, Mil)</span></label>
+                                        {{ form.ext_inspection_vol_mil }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label"><span class="label-text text-blue-950 font-semibold">Last
+                                                Ext.
+                                                Visual Inspection Date</span></label>
+                                        {{ form.last_ext_visual_inspection_date }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label"><span
+                                                class="label-text text-blue-950 font-semibold">Service
+                                                Years Since Last Ext. Visual Insp.</span></label>
+                                        {{ form.service_years_since_last_ext_visual_insp }}
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                                    <div class="form-control">
+                                        <label class="label"><span
+                                                class="label-text text-blue-950 font-semibold">External
+                                                Coating Quality</span></label>
+                                        {{ form.external_coating_quality }}
+                                    </div>
+                                    <div></div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                                    <div class="form-control">
+                                        <label class="label"><span
+                                                class="label-text text-blue-950 font-semibold">External
+                                                Crack Finding Capability</span></label>
+                                        {{ form.external_crack_finding_capability }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label"><span
+                                                class="label-text text-blue-950 font-semibold">External
+                                                Corrosion Finding Capability</span></label>
+                                        {{ form.external_corrosion_finding_capability }}
+                                    </div>
+                                </div>
+
+                                <!-- External Inspection History Table -->
+                                <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">External Inspection
+                                    History
+                                </h3>
+                                <div class="mb-4 flex justify-between items-center">
+                                    <button type="button" class="btn btn-sm bg-blue-950 text-white hover:bg-blue-900"
+                                        onclick="showAddInspectionModal('External')">
+                                        <span class="text-lg">+</span> Add External Inspection
+                                    </button>
+                                    <div class="flex gap-2">
+                                        <button type="button"
+                                            class="btn btn-sm bg-blue-950 text-white hover:bg-blue-900">
+                                            ✓ Save changes
+                                        </button>
+                                        <button type="button"
+                                            class="btn btn-sm bg-gray-300 text-gray-700 hover:bg-gray-400">
+                                            ⊘ Cancel changes
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="overflow-x-auto">
+                                    <table class="table w-full">
+                                        <thead class="bg-blue-950 text-white">
+                                            <tr>
+                                                <th>Method</th>
+                                                <th>Date</th>
+                                                <th>General Condition</th>
+                                                <th>Crack Finding Capability</th>
+                                                <th>Corrosion Finding Capability</th>
+                                                <th>Comments</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="external-history-tbody">
+                                            <!-- Dynamic rows will be added here -->
+                                            <tr class="text-gray-400 text-center">
+                                                <td colspan="7">No inspection history records yet</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Thickness Tab -->
+                            <div id="thickness-inspection-tab" class="inspection-tab hidden">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                    <div class="form-control">
+                                        <label class="label"><span
+                                                class="label-text text-blue-950 font-semibold">Nominal
+                                                Thickness (mm)</span></label>
+                                        {{ form.thickness_nominal_mm }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label"><span
+                                                class="label-text text-blue-950 font-semibold">Minimum
+                                                Required Thickness (mm)</span></label>
+                                        {{ form.thickness_minimum_required_mm }}
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                    <div class="form-control">
+                                        <label class="label"><span
+                                                class="label-text text-blue-950 font-semibold">Measured
+                                                Thickness (mm)</span></label>
+                                        {{ form.thickness_measured_mm }}
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label"><span
+                                                class="label-text text-blue-950 font-semibold">Corrosion
+                                                Rate (mm/year)</span></label>
+                                        {{ form.corrosion_rate_mm_year }}
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- 4.12.3 Affected Area Cost -->
-                            <div class="mb-8">
-                                <h4 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Affected Area Cost
-                                </h4>
-                                <div class="form-control max-w-md">
-                                    <label class="label">
-                                        <span class="label-text text-blue-950 font-semibold">Equipment Cost
-                                            ($/ft²)</span>
-                                    </label>
-                                    {{ form.equipment_cost_per_sqft }}
-                                    <label class="label">
-                                        <span class="label-text-alt text-gray-400">Replacement cost of surrounding
-                                            equipment per ft²</span>
-                                    </label>
+                            <!-- Inspection Summary (visible on all tabs) -->
+                            <div class="mt-8 pt-8 border-t-2 border-gray-200">
+                                <h3 class="text-md font-bold text-blue-950 mb-4">Inspection Summary</h3>
+                                <div class="form-control">
+                                    {{ form.inspection_summary }}
                                 </div>
                             </div>
+                        </div>
+                    </div> <!-- End of data-tab-content -->
 
-                            <!-- 4.12.4 Production Loss Mean Cost -->
-                            <div class="mb-8">
-                                <h4 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Production Loss
-                                    Mean Cost</h4>
-                                <div class="grid grid-cols-2 gap-6">
-                                    <div class="form-control">
-                                        <label class="label">
-                                            <span class="label-text text-blue-950 font-semibold">Production Cost
-                                                ($/day)</span>
-                                        </label>
-                                        {{ form.production_cost_per_day }}
-                                    </div>
-                                    <div class="form-control">
-                                        <label class="label">
-                                            <span class="label-text text-blue-950 font-semibold">Outage
-                                                Multiplier</span>
-                                        </label>
-                                        {{ form.outage_multiplier }}
-                                        <label class="label">
-                                            <span class="label-text-alt text-gray-400">Default: 1.0</span>
-                                        </label>
+                    <!-- CONSEQUENCE TAB CONTENT -->
+                    <div id="consequence-tab-content" class="hidden p-4 bg-gray-50 rounded-lg border border-gray-200">
+
+                        <!-- Validation Alert -->
+                        <div id="cof-validation-alert" class="alert alert-warning shadow-lg mb-6 hidden">
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6"
+                                    fill="none" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                                <div>
+                                    <h3 class="font-bold">Missing Required Information</h3>
+                                    <div class="text-xs" id="cof-missing-fields-list">
+                                        <!-- Dynamic list of missing fields -->
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <!-- 4.12.5 Personnel Injury Cost -->
-                            <div class="mb-8">
-                                <h4 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Personnel Injury
-                                    Cost</h4>
-                                <div class="grid grid-cols-2 gap-6 mb-4">
-                                    <div class="form-control">
-                                        <label class="label">
-                                            <span class="label-text text-blue-950 font-semibold">Unit Area
-                                                (ft²)</span>
-                                        </label>
-                                        {{ form.unit_area_safety }}
-                                    </div>
-                                    <div class="form-control">
-                                        <label class="label">
-                                            <span class="label-text text-blue-950 font-semibold">Injury Cost
-                                                ($/person)</span>
-                                        </label>
-                                        {{ form.injury_cost_per_person }}
-                                    </div>
-                                </div>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-                                <!-- Personnel Shifts Table -->
-                                <!-- Personnel Density Display (Refactored) -->
-                                <div class="bg-gray-50 p-4 rounded border border-gray-200">
-                                    <h5 class="font-semibold text-sm text-gray-700 mb-3">Personnel Density</h5>
-                                    <div class="form-control">
-                                        <label class="label">
-                                            <span class="label-text text-sm font-semibold text-blue-950">Unit People
-                                                Density (People/ft²)</span>
-                                        </label>
-                                        <div class="input input-bordered flex items-center bg-gray-100 text-gray-700">
-                                            {% if component %}
-                                            {{ component.equipment.system.unit.people_density }}
-                                            {% else %}
-                                            -
-                                            {% endif %}
+                            <!-- LEFT COLUMN: Data & Consequences -->
+                            <div class="space-y-6">
+
+                                <!-- DATA SECTION (Inputs) -->
+                                <div class="card bg-white shadow-lg border-t-4 border-purple-900">
+                                    <div
+                                        class="text-lg font-bold mb-6 bg-blue-950 text-white py-2 px-4 -mx-6 -mt-6 rounded-t-lg">
+                                        Data</div>
+                                    <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+
+                                        <!-- Equipment Cost -->
+                                        <div class="form-control">
+                                            <label class="label py-1"><span class="label-text">Equipment Replacement
+                                                    Cost ($)</span></label>
+                                            {{ form.equipment_cost_per_sqft }}
+                                            <label class="label py-0"><span
+                                                    class="label-text-alt text-gray-400">(Recommended Cost -
+                                                    $120,000.00)</span></label>
                                         </div>
-                                        <label class="label">
-                                            <span class="label-text-alt text-gray-500">Value inherited from Facility
-                                                Unit configuration</span>
-                                        </label>
+
+                                        <!-- Serious Injury Cost -->
+                                        <div class="form-control">
+                                            <label class="label py-1"><span class="label-text">Serious Injury Cost
+                                                    ($)</span></label>
+                                            {{ form.injury_cost_per_person }}
+                                        </div>
+
+                                        <!-- Enviro Cost -->
+                                        <div class="form-control">
+                                            <label class="label py-1"><span class="label-text">Environment Cleanup Cost
+                                                    ($/bbl)</span></label>
+                                            {{ form.environmental_cost_per_bbl }}
+                                        </div>
+
+                                        <!-- Production Cost -->
+                                        <div>
+                                            <label class="label py-1"><span class="label-text">Production
+                                                    ($/day)</span></label>
+                                            {{ form.production_cost_per_day }}
+                                        </div>
+
+                                        <!-- Production Impact (Mapped to Outage Multiplier/Days placeholder for now) -->
+                                        <!-- User Image: Production Impact (%). Model: None. -->
+                                        <!-- User Image: Shutdown (days). Model: outage_multiplier? -->
+                                        <div class="form-control">
+                                            <label class="label py-1"><span class="label-text">Outage Multiplier
+                                                    (Shutdown Days)</span></label>
+                                            {{ form.outage_multiplier }}
+                                        </div>
+
                                     </div>
-                                    <!-- Hidden fields for deprecated calculator inputs to prevent potential view errors if they are referenced elsewhere, though they are nullable models -->
+                                </div>
+
+                                <!-- CONSEQUENCES SECTION (Results) -->
+                                <div class="card bg-white shadow-lg border-t-4 border-purple-900">
+                                    <div
+                                        class="text-lg font-bold mb-6 bg-blue-950 text-white py-2 px-4 -mx-6 -mt-6 rounded-t-lg">
+                                        Consequences</div>
+                                    <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+
+                                        <!-- Safety -->
+                                        <div class="p-2 border rounded bg-gray-50">
+                                            <div class="text-xs text-gray-500">Safety Consequence ($)</div>
+                                            <div id="val_fc_inj" class="text-xl font-bold text-gray-800">0.00</div>
+                                        </div>
+
+                                        <!-- Environmental -->
+                                        <div class="p-2 border rounded bg-gray-50">
+                                            <div class="text-xs text-gray-500">Environmental Consequence ($)</div>
+                                            <div id="val_fc_env" class="text-xl font-bold text-gray-800">0.00</div>
+                                        </div>
+
+                                        <!-- Business -->
+                                        <div class="p-2 border rounded bg-gray-50">
+                                            <div class="text-xs text-gray-500">Business Consequence ($)</div>
+                                            <div id="val_fc_bus" class="text-xl font-bold text-gray-800">0.00</div>
+                                            <div class="text-xs text-gray-400 mt-1">(Cmd + Prod)</div>
+                                        </div>
+
+                                        <!-- Bus & Env -->
+                                        <div class="p-2 border rounded bg-gray-50">
+                                            <div class="text-xs text-gray-500">Business & Environmental Consequence ($)
+                                            </div>
+                                            <div id="val_fc_bus_env" class="text-xl font-bold text-gray-800">0.00</div>
+                                        </div>
+
+                                        <!-- Total -->
+                                        <div class="p-2 border rounded bg-purple-50 md:col-span-2">
+                                            <div class="text-xs text-purple-800 font-bold">Total Consequence ($)</div>
+                                            <div id="val_fc_total" class="text-2xl font-bold text-purple-900">0.00</div>
+                                        </div>
+
+                                        <!-- Consequence Area Summary (Hidden or Small) -->
+                                        <div class="md:col-span-2 mt-2 pt-2 border-t border-gray-200">
+                                            <div class="text-xs text-gray-400 mb-1">Area Details (ft²):</div>
+                                            <div class="flex justify-between text-xs">
+                                                <span>CMD Area: <strong id="val_final_cmd"
+                                                        class="text-red-500">-</strong></span>
+                                                <span>INJ Area: <strong id="val_final_inj"
+                                                        class="text-orange-500">-</strong></span>
+                                                <span>Start Rate: <strong id="val_wn1"
+                                                        class="text-blue-500">-</strong></span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- RIGHT COLUMN: Chart -->
+                            <div class="space-y-6">
+                                <div class="card bg-white shadow-lg border-t-4 border-purple-900 h-full">
+                                    <div class="bg-purple-900 text-white p-3 font-bold rounded-t-lg">CoF Chart</div>
+                                    <div class="p-4 flex items-center justify-center h-full min-h-[400px]">
+                                        <!-- Canvas for Chart.js -->
+                                        <canvas id="cofChart"></canvas>
+                                    </div>
                                 </div>
                             </div>
 
-                            <!-- 4.12.6 Environmental Cleanup Cost -->
-                            <div class="mb-8">
-                                <h4 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Environmental
-                                    Cleanup Cost</h4>
-                                <div class="form-control max-w-md">
-                                    <label class="label">
-                                        <span class="label-text text-blue-950 font-semibold">Environmental Cost
-                                            ($/bbl)</span>
-                                    </label>
-                                    {{ form.environmental_cost_per_bbl }}
-                                    <label class="label">
-                                        <span class="label-text-alt text-gray-400">Applied only if liquid spill
-                                            persists</span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-
-                    </div>
-
-                    <!-- Operating & Process Section (Hidden by default) -->
-                    <div id="operating-section" class="hidden bg-white shadow-md rounded-lg p-6">
-                        <h2 class="text-lg font-bold mb-6 bg-blue-950 text-white py-2 px-4 -mx-6 -mt-6 rounded-t-lg">
-                            Operating & Process</h2>
-
-                        <!-- Operating Temperature -->
-                        <div class="mb-8">
-                            <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Operating Temperature</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-blue-950 font-semibold">Operating Temperature (deg
-                                            F)</span>
-                                    </label>
-                                    {{ form.operating_temp_f }}
-                                </div>
-                                <div class="form-control md:col-span-2 flex flex-row items-center gap-2 pt-8">
-                                    <label class="label cursor-pointer justify-start gap-4">
-                                        <span class="label-text text-gray-700">Component may operate at or below the
-                                            MDMT</span>
-                                        {{ form.component_may_operate_below_mdmt }}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Operating Pressure -->
-                        <div class="mb-8">
-                            <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Operating Pressure</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-blue-950 font-semibold">Operating Pressure
-                                            (psia)</span>
-                                    </label>
-                                    {{ form.operating_pressure_psia }}
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Release Rate Parameters -->
-                        <div class="mb-8">
-                            <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Release Rate Parameters</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-blue-950 font-semibold">Storage Pressure Ps
-                                            (psia)</span>
-                                    </label>
-                                    {{ form.storage_pressure }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-blue-950 font-semibold">Atm. Pressure (psi)</span>
-                                    </label>
-                                    {{ form.atm_pressure }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-blue-950 font-semibold">Discharge Coeff.
-                                            (Cd)</span>
-                                    </label>
-                                    {{ form.discharge_coeff }}
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Flow Properties -->
-                        <div class="mb-8">
-                            <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Flow Properties</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-blue-950 font-semibold">Flow Velocity (ft/s)</span>
-                                    </label>
-                                    {{ form.flow_velocity_fts }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-blue-950 font-semibold">Inhibitor Efficiency
-                                            (%)</span>
-                                    </label>
-                                    {{ form.inhibitor_efficiency_percent }}
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Fluid Information -->
-                        <div class="mb-8">
-                            <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Fluid Information</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-blue-950 font-semibold">Fluid Name</span>
-                                    </label>
-                                    {{ form.fluid_name }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-blue-950 font-semibold">Fluid Description</span>
-                                    </label>
-                                    {{ form.fluid_description }}
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-blue-950 font-semibold">RBIX Fluid</span>
-                                    </label>
-                                    {{ form.rbix_fluid }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-blue-950 font-semibold">Operational Fluid
-                                            Phase</span>
-                                    </label>
-                                    {{ form.operational_fluid_phase }}
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-blue-950 font-semibold">Component Fluid Mass
-                                            (lb)</span>
-                                    </label>
-                                    {{ form.component_fluid_mass_lb }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-blue-950 font-semibold">Component Group Fluid Mass
-                                            (lb)</span>
-                                    </label>
-                                    {{ form.component_group_fluid_mass_lb }}
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Safety Systems Effectiveness -->
-                        <div class="mb-8">
-                            <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Safety Systems Effectiveness
-                            </h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-blue-950 font-semibold">Fluid Release Reduction
-                                            Safety Systems Effectiveness</span>
-                                    </label>
-                                    {{ form.fluid_release_reduction_safety_effectiveness }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-blue-950 font-semibold">Fire Reduction Safety
-                                            Systems Effectiveness</span>
-                                    </label>
-                                    {{ form.fire_reduction_safety_effectiveness }}
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Chemical Properties -->
-                        <div class="mb-8">
-                            <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Chemical Properties</h3>
-                            <div class="form-control max-w-xs mb-6">
-                                <label class="label">
-                                    <span class="label-text text-blue-950 font-semibold">pH</span>
-                                </label>
-                                {{ form.ph_value }}
-                            </div>
-
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                <div class="form-control flex flex-row items-center gap-2">
-                                    <label class="label cursor-pointer justify-start gap-3">
-                                        {{ form.contains_water }}
-                                        <span class="label-text text-gray-700">Water</span>
-                                    </label>
-                                </div>
-                                <div class="form-control flex flex-row items-center gap-2">
-                                    <label class="label cursor-pointer justify-start gap-3">
-                                        {{ form.contains_h2s }}
-                                        <span class="label-text text-gray-700">H₂S</span>
-                                    </label>
-                                </div>
-                                <div class="form-control flex flex-row items-center gap-2">
-                                    <label class="label cursor-pointer justify-start gap-3">
-                                        {{ form.contains_co2 }}
-                                        <span class="label-text text-gray-700">CO₂</span>
-                                    </label>
-                                </div>
-                                <div class="form-control flex flex-row items-center gap-2">
-                                    <label class="label cursor-pointer justify-start gap-3">
-                                        {{ form.contains_h2so4 }}
-                                        <span class="label-text text-gray-700">H₂SO₄</span>
-                                    </label>
-                                </div>
-                                <div class="form-control flex flex-row items-center gap-2">
-                                    <label class="label cursor-pointer justify-start gap-3">
-                                        {{ form.contains_hf }}
-                                        <span class="label-text text-gray-700">HF</span>
-                                    </label>
-                                </div>
-                                <div class="form-control flex flex-row items-center gap-2">
-                                    <label class="label cursor-pointer justify-start gap-3">
-                                        {{ form.contains_amine }}
-                                        <span class="label-text text-gray-700">Amine</span>
-                                    </label>
-                                </div>
-                                <div class="form-control flex flex-row items-center gap-2">
-                                    <label class="label cursor-pointer justify-start gap-3">
-                                        {{ form.contains_hcl }}
-                                        <span class="label-text text-gray-700">HCl</span>
-                                    </label>
-                                </div>
-                                <div class="form-control flex flex-row items-center gap-2">
-                                    <label class="label cursor-pointer justify-start gap-3">
-                                        {{ form.contains_oxygen }}
-                                        <span class="label-text text-gray-700">Oxygen</span>
-                                    </label>
-                                </div>
-                                <div class="form-control flex flex-row items-center gap-2">
-                                    <label class="label cursor-pointer justify-start gap-3">
-                                        {{ form.contains_sulphur }}
-                                        <span class="label-text text-gray-700">Sulphur</span>
-                                    </label>
-                                </div>
-                                <div class="form-control flex flex-row items-center gap-2">
-                                    <label class="label cursor-pointer justify-start gap-3">
-                                        {{ form.contains_chloride }}
-                                        <span class="label-text text-gray-700">Chloride</span>
-                                    </label>
-                                </div>
-                                <div class="form-control flex flex-row items-center gap-2">
-                                    <label class="label cursor-pointer justify-start gap-3">
-                                        {{ form.contains_hydrogen }}
-                                        <span class="label-text text-gray-700">Hydrogen</span>
-                                    </label>
-                                </div>
-                                <div class="form-control flex flex-row items-center gap-2">
-                                    <label class="label cursor-pointer justify-start gap-3">
-                                        {{ form.high_hydrogen_partial_pressure }}
-                                        <span class="label-text text-gray-700">Hydrogen partial pressure > 0.032 MPa [50
-                                            psi]</span>
-                                    </label>
-                                </div>
-                                <div class="form-control flex flex-row items-center gap-2">
-                                    <label class="label cursor-pointer justify-start gap-3">
-                                        {{ form.contains_oil }}
-                                        <span class="label-text text-gray-700">Oil</span>
-                                    </label>
-                                </div>
-                                <div class="form-control flex flex-row items-center gap-2">
-                                    <label class="label cursor-pointer justify-start gap-3">
-                                        {{ form.contains_caustic }}
-                                        <span class="label-text text-gray-700">Caustic</span>
-                                    </label>
-                                </div>
-                                <div class="form-control flex flex-row items-center gap-2">
-                                    <label class="label cursor-pointer justify-start gap-3">
-                                        {{ form.underground }}
-                                        <span class="label-text text-gray-700">Underground</span>
-                                    </label>
-                                </div>
-                                <div class="form-control flex flex-row items-center gap-2">
-                                    <label class="label cursor-pointer justify-start gap-3">
-                                        {{ form.cooling_water_service }}
-                                        <span class="label-text text-gray-700">Cooling Water Service</span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <!-- Chemical Concentrations (W%) -->
-                            <h4 class="text-sm font-bold text-blue-950 mb-4 mt-6">Chemical Concentrations (W%)</h4>
-                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-gray-700">H₂S (Hydrogen sulfide)(W%)</span>
-                                    </label>
-                                    {{ form.h2s_concentration_wpercent }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-gray-700">NH₃, Ammonia (W%)</span>
-                                    </label>
-                                    {{ form.nh3_concentration_wpercent }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-gray-700">CO₂ Carbon Monoxide (W%)</span>
-                                    </label>
-                                    {{ form.co2_concentration_wpercent }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-gray-700">HNO₃, Nitric Acid (W%)</span>
-                                    </label>
-                                    {{ form.hno3_concentration_wpercent }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-gray-700">H₂O₂, Nitrogen Dioxide (W%)</span>
-                                    </label>
-                                    {{ form.h2o2_concentration_wpercent }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-gray-700">COCl₂, Phosphine (W%)</span>
-                                    </label>
-                                    {{ form.cocl2_concentration_wpercent }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-gray-700">C₂H₄O₃, Ethylene Oxide (EO) (W%)</span>
-                                    </label>
-                                    {{ form.c2h4o3_concentration_wpercent }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-gray-700">C₃H₆O₂, Propylene Oxide (PO) (W%)</span>
-                                    </label>
-                                    {{ form.c3h6o2_concentration_wpercent }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-gray-700">Toluene Diisocynate (TDI) (W%)</span>
-                                    </label>
-                                    {{ form.toluene_diisocynate_wpercent }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-gray-700">C₃H₈O₂, Ethylene Glycol Monomethyl Ether
-                                            (EE) (W%)</span>
-                                    </label>
-                                    {{ form.c3h8o2_concentration_wpercent }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-gray-700">AlCl₃, Aluminum Chloride (W%)</span>
-                                    </label>
-                                    {{ form.alcl3_concentration_wpercent }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-gray-700">Toxic Mass Fraction</span>
-                                    </label>
-                                    {{ form.toxic_mass_fraction_wpercent }}
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-
-
-                    <!-- Inspection Section (Hidden by default) -->
-                    <div id="inspection-section" class="hidden bg-white shadow-md rounded-lg p-6">
-                        <h2 class="text-lg font-bold mb-6 bg-blue-950 text-white py-2 px-4 -mx-6 -mt-6 rounded-t-lg">
-                            Inspection</h2>
-
-                        <!-- Sub-tabs for Inspection -->
-                        <div class="flex gap-2 mb-6 border-b pb-2">
-                            <button type="button" onclick="showInspectionTab('internal', this)"
-                                class="px-4 py-2 rounded-t bg-blue-950 text-white font-semibold">Internal
-                                Inspection</button>
-                            <button type="button" onclick="showInspectionTab('external', this)"
-                                class="px-4 py-2 rounded-t bg-gray-200 text-gray-700 hover:bg-gray-300">External
-                                Inspection</button>
-                            <button type="button" onclick="showInspectionTab('thickness', this)"
-                                class="px-4 py-2 rounded-t bg-gray-200 text-gray-700 hover:bg-gray-300">Thickness</button>
-                        </div>
-
-                        <!-- Internal Inspection Tab -->
-                        <div id="internal-inspection-tab" class="inspection-tab">
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text text-blue-950 font-semibold">Int.
-                                            Inspection (vol, Mil)</span></label>
-                                    {{ form.int_inspection_vol_mil }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text text-blue-950 font-semibold">Last Int.
-                                            Visual Inspection Date</span></label>
-                                    {{ form.last_int_visual_inspection_date }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text text-blue-950 font-semibold">Service
-                                            Years Since Last Int. Visual Insp.</span></label>
-                                    {{ form.service_years_since_last_int_visual_insp }}
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text text-blue-950 font-semibold">Internal
-                                            Lining Quality</span></label>
-                                    {{ form.internal_lining_quality }}
-                                </div>
-                                <div class="form-control flex flex-row items-center gap-2 pt-8">
-                                    <label class="label cursor-pointer justify-start gap-4">
-                                        {{ form.internal_cracks_present }}
-                                        <span class="label-text text-gray-700">Internal Cracks Present</span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text text-blue-950 font-semibold">Internal
-                                            Crack Finding Capability</span></label>
-                                    {{ form.internal_crack_finding_capability }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text text-blue-950 font-semibold">Internal
-                                            Corrosion Finding Capability</span></label>
-                                    {{ form.internal_corrosion_finding_capability }}
-                                </div>
-                            </div>
-
-                            <!-- Internal Inspection History Table -->
-                            <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">Internal Inspection History
-                            </h3>
-                            <div class="mb-4 flex justify-between items-center">
-                                <button type="button" class="btn btn-sm bg-blue-950 text-white hover:bg-blue-900"
-                                    onclick="showAddInspectionModal('Internal')">
-                                    <span class="text-lg">+</span> Add Internal Inspection
-                                </button>
-                                <div class="flex gap-2">
-                                    <button type="button" class="btn btn-sm bg-blue-950 text-white hover:bg-blue-900">
-                                        ✓ Save changes
-                                    </button>
-                                    <button type="button"
-                                        class="btn btn-sm bg-gray-300 text-gray-700 hover:bg-gray-400">
-                                        ⊘ Cancel changes
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="overflow-x-auto">
-                                <table class="table w-full">
-                                    <thead class="bg-blue-950 text-white">
-                                        <tr>
-                                            <th>Method</th>
-                                            <th>Date</th>
-                                            <th>Lining Quality</th>
-                                            <th>General Condition</th>
-                                            <th>Crack Finding Capability</th>
-                                            <th>Corrosion Finding Capability</th>
-                                            <th>Comments</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="internal-history-tbody">
-                                        <!-- Dynamic rows will be added here -->
-                                        <tr class="text-gray-400 text-center">
-                                            <td colspan="8">No inspection history records yet</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <!-- External Inspection Tab -->
-                        <div id="external-inspection-tab" class="inspection-tab hidden">
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text text-blue-950 font-semibold">External
-                                            Inspection (vol, Mil)</span></label>
-                                    {{ form.ext_inspection_vol_mil }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text text-blue-950 font-semibold">Last Ext.
-                                            Visual Inspection Date</span></label>
-                                    {{ form.last_ext_visual_inspection_date }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text text-blue-950 font-semibold">Service
-                                            Years Since Last Ext. Visual Insp.</span></label>
-                                    {{ form.service_years_since_last_ext_visual_insp }}
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text text-blue-950 font-semibold">External
-                                            Coating Quality</span></label>
-                                    {{ form.external_coating_quality }}
-                                </div>
-                                <div></div>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text text-blue-950 font-semibold">External
-                                            Crack Finding Capability</span></label>
-                                    {{ form.external_crack_finding_capability }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text text-blue-950 font-semibold">External
-                                            Corrosion Finding Capability</span></label>
-                                    {{ form.external_corrosion_finding_capability }}
-                                </div>
-                            </div>
-
-                            <!-- External Inspection History Table -->
-                            <h3 class="text-md font-bold text-blue-950 mb-4 border-b pb-2">External Inspection History
-                            </h3>
-                            <div class="mb-4 flex justify-between items-center">
-                                <button type="button" class="btn btn-sm bg-blue-950 text-white hover:bg-blue-900"
-                                    onclick="showAddInspectionModal('External')">
-                                    <span class="text-lg">+</span> Add External Inspection
-                                </button>
-                                <div class="flex gap-2">
-                                    <button type="button" class="btn btn-sm bg-blue-950 text-white hover:bg-blue-900">
-                                        ✓ Save changes
-                                    </button>
-                                    <button type="button"
-                                        class="btn btn-sm bg-gray-300 text-gray-700 hover:bg-gray-400">
-                                        ⊘ Cancel changes
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="overflow-x-auto">
-                                <table class="table w-full">
-                                    <thead class="bg-blue-950 text-white">
-                                        <tr>
-                                            <th>Method</th>
-                                            <th>Date</th>
-                                            <th>General Condition</th>
-                                            <th>Crack Finding Capability</th>
-                                            <th>Corrosion Finding Capability</th>
-                                            <th>Comments</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="external-history-tbody">
-                                        <!-- Dynamic rows will be added here -->
-                                        <tr class="text-gray-400 text-center">
-                                            <td colspan="7">No inspection history records yet</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <!-- Thickness Tab -->
-                        <div id="thickness-inspection-tab" class="inspection-tab hidden">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text text-blue-950 font-semibold">Nominal
-                                            Thickness (mm)</span></label>
-                                    {{ form.thickness_nominal_mm }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text text-blue-950 font-semibold">Minimum
-                                            Required Thickness (mm)</span></label>
-                                    {{ form.thickness_minimum_required_mm }}
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text text-blue-950 font-semibold">Measured
-                                            Thickness (mm)</span></label>
-                                    {{ form.thickness_measured_mm }}
-                                </div>
-                                <div class="form-control">
-                                    <label class="label"><span class="label-text text-blue-950 font-semibold">Corrosion
-                                            Rate (mm/year)</span></label>
-                                    {{ form.corrosion_rate_mm_year }}
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Inspection Summary (visible on all tabs) -->
-                        <div class="mt-8 pt-8 border-t-2 border-gray-200">
-                            <h3 class="text-md font-bold text-blue-950 mb-4">Inspection Summary</h3>
-                            <div class="form-control">
-                                {{ form.inspection_summary }}
-                            </div>
                         </div>
                     </div>
+                    <!-- /CONSEQUENCE TAB CONTENT -->
 
+                    <!-- Chart.js -->
+                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
                 </form>
             </div>
@@ -1409,7 +1473,28 @@
     <!-- END MAIN CONTENT -->
 
 
+    <script type="module" src="{% static 'dashboard/js/cof_dashboard.js' %}"></script>
     <script>
+        function openMainTab(evt, tabName) {
+            // Hide all tab contents
+            document.getElementById('data-tab-content').classList.add('hidden');
+            document.getElementById('consequence-tab-content').classList.add('hidden');
+
+            // Show the clicked tab content
+            document.getElementById(tabName + '-tab-content').classList.remove('hidden');
+
+            // Deactivate all tabs
+            const tabs = document.querySelectorAll('.tabs > .tab');
+            tabs.forEach(t => {
+                t.classList.remove('tab-active', 'text-blue-950', 'font-semibold');
+                t.classList.add('text-gray-500');
+            });
+
+            // Activate clicked
+            evt.currentTarget.classList.add('tab-active', 'text-blue-950', 'font-semibold');
+            evt.currentTarget.classList.remove('text-gray-500');
+        }
+
         function showSubTab(tabName, clickedButton) {
             // Hide all sections
             document.getElementById('design-section').classList.add('hidden');

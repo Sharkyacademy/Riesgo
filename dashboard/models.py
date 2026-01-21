@@ -146,7 +146,7 @@ class Component(models.Model):
     # Fluid Information
     fluid_name = models.CharField(max_length=255, null=True, blank=True, verbose_name="Fluid Name")
     fluid_description = models.TextField(null=True, blank=True, verbose_name="Fluid Description")
-    rbix_fluid = models.CharField(max_length=255, null=True, blank=True, verbose_name="RBIX Fluid")
+    rbix_fluid = models.CharField(max_length=255, null=True, blank=True, verbose_name="RBIX Fluid", choices=REPRESENTATIVE_FLUIDS)
     operational_fluid_phase = models.CharField(max_length=50, null=True, blank=True, verbose_name="Operational Fluid Phase",
                                                choices=[('Gas', 'Gas'), ('Liquid', 'Liquid'), ('Two-Phase', 'Two-Phase')])
     component_fluid_mass_lb = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True, verbose_name="Component Fluid Mass (lb)")
