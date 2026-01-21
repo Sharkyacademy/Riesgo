@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import FacilityForm
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from .models import Facility, Unit, System
+from .models import Facility, Unit, System, Equipment, Component
 
 @login_required
 def dashboard(request):
@@ -16,10 +16,17 @@ def dashboard(request):
     systems_list = System.objects.filter(unit__facility__owner=request.user)
     systems_count = systems_list.count()
 
+    equipment_list = Equipment.objects.filter(system__unit__facility__owner=request.user)
+    equipment_count = equipment_list.count()
+
+    components_list = Component.objects.filter(equipment__system__unit__facility__owner=request.user)
+    components_count = components_list.count()
     return render(request, 'dashboard/dashboard.html', {
         'facilities_count': facilities_count,
         'units_count': units_count,
-        'systems_count': systems_count
+        'systems_count': systems_count,
+        'equipment_count': equipment_count,
+        'components_count': components_count
     })
 
 @login_required
