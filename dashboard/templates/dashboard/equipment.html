@@ -32,7 +32,7 @@
             <!-- SIDEBAR -->
             <aside
                 class="hidden lg:block w-64 bg-white p-6 shadow-xl border-r border-gray-200 flex-shrink-0 overflow-y-auto">
-                {% include 'formula_app/includes/sidebar.html' %}
+                {% include 'dashboard/includes/sidebar.html' %}
             </aside>
             <!-- END SIDEBAR -->
 
@@ -77,6 +77,16 @@
                                                 d="M19 9l-7 7-7-7" />
                                         </svg>
                                         Facility: {{ facility.name }}
+                                        <button
+                                            onclick="event.stopPropagation(); openEditFacilityModal('{{ facility.id|escapejs }}', '{{ facility.name|escapejs }}', '{{ facility.location|escapejs }}', '{{ facility.facility_type|escapejs }}', '{% if facility.company %}{{ facility.company|escapejs }}{% endif %}')"
+                                            class="btn btn-ghost btn-xs text-white hover:bg-blue-700 ml-2 tooltip tooltip-right"
+                                            data-tip="Edit Facility">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                            </svg>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -99,6 +109,16 @@
                                                 d="M19 9l-7 7-7-7" />
                                         </svg>
                                         Unit: {{ unit.name }}
+                                        <button
+                                            onclick="event.stopPropagation(); openEditUnitModal('{{ unit.id|escapejs }}', '{{ facility.id|escapejs }}', '{{ unit.name|escapejs }}', '{% if unit.description %}{{ unit.description|escapejs }}{% endif %}', '{{ unit.people_density|default:0.0|escapejs }}')"
+                                            class="btn btn-ghost btn-xs text-white hover:bg-blue-700 ml-2 tooltip tooltip-right"
+                                            data-tip="Edit Unit">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                            </svg>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -116,6 +136,16 @@
                                                 d="M19 9l-7 7-7-7" />
                                         </svg>
                                         System: {{ system.name }}
+                                        <button
+                                            onclick="event.stopPropagation(); openEditSystemModal('{{ system.id|escapejs }}', '{{ unit.id|escapejs }}', '{{ system.name|escapejs }}', '{% if system.description %}{{ system.description|escapejs }}{% endif %}')"
+                                            class="btn btn-ghost btn-xs text-blue-900 hover:bg-blue-100 ml-2 tooltip tooltip-right"
+                                            data-tip="Edit System">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                            </svg>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -127,16 +157,16 @@
                                 <td style="padding-left: 7rem;"
                                     class="font-medium text-gray-700 flex items-center gap-2">
                                     <span class="text-gray-300">└</span>
-                                    {{ equipment.number }}
-                                </td>
+                                    Equipment: {{ equipment.number }}
                                 <td class="text-gray-600">{{ equipment.plant_equipment_type }}</td>
                                 <td class="text-gray-600">{{ equipment.plant_equipment_desc }}</td>
                                 <td class="text-right pr-8">
                                     <div class="flex justify-end gap-2">
                                         <button
+                                            onclick="openEditEquipmentModal('{{ equipment.id|escapejs }}', '{{ system.id|escapejs }}', '{{ equipment.number|escapejs }}', '{{ equipment.plant_equipment_type|escapejs }}', '{% if equipment.plant_equipment_desc %}{{ equipment.plant_equipment_desc|escapejs }}{% endif %}')"
                                             class="btn btn-ghost btn-xs text-blue-950 hover:bg-blue-100">Edit</button>
-                                        <button
-                                            class="btn btn-ghost btn-xs text-red-600 hover:bg-red-50">Delete</button>
+                                        <a href="{% url 'equipment_delete' equipment.pk %}"
+                                            class="btn btn-ghost btn-xs text-red-600 hover:bg-red-50">Delete</a>
                                     </div>
                                 </td>
                             </tr>
@@ -179,7 +209,7 @@
                 <!-- Add Equipment Modal -->
                 <input type="checkbox" id="add_equipment_modal" class="modal-toggle" />
                 <div class="modal">
-                    <div class="modal-box relative">
+                    <div class="modal-box relative pt-6">
                         <label for="add_equipment_modal" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
                         <h3 class="text-lg font-bold mb-4 text-blue-950">Add New Equipment</h3>
                         <form method="post">
@@ -267,6 +297,10 @@
             </script>
 
         </main>
+        {% include 'dashboard/includes/edit_facility_modal.html' %}
+        {% include 'dashboard/includes/edit_unit_modal.html' %}
+        {% include 'dashboard/includes/edit_system_modal.html' %}
+        {% include 'dashboard/includes/edit_equipment_modal.html' %}
     </div>
 </div>
 {% endblock %}
