@@ -22,8 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputKvn = document.getElementById('id_viscosity_correction');
 
     // Inventory
-    const inputMassInv = document.getElementById('id_inventory_group_mass');
-    const inputMassComp = document.getElementById('id_component_mass');
+    const inputMassInv = document.getElementById('id_component_group_fluid_mass_lb');
+    const inputMassComp = document.getElementById('id_component_fluid_mass_lb');
 
     // Mitigation
     const selectDetection = document.getElementById('id_detection_class');
@@ -76,57 +76,111 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- MAIN CALCULATION FUNCTION ---
     function updateDashboardCOF() {
-        // Run validation first
+        // Gather Basic Inputs (Safe defaults for display)
+        const selectedLabel = selectFluid ? selectFluid.value : '-';
+        const phase = selectPhase ? selectPhase.value : '-';
+        const tempF = inputTemperature && inputTemperature.value ? parseFloat(inputTemperature.value) : null;
+        const Ps = inputPs && inputPs.value ? parseFloat(inputPs.value) : null;
+        const d_input = inputDiameter && inputDiameter.value ? parseFloat(inputDiameter.value) : 0;
+
+        // --- 1. ALWAYS UPDATE DEBUG DISPLAY WITH AVAILABLE DATA ---
+        setText('debug_fluid_name', selectedLabel);
+        setText('debug_op_phase', phase);
+        setText('debug_temp', tempF);
+        setText('debug_ps', Ps);
+
+        // Fluid Props
+        let props = null;
+        if (selectedLabel && FluidProperties[selectedLabel]) {
+            props = FluidProperties[selectedLabel];
+            setText('debug_mw', props.mw);
+            setText('debug_density', props.liquid_density);
+            setText('debug_nbp', props.nbp);
+            setText('debug_amb_state', props.ambient_state);
+            setText('debug_ait', props.ait);
+        } else {
+            setText('debug_mw', '-');
+            setText('debug_density', '-');
+            setText('debug_nbp', '-');
+            setText('debug_amb_state', '-');
+            setText('debug_ait', '-');
+        }
+
+        // Phase Determination Display
+        let finalPhase = 'Gas'; // Default
+        if (props) {
+            const nbp = props.nbp || 0;
+            const ambientState = props.ambient_state || 'Gas';
+
+            if (phase === 'Vapor' || phase === 'Gas') {
+                finalPhase = 'Gas';
+            } else if (phase === 'Liquid') {
+                if (ambientState === 'Gas') {
+                    finalPhase = (nbp > 80) ? 'Liquid' : 'Gas';
+                } else {
+                    finalPhase = 'Liquid';
+                }
+            } else if (phase === 'Two-Phase') {
+                finalPhase = (nbp > 80) ? 'Liquid' : 'Gas';
+            }
+            setText('debug_final_phase', finalPhase);
+        } else {
+            setText('debug_final_phase', '-');
+        }
+
+        // Diameter Display
+        let d = [0, 0, 0, 0];
+        if (d_input > 0) {
+            d[0] = Math.min(d_input, 0.25);
+            d[1] = Math.min(d_input, 1);
+            d[2] = Math.min(d_input, 4);
+            d[3] = Math.min(d_input, 16);
+            setText('debug_d1', d[0].toFixed(2));
+            setText('debug_d2', d[1].toFixed(2));
+            setText('debug_d3', d[2].toFixed(2));
+            setText('debug_d4', d[3].toFixed(2));
+        } else {
+            setText('debug_d1', '-');
+            setText('debug_d2', '-');
+            setText('debug_d3', '-');
+            setText('debug_d4', '-');
+        }
+
+        // Flow Regime Debug
+        let flowRegime = '-';
+        if (props && Ps !== null && tempF !== null) {
+            const Patm = (inputPatm && inputPatm.value) ? parseFloat(inputPatm.value) : 14.7;
+            if (finalPhase === 'Liquid' && Ps > 0) {
+                flowRegime = 'Liquid Flow';
+            } else if (finalPhase === 'Gas' && Ps > 0) {
+                const MW = props.mw;
+                const k = 1.4;
+                const termK = k / (k - 1);
+                const Ptrans = Patm * Math.pow((k + 1) / 2, termK); // Ptrans check
+                flowRegime = (Ps > Ptrans) ? 'Sonic' : 'Subsonic';
+            }
+            setText('debug_regime', flowRegime);
+        } else {
+            setText('debug_regime', '-');
+        }
+
+
+        // --- 2. VALIDATION CHECK FOR CALCULATION ---
         if (!validateInputs()) {
-            // Zero out chart
+            // Zero out chart and downstream debugs
             updateChart(0, 0, 0, 0);
+            // Clear other specific specific calculated fields if needed
             return;
         }
 
-        if (!selectFluid) return;
-
-        // 1. Gather Basic Inputs
-        const selectedLabel = selectFluid.value;
-        const phase = selectPhase ? selectPhase.value : null;
-        const tempF = inputTemperature ? parseFloat(inputTemperature.value) : NaN;
-
-        if (!selectedLabel) return;
-        const props = FluidProperties[selectedLabel];
+        // --- 3. FULL CALCULATION (If Validation Passed) ---
         if (!props) return;
 
-        // 2. Phase Determination
-        let finalPhase = 'Gas';
-        const nbp = props.nbp || 0;
-        const ambientState = props.ambient_state || 'Gas';
-
-        if (phase === 'Vapor' || phase === 'Gas') { // Handle "Gas" from Op Phase choices
-            finalPhase = 'Gas';
-        } else if (phase === 'Liquid') {
-            if (ambientState === 'Gas') {
-                finalPhase = (nbp > 80) ? 'Liquid' : 'Gas';
-            } else {
-                finalPhase = 'Liquid';
-            }
-        } else if (phase === 'Two-Phase') {
-            // Default COF handling for Two-Phase? Usually max consequence of Liquid/Gas or specific logic.
-            // For Level 1, simplified to Liquid if NBP>80 or similar. 
-            // Let's assume Liquid for worst case or default logic
-            finalPhase = (nbp > 80) ? 'Liquid' : 'Gas';
-        }
-
-        // 3. Hole Sizes & GFF
-        const diameter = inputDiameter ? parseFloat(inputDiameter.value) : 0;
+        const diameter = d_input;
         const componentCode = selectComponent ? selectComponent.value : null;
 
-        let d = [0, 0, 0, 0]; // d1, d2, d3, d4
-        if (diameter > 0) {
-            d[0] = Math.min(diameter, 0.25);
-            d[1] = Math.min(diameter, 1);
-            d[2] = Math.min(diameter, 4);
-            d[3] = Math.min(diameter, 16);
-        }
-
-        let gff = [0, 0, 0, 0]; // small, medium, large, rupture
+        // GFF Logic
+        let gff = [0, 0, 0, 0];
         let gffTotal = 0;
         if (componentCode) {
             const compData = ComponentGFFs.find(c => c.componentType === componentCode);
@@ -136,18 +190,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // 4. Release Rates (Wn)
+        // Release Rates
         let Wn = [0, 0, 0, 0];
-        const Ps = inputPs ? parseFloat(inputPs.value) : 0;
         const Patm = (inputPatm && inputPatm.value) ? parseFloat(inputPatm.value) : 14.7;
         const Cd = (inputCd && inputCd.value) ? parseFloat(inputCd.value) : 0.61;
 
-        let calcWn = (dn) => 0; // Default function
+        let calcWn = (dn) => 0;
 
         if (finalPhase === 'Liquid' && Ps > 0) {
             const rho_l = props.liquid_density || 62.4;
             const Kvn = (inputKvn && inputKvn.value) ? parseFloat(inputKvn.value) : 1.0;
-            const gc = 32.174;
+            const gc = 32.2; //Valor real: 32.174, valor según API 581: 32.2
             calcWn = (dn) => {
                 const An = (Math.PI * Math.pow(dn, 2) / 4) / 144; // ft2
                 const dP = Math.max(0, (Ps - Patm) * 144);
@@ -155,11 +208,10 @@ document.addEventListener('DOMContentLoaded', () => {
             };
         } else if (finalPhase === 'Gas' && Ps > 0) {
             const MW = props.mw;
-            const k = 1.4; // Simplified
+            const k = 1.4;
             const R_gas = 1545.3;
             const Ts_R = (tempF || 70) + 459.67;
-            const gc = 32.174;
-
+            const gc = 32.2; //Valor real: 32.174, valor según API 581: 32.2
             const termK = k / (k - 1);
             const Ptrans = Patm * Math.pow((k + 1) / 2, termK);
             const isSonic = Ps > Ptrans;
@@ -183,11 +235,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         Wn = d.map(dn => calcWn(dn));
-        // Update Release Rate Display if needed (hidden in current layout)
+
+        setText('debug_wn1', Wn[0].toFixed(2));
+        setText('debug_wn2', Wn[1].toFixed(2));
+        setText('debug_wn3', Wn[2].toFixed(2));
+        setText('debug_wn4', Wn[3].toFixed(2));
+
         if (document.getElementById('val_wn1')) document.getElementById('val_wn1').textContent = Wn[0].toFixed(2);
 
 
-        // 5. Consequence Areas (CMD, INJ) & Financials
+        // Consequence Areas & Financials
         let totalCmd = 0;
         let totalInj = 0;
 
@@ -196,14 +253,12 @@ document.addEventListener('DOMContentLoaded', () => {
         let FC_env = 0;
         let FC_prod = 0;
 
-        // Inputs for Financials
         const equipCostPerSqFt = inputEquipCost ? parseFloat(inputEquipCost.value) : 0;
-        const injCostPerPerson = inputInjCost ? parseFloat(inputInjCost.value) : 0; // Serious Injury Cost
+        const injCostPerPerson = inputInjCost ? parseFloat(inputInjCost.value) : 0;
         const envCostPerBbl = inputEnvCost ? parseFloat(inputEnvCost.value) : 0;
         const prodCostPerDay = inputProdCost ? parseFloat(inputProdCost.value) : 0;
         const shutdownDays = inputOutageMult ? parseFloat(inputOutageMult.value) : 0;
 
-        // Loop Holes
         const W_max8 = calcWn(Math.min(diameter, 8.0));
         const massInv = inputMassInv ? parseFloat(inputMassInv.value) : 0;
         const massComp = inputMassComp ? parseFloat(inputMassComp.value) : 0;
@@ -215,48 +270,67 @@ document.addEventListener('DOMContentLoaded', () => {
         const mitFactor = MitigationSystems[mitKey] ? MitigationSystems[mitKey].factor : 0.0;
         const tempR = (tempF || 70) + 459.67;
 
+        setText('debug_factdi', factDi.toFixed(2));
+
+        let massAvailDebug = 0;
+
         for (let i = 0; i < 4; i++) {
             if (gff[i] <= 0) continue;
 
             const rateN = Wn[i] * (1.0 - factDi);
+            setText('debug_raten' + (i + 1), rateN.toFixed(2));
+
             if (rateN <= 0) continue;
 
-            // Leak Duration / Mass
             const ldMaxMin = getLeakDuration(detClass, isoClass, d[i]);
             const ldMaxSec = 60 * ldMaxMin;
 
-            // Available Mass logic simplified
             const massAdd = 180 * Math.min(rateN, W_max8);
             const massAvail = Math.min(massComp + massAdd, massInv || (massComp + massAdd));
+
+            if (i === 0) massAvailDebug = massAvail;
 
             const ldN = Math.min(massAvail / rateN, ldMaxSec);
             const massN = Math.min(rateN * ldN, massAvail);
 
-            // Area Calc
+            setText('debug_ld' + (i + 1), ldN.toFixed(1));
+            setText('debug_massn' + (i + 1), massN.toFixed(1));
+
             let res = { cmd: 0, inj: 0 };
-            const isInst = (d[i] > 0.25 && rateN > 55.6); // Instantaneous Primary flag
+            const isInst = (d[i] > 0.25 && rateN > 55.6);
+
+            // UI Update for Release Type
+            const rTypeEl = document.getElementById('debug_rtype' + (i + 1));
+            if (rTypeEl) {
+                if (isInst) {
+                    rTypeEl.textContent = 'Inst.';
+                    rTypeEl.className = 'bg-red-50 text-red-600 font-bold';
+                } else {
+                    rTypeEl.textContent = 'Cont.';
+                    rTypeEl.className = 'bg-green-50 text-green-600 font-bold';
+                }
+            }
 
             if (["Steam", "Acid"].includes(selectedLabel)) {
-                // Simplified Steam/Acid
                 if (selectedLabel === "Steam" && SteamConstants) {
-                    const { C9, C10 } = SteamConstants; // C5 missing in imports? Assuming simplified
-                    // Steam usually just CMD = C9*rate + ...
-                    res.inj = 0; // Placeholder
+                    const { C9, C10 } = SteamConstants;
+                    res.inj = 0;
                     res.cmd = rateN * C9;
                 }
             } else {
                 res = calcFlammableCA(selectedLabel, rateN, massN, tempR, mitFactor, finalPhase, isInst);
             }
 
-            // Weighted Sums for Areas
+            setText('debug_cmd' + (i + 1), res.cmd.toFixed(0));
+            setText('debug_inj' + (i + 1), res.inj.toFixed(0));
+
             totalCmd += res.cmd * gff[i];
             totalInj += res.inj * gff[i];
 
-            // --- FINANCIALS ---
             const cost_cmd_i = res.cmd * equipCostPerSqFt;
             FC_cmd += cost_cmd_i * gff[i];
 
-            const popDensity = 0.002; // Placeholder
+            const popDensity = 0.002;
             const cost_inj_i = res.inj * popDensity * injCostPerPerson;
             FC_inj += cost_inj_i * gff[i];
 
@@ -265,10 +339,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const cost_prod_i = (d[i] > 0.25) ? (shutdownDays * prodCostPerDay) : 0;
             FC_prod += cost_prod_i * gff[i];
-
         }
 
-        // --- NORMALIZE RESULTS (Weighted Average) ---
+        setText('debug_mass_avail', massAvailDebug.toFixed(1));
+
+        // Normalization
         if (gffTotal > 0) {
             totalCmd /= gffTotal;
             totalInj /= gffTotal;
@@ -281,8 +356,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const FC_bus = FC_cmd + FC_prod; // Business
         const FC_total = FC_bus + FC_inj + FC_env;
 
-        // --- UPDATE UI ---
-        // Areas
+        // UI Update
         if (document.getElementById('val_final_cmd')) document.getElementById('val_final_cmd').textContent = totalCmd.toFixed(0);
         if (document.getElementById('val_final_inj')) document.getElementById('val_final_inj').textContent = totalInj.toFixed(0);
         if (document.getElementById('val_final_cof')) document.getElementById('val_final_cof').textContent = Math.max(totalCmd, totalInj).toFixed(0);
@@ -294,7 +368,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (document.getElementById('val_fc_bus_env')) document.getElementById('val_fc_bus_env').textContent = formatCurrency(FC_bus + FC_env); // As per image label
         if (document.getElementById('val_fc_total')) document.getElementById('val_fc_total').textContent = formatCurrency(FC_total);
 
-        // --- CHART UPDATE ---
         updateChart(FC_inj, FC_bus, FC_env, FC_total);
     }
 
@@ -358,6 +431,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+
+    function setText(id, val) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val !== null && val !== undefined ? val : '-';
+    }
 
     // --- LISTENERS ---
     // List all inputs that affect calc
