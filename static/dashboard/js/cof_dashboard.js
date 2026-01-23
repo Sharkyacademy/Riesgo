@@ -275,12 +275,17 @@ document.addEventListener('DOMContentLoaded', () => {
         let massAvailDebug = 0;
 
         for (let i = 0; i < 4; i++) {
-            if (gff[i] <= 0) continue;
+            // if (gff[i] <= 0) { console.log('gff[i] <= 0', gff[i]); continue; }
 
             const rateN = Wn[i] * (1.0 - factDi);
             setText('debug_raten' + (i + 1), rateN.toFixed(2));
 
-            if (rateN <= 0) continue;
+            if (rateN <= 0) {
+                console.log('rateN <= 0', rateN);
+                const errEl = document.getElementById('debug_rtype' + (i + 1));
+                if (errEl) errEl.textContent = 'Err:Rate0';
+                continue;
+            }
 
             const ldMaxMin = getLeakDuration(detClass, isoClass, d[i]);
             const ldMaxSec = 60 * ldMaxMin;
@@ -301,6 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // UI Update for Release Type
             const rTypeEl = document.getElementById('debug_rtype' + (i + 1));
+            console.log(`[DEBUG] i=${i}, d=${d[i]}, rateN=${rateN}, isInst=${isInst}, El=${!!rTypeEl}`);
             if (rTypeEl) {
                 if (isInst) {
                     rTypeEl.textContent = 'Inst.';
