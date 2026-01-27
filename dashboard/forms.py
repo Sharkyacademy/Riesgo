@@ -179,7 +179,7 @@ class ComponentForm(forms.ModelForm):
             'inhibitor_efficiency_percent': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': '%'}),
             'fluid_name': forms.TextInput(attrs={'class': 'input input-bordered w-full', 'placeholder': 'Fluid Name'}),
             'fluid_description': forms.Textarea(attrs={'class': 'textarea textarea-bordered w-full', 'rows': 2, 'placeholder': 'Fluid Description'}),
-            'rbix_fluid': forms.TextInput(attrs={'class': 'input input-bordered w-full', 'placeholder': 'RBIX Fluid'}),
+            'rbix_fluid': forms.Select(attrs={'class': 'select select-bordered w-full'}),
             'operational_fluid_phase': forms.Select(attrs={'class': 'select select-bordered w-full'}),
             'component_fluid_mass_lb': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': 'lb'}),
             'component_group_fluid_mass_lb': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': 'lb'}),
