@@ -1,0 +1,52 @@
+services:
+  web:
+    build: .
+    command: gunicorn web.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - ./media:/app/media
+      - static_volume:/app/staticfiles
+    expose:
+      - 8000
+    env_file:
+      - .env
+    depends_on:
+      - db
+    environment:
+      SQL_HOST: db
+      SQL_PORT: 5432
+      DATABASE: postgres
+
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=stiiuser
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=stii_database
+
+  nginx:
+    image: nginx:1.25-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - static_volume:/app/staticfiles
+      - ./media:/app/media
+      - certbot_conf:/etc/letsencrypt
+      - certbot_www:/var/www/certbot
+    depends_on:
+      - web
+
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - certbot_conf:/etc/letsencrypt
+      - certbot_www:/var/www/certbot
+
+volumes:
+  postgres_data:
+  static_volume:
+  certbot_conf:
+  certbot_www:
