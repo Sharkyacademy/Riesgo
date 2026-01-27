@@ -56,7 +56,7 @@ INSTALLED_APPS = [
 if DEBUG:
     INSTALLED_APPS.append('django_browser_reload')
 
-LOGIN_REDIRECT_URL = '/formula_app/'
+LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 AUTH_USER_MODEL = "accounts.CustomUser"
