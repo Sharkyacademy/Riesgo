@@ -47,9 +47,11 @@ INSTALLED_APPS = [
     'accounts',
     'tailwind',
     'theme',
-    'django_browser_reload',
     'dashboard',
 ]
+
+if DEBUG:
+    INSTALLED_APPS.append('django_browser_reload')
 
 LOGIN_REDIRECT_URL = '/formula_app/'
 LOGIN_URL = '/'
@@ -67,6 +69,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+if DEBUG:
+    MIDDLEWARE.append('django_browser_reload.middleware.BrowserReloadMiddleware')
 
 ROOT_URLCONF = 'web.urls'
 
