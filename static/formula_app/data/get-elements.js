@@ -3,6 +3,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const equipmentSelect = document.getElementById("equipment");
     const componentSelect = document.getElementById("component");
 
+    if (!equipmentSelect) console.error("Element #equipment not found!");
+    if (!componentSelect) console.error("Element #component not found!");
+
 
     const has_cladding = document.getElementById("has_cladding");
     const cladding_row = document.getElementById("cladding_row");
@@ -65,7 +68,10 @@ document.addEventListener("DOMContentLoaded", function () {
     async function loadComponents(equipmentId) {
         // 1. Clear immediately to show feedback
         componentSelect.innerHTML = '<option value="" disabled selected>Select component</option>';
-        if (!equipmentId) return;
+        if (!equipmentId) {
+            console.log("loadComponents called with empty equipmentId");
+            return;
+        }
 
         // 2. Increment fetch ID
         currentFetchId++;
@@ -74,9 +80,10 @@ document.addEventListener("DOMContentLoaded", function () {
         // Use Django URL if available, else fallback
         const urlBase = (window.djangoUrls && window.djangoUrls.getComponents)
             ? window.djangoUrls.getComponents
-            : 'api/get-components/';
+            : 'get-components/'; // Fixed fallback URL
 
         try {
+            console.log(`Fetching components from ${urlBase}?equipment_id=${equipmentId}`);
             const response = await fetch(`${urlBase}?equipment_id=${equipmentId}`);
             if (!response.ok) throw new Error("HTTP " + response.status);
 
