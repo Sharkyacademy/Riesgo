@@ -4,6 +4,7 @@ import ComponentGFFs from '../../formula_app/data/cof/gff_table_3_1.js';
 import { getReductionFactor, getLeakDuration } from '../../formula_app/data/cof/table4_6_7.js';
 import { MitigationSystems, SteamConstants, AcidConstants } from '../../formula_app/data/cof/table4_8_9_10.js';
 import { calcFlammableCA } from '../../formula_app/js/cof_level_1_4_8.js';
+import { ComponentCostData, MaterialCostFactors } from '../../formula_app/data/cof/table4_15_16.js';
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -31,6 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectMitigation = document.getElementById('id_mitigation_system');
 
     // Financial Inputs ("Data" tab)
+    const selectMaterialConstruction = document.getElementById('id_material_construction');
+    const inputCostFactor = document.getElementById('id_cost_factor');
     const inputEquipCost = document.getElementById('id_equipment_cost_per_sqft');
     const inputInjCost = document.getElementById('id_injury_cost_per_person');
     const inputEnvCost = document.getElementById('id_environmental_cost_per_bbl');
@@ -252,13 +255,19 @@ document.addEventListener('DOMContentLoaded', () => {
         let FC_inj = 0;
         let FC_env = 0;
         let FC_prod = 0;
+        // Inputs for Financials
+        // API 581 Table 4.16: Material Cost Factors (multipliers)
+        const materialName = selectMaterialConstruction ? selectMaterialConstruction.value : 'Carbon Steel';
+        const materialFactor = MaterialCostFactors[materialName] || 1.0; // Table 4.16 multiplier
+        const costFactor = inputCostFactor ? parseFloat(inputCostFactor.value) : 1.0; // CFAC adjustment
 
         const equipCostPerSqFt = inputEquipCost ? parseFloat(inputEquipCost.value) : 0;
-        const injCostPerPerson = inputInjCost ? parseFloat(inputInjCost.value) : 0;
+        const injCostPerPerson = inputInjCost ? parseFloat(inputInjCost.value) : 0; // Serious Injury Cost
         const envCostPerBbl = inputEnvCost ? parseFloat(inputEnvCost.value) : 0;
         const prodCostPerDay = inputProdCost ? parseFloat(inputProdCost.value) : 0;
         const shutdownDays = inputOutageMult ? parseFloat(inputOutageMult.value) : 0;
 
+        // Loop Holes
         const W_max8 = calcWn(Math.min(diameter, 8.0));
         const massInv = inputMassInv ? parseFloat(inputMassInv.value) : 0;
         const massComp = inputMassComp ? parseFloat(inputMassComp.value) : 0;
@@ -333,7 +342,10 @@ document.addEventListener('DOMContentLoaded', () => {
             totalCmd += res.cmd * gff[i];
             totalInj += res.inj * gff[i];
 
-            const cost_cmd_i = res.cmd * equipCostPerSqFt;
+            // --- FINANCIALS ---
+            // FC_cmd: Component Damage Cost (API 581 Section 4.12.2)
+            // Formula: FC_cmd = Base Cost × Material Factor (Table 4.16) × CFAC
+            const cost_cmd_i = res.cmd * equipCostPerSqFt * materialFactor * costFactor;
             FC_cmd += cost_cmd_i * gff[i];
 
             const popDensity = 0.002;
@@ -450,6 +462,7 @@ document.addEventListener('DOMContentLoaded', () => {
         inputPs, inputPatm, inputCd, inputKvn,
         inputMassInv, inputMassComp,
         selectDetection, selectIsolation, selectMitigation,
+        selectMaterialConstruction, inputCostFactor,
         inputEquipCost, inputInjCost, inputEnvCost, inputProdCost, inputOutageMult
     ];
 

@@ -2,6 +2,7 @@ from django.db import models
 from .data.representative_fluids import REPRESENTATIVE_FLUIDS
 from .data.component_types import COMPONENT_TYPES
 from .data.materials import MATERIAL_CHOICES
+from .data.material_construction import MATERIAL_CONSTRUCTION_CHOICES
 
 
 class Facility(models.Model):
@@ -68,6 +69,7 @@ class Component(models.Model):
     
     # COF Level 1 - Release Hole Size & GFF (4.2)
     component_diameter = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Component Diameter (inches)")
+    heat_traced = models.BooleanField(default=False, verbose_name="Heat Traced")
     
     # COF Level 1 - Release Rate Parameters (4.3.2 & 4.3.3) - Shared
     storage_pressure = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Storage Pressure Ps (psia)")
@@ -107,7 +109,7 @@ class Component(models.Model):
     
     # COF Level 1 - Financial Consequence (4.12)
     # 4.12.2 Component Damage Cost
-    material_construction = models.CharField(max_length=255, null=True, blank=True, verbose_name="Material of Construction", choices=MATERIAL_CHOICES)
+    material_construction = models.CharField(max_length=255, null=True, blank=True, verbose_name="Material of Construction", choices=MATERIAL_CONSTRUCTION_CHOICES)
     cost_factor = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, default=1.0, verbose_name="Cost Factor")
     
     # 4.12.3 Affected Area Cost
@@ -276,6 +278,114 @@ class Component(models.Model):
     # Inspection Summary
     inspection_summary = models.TextField(null=True, blank=True, verbose_name="Inspection Summary")
 
+
+    # --- RISK PROBABILITY CALCULATIONS (MIGRATION) ---
+    
+    # SCC - Caustic Cracking
+    mechanism_scc_caustic_active = models.BooleanField(default=False, verbose_name="Mech. Active: SCC Caustic")
+    scc_caustic_cracks_observed = models.BooleanField(default=False, verbose_name="Caustic Cracks Observed?")
+    scc_caustic_cracks_removed = models.BooleanField(default=False, verbose_name="Caustic Cracks Removed?")
+    scc_caustic_stress_relieved = models.BooleanField(default=False, verbose_name="Caustic Stress Relieved?")
+    scc_caustic_naoh_conc_percent = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, verbose_name="NaOH Concentration (%)")
+    scc_caustic_steamed_out_prior = models.BooleanField(default=False, verbose_name="Steamed Out Prior to Service?")
+    
+    scc_caustic_inspection_count_a = models.IntegerField(default=0, verbose_name="Insp. Count Cat A (Caustic)")
+    scc_caustic_inspection_count_b = models.IntegerField(default=0, verbose_name="Insp. Count Cat B (Caustic)")
+    scc_caustic_inspection_count_c = models.IntegerField(default=0, verbose_name="Insp. Count Cat C (Caustic)")
+    scc_caustic_inspection_count_d = models.IntegerField(default=0, verbose_name="Insp. Count Cat D (Caustic)")
+
+    # SCC - Amine Cracking
+    mechanism_scc_amine_active = models.BooleanField(default=False, verbose_name="Mech. Active: SCC Amine")
+    scc_amine_cracks_observed = models.BooleanField(default=False, verbose_name="Amine Cracks Observed?")
+    scc_amine_cracks_removed = models.BooleanField(default=False, verbose_name="Amine Cracks Removed?")
+    scc_amine_stress_relieved = models.BooleanField(default=False, verbose_name="Amine Stress Relieved?")
+    scc_amine_solution_type = models.CharField(max_length=20, null=True, blank=True, verbose_name="Amine Solution Type")
+    scc_amine_steamed_out = models.BooleanField(default=False, verbose_name="Amine Steamed Out?")
+    scc_amine_inspection_count_a = models.IntegerField(default=0, verbose_name="Insp. Count Cat A (Amine)")
+    scc_amine_inspection_count_b = models.IntegerField(default=0, verbose_name="Insp. Count Cat B (Amine)")
+    scc_amine_inspection_count_c = models.IntegerField(default=0, verbose_name="Insp. Count Cat C (Amine)")
+    scc_amine_inspection_count_d = models.IntegerField(default=0, verbose_name="Insp. Count Cat D (Amine)")
+
+    # SCC - SSC (Sulfide Stress Cracking)
+    mechanism_scc_ssc_active = models.BooleanField(default=False, verbose_name="Mech. Active: SSC")
+    scc_ssc_ph = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True, verbose_name="pH")
+    scc_ssc_h2s_ppm = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="H2S Content (ppm)")
+    scc_ssc_hardness_hb = models.DecimalField(max_digits=6, decimal_places=1, null=True, blank=True, verbose_name="Max Hardness (HB)")
+    scc_ssc_pwht = models.BooleanField(default=False, verbose_name="SSC PWHT?")
+    scc_ssc_cracks_observed = models.BooleanField(default=False, verbose_name="SSC Cracks Observed?")
+    scc_ssc_cracks_removed = models.BooleanField(default=False, verbose_name="SSC Cracks Removed?")
+    scc_ssc_inspection_count_a = models.IntegerField(default=0, verbose_name="Insp. Count Cat A (SSC)")
+    scc_ssc_inspection_count_b = models.IntegerField(default=0, verbose_name="Insp. Count Cat B (SSC)")
+    scc_ssc_inspection_count_c = models.IntegerField(default=0, verbose_name="Insp. Count Cat C (SSC)")
+    scc_ssc_inspection_count_d = models.IntegerField(default=0, verbose_name="Insp. Count Cat D (SSC)")
+
+    # SCC - HIC/SOHIC-H2S
+    mechanism_scc_hic_h2s_active = models.BooleanField(default=False, verbose_name="Mech. Active: HIC/SOHIC-H2S")
+    scc_hic_h2s_ph = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True, verbose_name="pH (HIC)")
+    scc_hic_h2s_h2s_ppm = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="H2S (ppm) (HIC)")
+    scc_hic_h2s_cyanide_present = models.BooleanField(default=False, verbose_name="Cyanide Present?")
+    scc_hic_h2s_banding_severity = models.CharField(max_length=20, null=True, blank=True, verbose_name="Banding Severity")
+    scc_hic_h2s_cracks_observed = models.BooleanField(default=False, verbose_name="HIC Cracks Observed?")
+    scc_hic_h2s_cracks_removed = models.BooleanField(default=False, verbose_name="HIC Cracks Removed?")
+    scc_hic_h2s_inspection_count_a = models.IntegerField(default=0, verbose_name="Insp. Count Cat A (HIC)")
+    scc_hic_h2s_inspection_count_b = models.IntegerField(default=0, verbose_name="Insp. Count Cat B (HIC)")
+    scc_hic_h2s_inspection_count_c = models.IntegerField(default=0, verbose_name="Insp. Count Cat C (HIC)")
+    scc_hic_h2s_inspection_count_d = models.IntegerField(default=0, verbose_name="Insp. Count Cat D (HIC)")
+
+    # SCC - ACSCC (Alkaline Carbonate)
+    mechanism_scc_acscc_active = models.BooleanField(default=False, verbose_name="Mech. Active: ACSCC")
+    scc_acscc_cracks_observed = models.BooleanField(default=False, verbose_name="ACSCC Cracks Observed?")
+    scc_acscc_cracks_removed = models.BooleanField(default=False, verbose_name="ACSCC Cracks Removed?")
+    scc_acscc_stress_relieved = models.BooleanField(default=False, verbose_name="ACSCC Stress Relieved?")
+    scc_acscc_co3_conc_percent = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, verbose_name="CO3 Concentration (%)")
+    scc_acscc_inspection_count_a = models.IntegerField(default=0, verbose_name="Insp. Count Cat A (ACSCC)")
+    scc_acscc_inspection_count_b = models.IntegerField(default=0, verbose_name="Insp. Count Cat B (ACSCC)")
+    scc_acscc_inspection_count_c = models.IntegerField(default=0, verbose_name="Insp. Count Cat C (ACSCC)")
+    scc_acscc_inspection_count_d = models.IntegerField(default=0, verbose_name="Insp. Count Cat D (ACSCC)")
+
+    # SCC - PASCC (Polythionic Acid)
+    mechanism_scc_pascc_active = models.BooleanField(default=False, verbose_name="Mech. Active: PASCC")
+    scc_pascc_cracks_observed = models.BooleanField(default=False, verbose_name="PASCC Cracks Observed?")
+    scc_pascc_cracks_removed = models.BooleanField(default=False, verbose_name="PASCC Cracks Removed?")
+    scc_pascc_sensitized = models.BooleanField(default=False, verbose_name="Material Sensitized?")
+    scc_pascc_sulfur_exposure = models.BooleanField(default=False, verbose_name="Sulfur Exposure?")
+    scc_pascc_inspection_count_a = models.IntegerField(default=0, verbose_name="Insp. Count Cat A (PASCC)")
+    scc_pascc_inspection_count_b = models.IntegerField(default=0, verbose_name="Insp. Count Cat B (PASCC)")
+    scc_pascc_inspection_count_c = models.IntegerField(default=0, verbose_name="Insp. Count Cat C (PASCC)")
+    scc_pascc_inspection_count_d = models.IntegerField(default=0, verbose_name="Insp. Count Cat D (PASCC)")
+
+    # SCC - ClSCC (Chloride)
+    mechanism_scc_clscc_active = models.BooleanField(default=False, verbose_name="Mech. Active: ClSCC")
+    scc_clscc_cracks_observed = models.BooleanField(default=False, verbose_name="ClSCC Cracks Observed?")
+    scc_clscc_cracks_removed = models.BooleanField(default=False, verbose_name="ClSCC Cracks Removed?")
+    scc_clscc_cl_conc_ppm = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Cl Concentration (ppm)")
+    scc_clscc_inspection_count_a = models.IntegerField(default=0, verbose_name="Insp. Count Cat A (ClSCC)")
+    scc_clscc_inspection_count_b = models.IntegerField(default=0, verbose_name="Insp. Count Cat B (ClSCC)")
+    scc_clscc_inspection_count_c = models.IntegerField(default=0, verbose_name="Insp. Count Cat C (ClSCC)")
+    scc_clscc_inspection_count_d = models.IntegerField(default=0, verbose_name="Insp. Count Cat D (ClSCC)")
+
+    # SCC - HSC-HF (Hydrogen Stress Cracking - HF)
+    mechanism_scc_hsc_hf_active = models.BooleanField(default=False, verbose_name="Mech. Active: HSC-HF")
+    scc_hsc_hf_cracks_observed = models.BooleanField(default=False, verbose_name="HSC-HF Cracks Observed?")
+    scc_hsc_hf_cracks_removed = models.BooleanField(default=False, verbose_name="HSC-HF Cracks Removed?")
+    scc_hsc_hf_hf_conc_percent = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, verbose_name="HF Concentration (%)")
+    scc_hsc_hf_hardness_hrc = models.DecimalField(max_digits=4, decimal_places=1, null=True, blank=True, verbose_name="Hardness (HRC)")
+    scc_hsc_hf_inspection_count_a = models.IntegerField(default=0, verbose_name="Insp. Count Cat A (HSC-HF)")
+    scc_hsc_hf_inspection_count_b = models.IntegerField(default=0, verbose_name="Insp. Count Cat B (HSC-HF)")
+    scc_hsc_hf_inspection_count_c = models.IntegerField(default=0, verbose_name="Insp. Count Cat C (HSC-HF)")
+    scc_hsc_hf_inspection_count_d = models.IntegerField(default=0, verbose_name="Insp. Count Cat D (HSC-HF)")
+
+
+    # Brittle Fracture
+    mechanism_brittle_fracture_active = models.BooleanField(default=False, verbose_name="Mech. Active: Brittle Fracture")
+    brittle_admin_controls = models.BooleanField(default=False, verbose_name="Admin Controls Prevent Pressurization?")
+    brittle_min_operating_temp_f = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Min. Operating Temp (°F)")
+    brittle_delta_fatt = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Delta FATT")
+    brittle_cet_f = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Critical Exposure Temp (CET) (°F)")
+    brittle_pwht = models.BooleanField(default=False, verbose_name="PWHT (Brittle Specific)")
+
+    # External Damage (Uses mostly existing fields, but might need a toggle)
+    mechanism_external_damage_active = models.BooleanField(default=False, verbose_name="Mech. Active: External Damage")
 
     def __str__(self):
         return f"{self.rbix_component_type} - {self.equipment.number}"

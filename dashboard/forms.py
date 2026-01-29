@@ -67,7 +67,7 @@ class ComponentForm(forms.ModelForm):
             'remaining_life_years', 'external_coating_date', 'material', 'rep_pipe_no',
             # COF Level 1 fields
             'representative_fluid', 'stored_phase', 'fluid_temperature',
-            'component_diameter',
+            'component_diameter', 'heat_traced',
             'storage_pressure', 'atm_pressure', 'discharge_coeff', 'viscosity_correction', 'conversion_factor_c2',
             'inventory_group_mass', 'component_mass',
             'detection_class', 'isolation_class',
@@ -109,7 +109,67 @@ class ComponentForm(forms.ModelForm):
             'diameter_outside_in', 'diameter_inside_in',
             'safety_factor', 'design_code', 'joint_efficiency', 'pwht', 'heat_traced',
             'atmosphere_corrosivity', 'internal_cladding', 'internal_lining',
-            'insulated', 'insulation_type', 'other_insulation'
+            'insulated', 'insulation_type', 'other_insulation',
+            
+            # Risk Probability Fields - SCC Caustic
+            'mechanism_scc_caustic_active', 'scc_caustic_cracks_observed', 'scc_caustic_cracks_removed',
+            'scc_caustic_stress_relieved', 'scc_caustic_naoh_conc_percent', 'scc_caustic_steamed_out_prior',
+            'scc_caustic_inspection_count_a', 'scc_caustic_inspection_count_b', 'scc_caustic_inspection_count_c',
+            'scc_caustic_inspection_count_d',
+            
+            # SCC Amine
+            'mechanism_scc_amine_active', 'scc_amine_cracks_observed', 'scc_amine_cracks_removed',
+            'scc_amine_stress_relieved', 'scc_amine_solution_type', 'scc_amine_steamed_out',
+            'scc_amine_inspection_count_a', 'scc_amine_inspection_count_b', 'scc_amine_inspection_count_c',
+            'scc_amine_inspection_count_d',
+            
+            # SCC SSC
+            'mechanism_scc_ssc_active', 'scc_ssc_ph', 'scc_ssc_h2s_ppm', 'scc_ssc_hardness_hb',
+            'scc_ssc_pwht', 'scc_ssc_cracks_observed', 'scc_ssc_cracks_removed',
+            'scc_ssc_inspection_count_a', 'scc_ssc_inspection_count_b', 'scc_ssc_inspection_count_c',
+            'scc_ssc_inspection_count_d',
+            
+            # SCC HIC/SOHIC
+            'mechanism_scc_hic_h2s_active', 'scc_hic_h2s_ph', 'scc_hic_h2s_h2s_ppm',
+            'scc_hic_h2s_cyanide_present', 'scc_hic_h2s_banding_severity',
+            'scc_hic_h2s_cracks_observed', 'scc_hic_h2s_cracks_removed',
+            'scc_hic_h2s_inspection_count_a', 'scc_hic_h2s_inspection_count_b', 'scc_hic_h2s_inspection_count_c',
+            'scc_hic_h2s_inspection_count_d',
+            
+            # SCC ACSCC
+            'mechanism_scc_acscc_active', 'scc_acscc_cracks_observed', 'scc_acscc_cracks_removed',
+            'scc_acscc_stress_relieved', 'scc_acscc_co3_conc_percent',
+            'scc_acscc_inspection_count_a', 'scc_acscc_inspection_count_b', 'scc_acscc_inspection_count_c',
+            'scc_acscc_inspection_count_d',
+            
+            # SCC PASCC
+            'mechanism_scc_pascc_active', 'scc_pascc_cracks_observed', 'scc_pascc_cracks_removed',
+            'scc_pascc_sensitized', 'scc_pascc_sulfur_exposure',
+            'scc_pascc_inspection_count_a', 'scc_pascc_inspection_count_b', 'scc_pascc_inspection_count_c',
+            'scc_pascc_inspection_count_d',
+            
+            # SCC ClSCC
+            'mechanism_scc_clscc_active', 'scc_clscc_cracks_observed', 'scc_clscc_cracks_removed',
+            'scc_clscc_cl_conc_ppm',
+            'scc_clscc_inspection_count_a', 'scc_clscc_inspection_count_b', 'scc_clscc_inspection_count_c',
+            'scc_clscc_inspection_count_d',
+            
+            # SCC HSC-HF
+            'mechanism_scc_hsc_hf_active', 'scc_hsc_hf_cracks_observed', 'scc_hsc_hf_cracks_removed',
+            'scc_hsc_hf_hf_conc_percent', 'scc_hsc_hf_hardness_hrc',
+            'scc_hsc_hf_inspection_count_a', 'scc_hsc_hf_inspection_count_b', 'scc_hsc_hf_inspection_count_c',
+            'scc_hsc_hf_inspection_count_d',
+            
+            # Brittle Fracture
+            'mechanism_brittle_fracture_active', 'brittle_admin_controls', 'brittle_min_operating_temp_f',
+            'brittle_delta_fatt', 'brittle_cet_f', 'brittle_pwht',
+
+            'mechanism_external_damage_active',
+            
+            # COF Financial Fields
+            'material_construction', 'cost_factor', 'equipment_cost_per_sqft',
+            'production_cost_per_day', 'outage_multiplier', 'injury_cost_per_person',
+            'environmental_cost_per_bbl'
         ]
         widgets = {
             # Original widgets
@@ -127,6 +187,8 @@ class ComponentForm(forms.ModelForm):
             'remaining_life_years': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01'}),
             'external_coating_date': forms.DateInput(attrs={'class': 'input input-bordered w-full', 'type': 'date'}),
             'material': forms.TextInput(attrs={'class': 'input input-bordered w-full', 'placeholder': 'Material'}),
+            'material_construction': forms.Select(attrs={'class': 'select select-bordered w-full'}),
+            'cost_factor': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': '1.0'}),
             'rep_pipe_no': forms.TextInput(attrs={'class': 'input input-bordered w-full', 'placeholder': 'Rep. Pipe No.'}),
             
             # COF Level 1 widgets - Representative Fluids
@@ -267,6 +329,109 @@ class ComponentForm(forms.ModelForm):
             'insulated': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
             'insulation_type': forms.Select(attrs={'class': 'select select-bordered w-full'}),
             'other_insulation': forms.TextInput(attrs={'class': 'input input-bordered w-full', 'placeholder': 'Other'}),
+            
+            # --- RISK PROBABILITY WIDGETS ---
+            'mechanism_scc_caustic_active': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_caustic_cracks_observed': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_caustic_cracks_removed': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_caustic_stress_relieved': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_caustic_naoh_conc_percent': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': 'NaOH %'}),
+            'scc_caustic_steamed_out_prior': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            
+            'scc_caustic_inspection_count_a': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            'scc_caustic_inspection_count_b': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            'scc_caustic_inspection_count_c': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            'scc_caustic_inspection_count_d': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            
+            # SCC Amine
+            'mechanism_scc_amine_active': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_amine_cracks_observed': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_amine_cracks_removed': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_amine_stress_relieved': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_amine_solution_type': forms.Select(attrs={'class': 'select select-bordered w-full'}),
+            'scc_amine_steamed_out': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_amine_inspection_count_a': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            'scc_amine_inspection_count_b': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            'scc_amine_inspection_count_c': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            'scc_amine_inspection_count_d': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            
+            # SCC SSC
+            'mechanism_scc_ssc_active': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_ssc_ph': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': 'pH'}),
+            'scc_ssc_h2s_ppm': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': 'ppm'}),
+            'scc_ssc_hardness_hb': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.1', 'placeholder': 'HB'}),
+            'scc_ssc_pwht': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_ssc_cracks_observed': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_ssc_cracks_removed': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_ssc_inspection_count_a': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            'scc_ssc_inspection_count_b': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            'scc_ssc_inspection_count_c': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            'scc_ssc_inspection_count_d': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            
+            # SCC HIC/SOHIC
+            'mechanism_scc_hic_h2s_active': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_hic_h2s_ph': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': 'pH'}),
+            'scc_hic_h2s_h2s_ppm': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': 'ppm'}),
+            'scc_hic_h2s_cyanide_present': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_hic_h2s_banding_severity': forms.Select(attrs={'class': 'select select-bordered w-full'}),
+            'scc_hic_h2s_cracks_observed': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_hic_h2s_cracks_removed': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_hic_h2s_inspection_count_a': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            'scc_hic_h2s_inspection_count_b': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            'scc_hic_h2s_inspection_count_c': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            'scc_hic_h2s_inspection_count_d': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            
+            # SCC ACSCC
+            'mechanism_scc_acscc_active': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_acscc_cracks_observed': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_acscc_cracks_removed': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_acscc_stress_relieved': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_acscc_co3_conc_percent': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': 'CO3 %'}),
+            'scc_acscc_inspection_count_a': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            'scc_acscc_inspection_count_b': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            'scc_acscc_inspection_count_c': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            'scc_acscc_inspection_count_d': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            
+            # SCC PASCC
+            'mechanism_scc_pascc_active': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_pascc_cracks_observed': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_pascc_cracks_removed': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_pascc_sensitized': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_pascc_sulfur_exposure': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_pascc_inspection_count_a': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            'scc_pascc_inspection_count_b': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            'scc_pascc_inspection_count_c': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            'scc_pascc_inspection_count_d': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            
+            # SCC ClSCC
+            'mechanism_scc_clscc_active': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_clscc_cracks_observed': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_clscc_cracks_removed': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_clscc_cl_conc_ppm': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': 'Cl ppm'}),
+            'scc_clscc_inspection_count_a': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            'scc_clscc_inspection_count_b': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            'scc_clscc_inspection_count_c': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            'scc_clscc_inspection_count_d': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            
+            # SCC HSC-HF
+            'mechanism_scc_hsc_hf_active': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_hsc_hf_cracks_observed': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_hsc_hf_cracks_removed': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'scc_hsc_hf_hf_conc_percent': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': 'HF %'}),
+            'scc_hsc_hf_hardness_hrc': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.1', 'placeholder': 'HRC'}),
+            'scc_hsc_hf_inspection_count_a': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            'scc_hsc_hf_inspection_count_b': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            'scc_hsc_hf_inspection_count_c': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            'scc_hsc_hf_inspection_count_d': forms.NumberInput(attrs={'class': 'input input-bordered w-full'}),
+            
+            'mechanism_brittle_fracture_active': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'brittle_admin_controls': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'brittle_min_operating_temp_f': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': '°F'}),
+            'brittle_delta_fatt': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': 'Delta FATT'}),
+            'brittle_cet_f': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': 'CET (°F)'}),
+            'brittle_pwht': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            
+            'mechanism_external_damage_active': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
         }
 
     def __init__(self, user, *args, **kwargs):

@@ -1,0 +1,9 @@
+{
+    "description": "Table 2.C.1.2 - Severity Index for Caustic Cracking",
+    "mappings": {
+        "High": 5000,
+        "Medium": 500,
+        "Low": 50,
+        "None": 0
+    }
+}
