@@ -282,40 +282,30 @@
                                         {{ form.material }}
                                     </div>
                                     <div class="form-control">
-                                        <button type="button"
+                                        <button type="button" id="btnSelectMaterial"
                                             class="btn bg-blue-950 text-white hover:bg-blue-900 btn-block">Select
                                             Material</button>
                                     </div>
                                     <div class="form-control">
                                         <label class="label"><span class="label-text font-semibold text-blue-950">RBIX
                                                 Material</span></label>
-                                        <input type="text" class="input input-bordered bg-gray-100" readonly
-                                            value="Carbon steel">
+                                        <!-- Hidden select for form submission -->
+                                        <div style="display: none;">
+                                            {{ form.material_construction }}
+                                        </div>
+                                        <input type="text" id="rbixMaterialDisplay"
+                                            class="input input-bordered bg-gray-100" readonly
+                                            placeholder="Select Material..."
+                                            value="{{ form.instance.material_construction|default:'' }}">
                                     </div>
                                     <div class="form-control">
-                                        <input type="text" class="input input-bordered bg-gray-100" readonly
-                                            value="Carbon Steel A 516">
+                                        <label class="label"><span class="label-text font-semibold text-blue-950">
+                                                Cost Factor (CFAC)</span></label>
+                                        {{ form.cost_factor }}
                                     </div>
                                 </div>
 
-                                <!-- Material of Construction for COF (API 581 Table 4.16) -->
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <div class="form-control md:col-span-2">
-                                        <label class="label"><span
-                                                class="label-text font-semibold text-purple-700">Material of
-                                                Construction (API 581 Table 4.16)</span></label>
-                                        {{ form.material_construction }}
-                                        <label class="label"><span class="label-text-alt text-gray-400">For COF cost
-                                                multiplier calculation</span></label>
-                                    </div>
-                                    <div class="form-control">
-                                        <label class="label"><span class="label-text font-semibold text-purple-700">Cost
-                                                Adjustment Factor</span></label>
-                                        {{ form.cost_factor }}
-                                        <label class="label"><span class="label-text-alt text-gray-400">Default:
-                                                1.0</span></label>
-                                    </div>
-                                </div>
+
 
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div class="form-control">
@@ -1659,7 +1649,8 @@
     <!-- Chart.js for PoF visualization -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="{% static 'dashboard/js/calculations/formula_app_adapter.js' %}"></script>
-    <script src="{% static 'dashboard/js/calculations/scc_calculations.js' %}"></script>
+    <!-- OLD: Commented out to prevent conflicts with formula_app_adapter.js -->
+    <!-- <script src="{% static 'dashboard/js/calculations/scc_calculations.js' %}"></script> -->
     <script>
         function openMainTab(evt, tabName) {
             // Hide all tab contents
@@ -1762,4 +1753,145 @@
     </main>
 </div>
 </div>
+
+<!-- Material Selection Modal -->
+<dialog id="materialModal" class="modal">
+    <div class="modal-box w-11/12 max-w-3xl">
+        <h3 class="font-bold text-lg mb-4">Select Material of Construction (API 581 Table 4.16)</h3>
+
+        <!-- Search Box -->
+        <input type="text" id="materialSearch" placeholder="Search materials..."
+            class="input input-bordered w-full mb-4">
+
+        <!-- Materials Table -->
+        <div class="overflow-y-auto max-h-96">
+            <table class="table table-zebra w-full">
+                <thead class="bg-purple-800 text-white sticky top-0">
+                    <tr>
+                        <th class="w-12 text-center">#</th>
+                        <th>Material Name</th>
+                        <th class="text-center">Category</th>
+                        <th class="text-center">Cost Factor</th>
+                        <th class="text-center w-24"></th>
+                    </tr>
+                </thead>
+                <tbody id="materialTableBody">
+                    <!-- Will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-6 flex justify-end">
+            <button type="button" onclick="materialModal.close()" class="btn btn-outline">Cancel</button>
+        </div>
+    </div>
+    </div>
+</dialog>
+
+<script type="module">
+    import { MaterialCostFactors } from '{% static "formula_app/data/cof/table4_15_16.js" %}';
+
+    const materialModal = document.getElementById('materialModal');
+    const materialSearch = document.getElementById('materialSearch');
+    const materialTableBody = document.getElementById('materialTableBody');
+    const materialConstructionSelect = document.getElementById('id_material_construction');
+    const rbixMaterialDisplay = document.getElementById('rbixMaterialDisplay');
+
+    // Find the "Select Material" button
+    const selectMaterialButton = document.getElementById('btnSelectMaterial');
+
+    // Populate material table
+    function populateMaterialTable(filter = '') {
+        materialTableBody.innerHTML = '';
+
+        Object.entries(MaterialCostFactors)
+            .filter(([name]) => name.toLowerCase().includes(filter.toLowerCase()))
+            .sort(([a], [b]) => a.localeCompare(b))
+            .forEach(([materialName, costFactor], index) => {
+                // Helper to categorize materials
+                let category = 'Other';
+                if (materialName.includes('Steel') || materialName === 'Carbon Steel') category = 'Carbon Steel';
+                else if (materialName.includes('SS')) category = 'Stainless Steel';
+                else if (materialName.includes('Alloy')) category = 'Alloy';
+                else if (materialName.includes('Cu/Ni')) category = 'Copper Alloy';
+                else if (materialName.includes('lined') || materialName.includes('coating')) category = 'Lined/Coated';
+
+                const row = document.createElement('tr');
+                row.className = 'hover cursor-pointer';
+                row.innerHTML = `
+                    <td class="text-center text-gray-500 text-sm">${index + 1}</td>
+                    <td class="font-medium">${materialName}</td>
+                    <td class="text-center text-sm">${category}</td>
+                    <td class="text-center tabular-nums font-semibold">${costFactor.toFixed(1)}</td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-xs btn-primary select-material-btn" 
+                                data-material="${materialName}">
+                            Select
+                        </button>
+                    </td>
+                `;
+
+                // Click row to select
+                row.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('select-material-btn')) {
+                        selectMaterial(materialName);
+                    }
+                });
+
+                // Click button to select
+                const selectBtn = row.querySelector('.select-material-btn');
+                selectBtn.addEventListener('click', () => selectMaterial(materialName));
+
+                materialTableBody.appendChild(row);
+            });
+    }
+
+    // Select material and close modal
+    function selectMaterial(materialName) {
+        if (materialConstructionSelect) {
+            // Update the select dropdown
+            materialConstructionSelect.value = materialName;
+
+            // Update the visible display field
+            if (rbixMaterialDisplay) {
+                const factor = MaterialCostFactors[materialName];
+                rbixMaterialDisplay.value = `${materialName} (Factor: ${factor.toFixed(1)})`;
+            }
+
+            // Trigger change event for any listeners
+            materialConstructionSelect.dispatchEvent(new Event('change'));
+
+            // Close modal
+            materialModal.close();
+        }
+    }
+
+    // Open modal on button click
+    if (selectMaterialButton) {
+        selectMaterialButton.addEventListener('click', () => {
+            populateMaterialTable();
+            materialSearch.value = '';
+            materialModal.showModal();
+        });
+    }
+
+    // Search functionality
+    if (materialSearch) {
+        materialSearch.addEventListener('input', (e) => {
+            populateMaterialTable(e.target.value);
+        });
+    }
+
+    // Initialize display if value exists
+    if (materialConstructionSelect && materialConstructionSelect.value && rbixMaterialDisplay) {
+        const currentMaterial = materialConstructionSelect.value;
+        if (MaterialCostFactors[currentMaterial]) {
+            const factor = MaterialCostFactors[currentMaterial];
+            rbixMaterialDisplay.value = `${currentMaterial} (Factor: ${factor.toFixed(1)})`;
+        } else {
+            rbixMaterialDisplay.value = currentMaterial;
+        }
+    }
+</script>
+
 {% endblock %}
