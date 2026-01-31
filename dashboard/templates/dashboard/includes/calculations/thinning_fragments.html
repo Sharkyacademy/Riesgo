@@ -1,0 +1,136 @@
+<div id="thinning-content" class="space-y-4">
+    <div class="alert alert-info shadow-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <span>
+            <strong>Thinning (Metal Loss) Configuration</strong><br>
+            Select the active corrosion mechanisms below.
+        </span>
+    </div>
+
+    <!-- Mechanism Selection -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- CO2 Corrosion -->
+        <div class="card bg-base-100 border shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+            onclick="document.getElementById('id_mech_thinning_co2_active').click()">
+            <div class="card-body p-4 flex flex-row items-center gap-3">
+                <input type="checkbox" id="id_mech_thinning_co2_active" class="checkbox checkbox-primary"
+                    onchange="toggleThinningMech('co2')" />
+                <span class="font-bold text-gray-700">CO2 Corrosion</span>
+            </div>
+        </div>
+
+        <!-- HCl Corrosion -->
+        <div class="card bg-base-100 border shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+            onclick="document.getElementById('id_mech_thinning_hcl_active').click()">
+            <div class="card-body p-4 flex flex-row items-center gap-3">
+                <input type="checkbox" id="id_mech_thinning_hcl_active" class="checkbox checkbox-primary"
+                    onchange="toggleThinningMech('hcl')" />
+                <span class="font-bold text-gray-700">Hydrochloric Acid (HCl)</span>
+            </div>
+        </div>
+
+        <!-- Sulfuric Acid -->
+        <div class="card bg-base-100 border shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+            onclick="document.getElementById('id_mech_thinning_h2so4_active').click()">
+            <div class="card-body p-4 flex flex-row items-center gap-3">
+                <input type="checkbox" id="id_mech_thinning_h2so4_active" class="checkbox checkbox-primary"
+                    onchange="toggleThinningMech('h2so4')" />
+                <span class="font-bold text-gray-700">Sulfuric Acid (H2SO4)</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="divider">Configuration</div>
+
+    <!-- CO2 Container -->
+    <div id="thinning_mech_co2" class="thinning-mechanism-content hidden p-6 bg-gray-50 rounded-box border">
+        <h3 class="font-bold text-lg mb-4 text-blue-900">CO2 Corrosion Configuration</h3>
+
+        <!-- Input Fields -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text font-semibold">CO2 Concentration (mol %)</span>
+                </label>
+                {{ form.co2_concentration_mol_percent }}
+            </div>
+
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text font-semibold">Shear Stress (Pa)</span>
+                </label>
+                {{ form.co2_shear_stress_pa }}
+            </div>
+        </div>
+
+        <!-- Shared Fields Info -->
+        <div class="alert alert-info mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-current shrink-0 w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <div>
+                <span class="font-semibold">Shared Inputs:</span>
+                <span>Operating Temperature (F), Operating Pressure (psia), and pH are taken from the "Operating &
+                    Process" tab.</span>
+            </div>
+        </div>
+
+        <!-- Calculate Button -->
+        <button type="button" id="btn_calc_co2" class="btn bg-blue-950 text-white hover:bg-blue-900 shadow-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                    d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V8z"
+                    clip-rule="evenodd" />
+            </svg>
+            Calculate CO2 Corrosion Rate
+        </button>
+
+        <!-- Result Display -->
+        <div id="co2_result" class="hidden mt-4 p-4 bg-green-50 border-l-4 border-green-500 rounded">
+            <h4 class="font-bold text-green-900 mb-2">Calculated Corrosion Rate:</h4>
+            <p class="text-xl font-bold text-green-700" id="co2_rate_display">-- mpy</p>
+        </div>
+
+        <!-- Error Display -->
+        <div id="co2_error" class="hidden mt-4 alert alert-error">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span id="co2_error_msg">Error message</span>
+        </div>
+    </div>
+
+    <!-- HCl Container -->
+    <div id="thinning_mech_hcl" class="thinning-mechanism-content hidden p-4 bg-gray-50 rounded-box border">
+        <h3 class="font-bold text-lg mb-4 text-blue-900">HCl Corrosion Configuration</h3>
+        <p class="text-gray-500 italic">Configuration fields coming soon...</p>
+    </div>
+
+    <!-- H2SO4 Container -->
+    <div id="thinning_mech_h2so4" class="thinning-mechanism-content hidden p-4 bg-gray-50 rounded-box border">
+        <h3 class="font-bold text-lg mb-4 text-blue-900">Sulfuric Acid Configuration</h3>
+        <p class="text-gray-500 italic">Configuration fields coming soon...</p>
+    </div>
+
+</div>
+
+<script>
+    function toggleThinningMech(mechId) {
+        const container = document.getElementById(`thinning_mech_${mechId}`);
+        const checkbox = document.getElementById(`id_mech_thinning_${mechId}_active`);
+        if (checkbox && container) {
+            if (checkbox.checked) {
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+            }
+        }
+    }
+</script>

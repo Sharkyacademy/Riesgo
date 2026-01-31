@@ -160,6 +160,15 @@ class ComponentForm(forms.ModelForm):
             'scc_hsc_hf_inspection_count_a', 'scc_hsc_hf_inspection_count_b', 'scc_hsc_hf_inspection_count_c',
             'scc_hsc_hf_inspection_count_d',
             
+            # Thinning (Metal Loss) Mechanisms
+            'mech_thinning_co2_active', 'mech_thinning_hcl_active', 'mech_thinning_h2so4_active',
+            'mech_thinning_hf_active', 'mech_thinning_amine_active', 'mech_thinning_alkaline_active',
+            'mech_thinning_acid_active', 'mech_thinning_soil_active', 'mech_thinning_h2s_h2_active',
+            'mech_thinning_sulfidic_active',
+            
+            # CO2 Corrosion Inputs
+            'co2_concentration_mol_percent', 'co2_shear_stress_pa', 'co2_corrosion_rate_mpy',
+            
             # Brittle Fracture
             'mechanism_brittle_fracture_active', 'brittle_admin_controls', 'brittle_min_operating_temp_f',
             'brittle_delta_fatt', 'brittle_cet_f', 'brittle_pwht',

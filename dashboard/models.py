@@ -397,6 +397,24 @@ class Component(models.Model):
 
     # External Damage (Uses mostly existing fields, but might need a toggle)
     mechanism_external_damage_active = models.BooleanField(default=False, verbose_name="Mech. Active: External Damage")
+    scc_hsc_hf_inspection_count_d = models.IntegerField(default=0, verbose_name="Insp. Count Cat D (HSC-HF)")
+
+    # Thinning (Metal Loss) Mechanisms
+    mech_thinning_co2_active = models.BooleanField(default=False, verbose_name="Mech. Active: CO2 Corrosion")
+    mech_thinning_hcl_active = models.BooleanField(default=False, verbose_name="Mech. Active: HCl Corrosion")
+    mech_thinning_h2so4_active = models.BooleanField(default=False, verbose_name="Mech. Active: H2SO4 Corrosion")
+    mech_thinning_hf_active = models.BooleanField(default=False, verbose_name="Mech. Active: HF Corrosion")
+    mech_thinning_amine_active = models.BooleanField(default=False, verbose_name="Mech. Active: Amine Corrosion")
+    mech_thinning_alkaline_active = models.BooleanField(default=False, verbose_name="Mech. Active: Alkaline Water Corrosion")
+    mech_thinning_acid_active = models.BooleanField(default=False, verbose_name="Mech. Active: Acid Water Corrosion")
+    mech_thinning_soil_active = models.BooleanField(default=False, verbose_name="Mech. Active: Soil Side Corrosion")
+    mech_thinning_h2s_h2_active = models.BooleanField(default=False, verbose_name="Mech. Active: High Temp H2S/H2")
+    mech_thinning_sulfidic_active = models.BooleanField(default=False, verbose_name="Mech. Active: Sulfidic/Naphthenic")
+
+    # CO2 Corrosion Fields
+    co2_concentration_mol_percent = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True, verbose_name="CO2 Concentration (mol %)")
+    co2_shear_stress_pa = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Shear Stress (Pa)")
+    co2_corrosion_rate_mpy = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="CO2 Corrosion Rate (mpy)")
 
     def __str__(self):
         return f"{self.rbix_component_type} - {self.equipment.number}"
