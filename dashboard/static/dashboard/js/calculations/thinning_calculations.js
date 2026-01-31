@@ -35,38 +35,78 @@ async function calculateCO2CorrosionRate() {
     }
 
     try {
+        console.log('========== CO2 CALCULATION DEBUG ==========');
+        console.log('INPUTS:');
+        console.log('  CO2 Concentration:', co2Mol, 'mol %');
+        console.log('  Shear Stress:', shearPa, 'Pa');
+        console.log('  Temperature:', tempF, '°F');
+        console.log('  Pressure:', pressurePsia, 'psia');
+        console.log('  pH:', pH);
+
         // Step 1: Convert pressure to bar
         const pressureBar = pressurePsia * 0.0689476;
+        console.log('\nSTEP 1 - Pressure Conversion:');
+        console.log('  Pressure (bar):', pressureBar.toFixed(4));
 
         // Step 2: Calculate partial pressure of CO2 (bar)
         const pCO2Bar = (co2Mol / 100) * pressureBar;
+        console.log('\nSTEP 2 - Partial Pressure CO2:');
+        console.log('  p_CO2 = (', co2Mol, '/ 100) ×', pressureBar.toFixed(4), '=', pCO2Bar.toFixed(4), 'bar');
 
         // Step 3: Calculate temperature in Celsius
         const tempC = (tempF - 32) * 5 / 9;
+        console.log('\nSTEP 3 - Temperature Conversion:');
+        console.log('  Temp (°C):', tempC.toFixed(2), '°C');
 
         // Step 4: Calculate fugacity f_CO2 (Equation 2.B.30 & 2.B.32)
-        // log10(a) = p_CO2(min(250, p_CO2)) * [0.0031 - (1.4 / (T_C + 273))]
+        console.log('\nSTEP 4 - Fugacity Calculation (Eq 2.B.30):');
         const termP = Math.min(250, pCO2Bar);
+        console.log('  termP = min(250,', pCO2Bar.toFixed(4), ') =', termP.toFixed(4));
+
         const termA = 0.0031 - (1.4 / (tempC + 273));
+        console.log('  termA = 0.0031 - (1.4 / (', tempC.toFixed(2), '+ 273)) =', termA.toFixed(6));
+
         const logA = termP * termA;
+        console.log('  log10(a) =', termP.toFixed(4), '×', termA.toFixed(6), '=', logA.toFixed(6));
+
         const a = Math.pow(10, logA);
+        console.log('  a = 10^(', logA.toFixed(6), ') =', a.toFixed(6));
+
         const fCO2Bar = a * pCO2Bar;
+        console.log('  f_CO2 =', a.toFixed(6), '×', pCO2Bar.toFixed(4), '=', fCO2Bar.toFixed(4), 'bar');
 
         // Step 5: Lookup f(T, pH) from Table 2.B.13.2
         const fTpH = await interpolateFTpH(tempF, pH);
+        console.log('\nSTEP 5 - f(T, pH) Interpolation from Table 2.B.13.2:');
+        console.log('  f(', tempF, '°F,', pH, ') =', fTpH.toFixed(4));
 
         // Step 6: Calculate shear term (default to 1.0 if shear stress is 0)
         let shearTerm = 1.0; // Default per API 581
         if (shearPa > 0) {
             shearTerm = Math.pow((shearPa / 19), 0.146);
         }
+        console.log('\nSTEP 6 - Shear Term:');
+        console.log('  Shear Stress:', shearPa, 'Pa');
+        if (shearPa > 0) {
+            console.log('  Shear Term = (', shearPa, '/ 19)^0.146 =', shearTerm.toFixed(4));
+        } else {
+            console.log('  Shear Term = 1.0 (default, no shear stress provided)');
+        }
 
         // Step 7: Calculate corrosion rate (Equation 2.B.26)
         // CR_mm_yr = 0.0324 * f(T, pH) * (f_CO2)^0.62 * (S / 19)^0.146
         const crMmYr = 0.0324 * fTpH * Math.pow(fCO2Bar, 0.62) * shearTerm;
+        console.log('\nSTEP 7 - Corrosion Rate (Eq 2.B.26):');
+        console.log('  CR = 0.0324 × f(T,pH) × (f_CO2)^0.62 × shearTerm');
+        console.log('  CR = 0.0324 ×', fTpH.toFixed(4), '× (', fCO2Bar.toFixed(4), ')^0.62 ×', shearTerm.toFixed(4));
+        console.log('  CR = 0.0324 ×', fTpH.toFixed(4), '×', Math.pow(fCO2Bar, 0.62).toFixed(4), '×', shearTerm.toFixed(4));
+        console.log('  CR (mm/yr):', crMmYr.toFixed(4), 'mm/yr');
 
         // Step 8: Convert to mpy
         const crMpy = crMmYr * 39.4;
+        console.log('\nSTEP 8 - Final Result:');
+        console.log('  CR (mpy) =', crMmYr.toFixed(4), '× 39.4 =', crMpy.toFixed(2), 'mpy');
+        console.log('==========================================\n');
 
         // Update UI
         displayCO2Result(crMpy);
