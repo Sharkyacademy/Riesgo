@@ -414,6 +414,7 @@ async function runCausticCalculationsFormulaApp() {
     document.getElementById('res_scc_caustic_svi').textContent = svi;
     document.getElementById('res_scc_caustic_df').textContent = finalDF;
 
+    updateDebugFields('caustic', { susc: susceptibility, svi, baseDF, finalDF, insp: inspection.category });
     updatePofSummary();
 
     console.log('[Caustic Formula App] Complete:', {
@@ -557,6 +558,7 @@ async function runAmineCalculations() {
 
     // Display
     setResults('amine', susceptibility, svi, finalDF);
+    updateDebugFields('amine', { susc: susceptibility, svi, baseDF, finalDF, insp: inspection.category });
     updatePofSummary();
 }
 
@@ -657,15 +659,12 @@ async function initializeACSCCData() {
     }
 }
 
+
 async function initializeSSCData() {
     try {
         const [envRes, suscRes] = await Promise.all([
             fetch('/static/formula_app/data/scc_ssc_environmental_severity.json'),
-            fetch('/static/formula_app/data/scc_ssc_environmental_severity.json'),
-            fetch('/static/formula_app/data/scc_ssc_susceptibility.json'),
-            initializeACSCCData(),
-            initializeClSCCData(), // Init ClSCC
-            initializeHSCHFData() // Init HSC-HF
+            fetch('/static/formula_app/data/scc_ssc_susceptibility.json')
         ]);
 
         sccSscEnvSeverityData = await envRes.json();
@@ -822,6 +821,7 @@ async function runSSCCalculations() {
 
     // Display
     setResults('ssc', susceptibility, svi, finalDF);
+    updateDebugFields('ssc', { susc: susceptibility, svi, baseDF, finalDF, insp: inspection.category });
     updatePofSummary();
 }
 
@@ -1086,6 +1086,7 @@ async function runHICCalculations() {
 
     // Display
     setResults('hic_h2s', susceptibility, svi, finalDF);
+    updateDebugFields('hic', { susc: susceptibility, svi, baseDF, finalDF, insp: inspection.category });
     updatePofSummary();
 }
 
@@ -1194,6 +1195,7 @@ async function runACSCCCalculations() {
 
     // Display
     setResults('acscc', susceptibility, svi, finalDF);
+    updateDebugFields('acscc', { susc: susceptibility, svi, baseDF, finalDF, insp: inspection.category });
     updatePofSummary();
 }
 
@@ -1293,6 +1295,7 @@ async function runPASCCCalculations() {
 
     // Display
     setResults('pascc', susceptibility, svi, finalDF);
+    updateDebugFields('pascc', { susc: susceptibility, svi, baseDF, finalDF, insp: inspection.category });
     updatePofSummary();
 }
 
@@ -1456,6 +1459,7 @@ async function runClSCCCalculations() {
 
     // Display
     setResults('clscc', susceptibility, svi, finalDF);
+    updateDebugFields('clscc', { susc: susceptibility, svi, baseDF, finalDF, insp: inspection.category });
     updatePofSummary();
 }
 window.runCausticCalculationsFormulaApp = runCausticCalculationsFormulaApp;
@@ -1568,7 +1572,69 @@ async function runHSCHFCalculations() {
     const finalDF = calculateFinalDamageFactor(baseDF, age);
 
     setResults('hsc_hf', susceptibility, svi, finalDF);
+    updateDebugFields('hschf', { susc: susceptibility, svi, baseDF, finalDF, insp: inspection.category });
     updatePofSummary();
 }
 
+// ============================================================================
+// POF DEBUG PANEL POPULATION (INFORMATIVE ONLY)
+// ============================================================================
+
+/**
+ * Populate POF Calculation Details panel with intermediate values
+ * This is purely informational and does not affect calculations
+ */
+function updateDebugFields(mechShortName, data) {
+    const prefix = `pof_debug_${mechShortName}`;
+
+    // Update susceptibility
+    if (data.susc !== undefined) {
+        const el = document.getElementById(`${prefix}_susc`);
+        if (el) el.textContent = data.susc || '--';
+    }
+
+    // Update SVI
+    if (data.svi !== undefined) {
+        const el = document.getElementById(`${prefix}_svi`);
+        if (el) el.textContent = data.svi || '--';
+    }
+
+    // Update Inspection
+    if (data.insp !== undefined) {
+        const el = document.getElementById(`${prefix}_insp`);
+        if (el) el.textContent = data.insp || '--';
+    }
+
+    // Update Base DF
+    if (data.baseDF !== undefined) {
+        const el = document.getElementById(`${prefix}_base_df`);
+        if (el) el.textContent = typeof data.baseDF === 'number' ? data.baseDF.toFixed(2) : (data.baseDF || '--');
+    }
+
+    // Update Final DF
+    if (data.finalDF !== undefined) {
+        const el = document.getElementById(`${prefix}_final_df`);
+        if (el) {
+            el.textContent = typeof data.finalDF === 'number' ? data.finalDF.toFixed(2) : (data.finalDF || '--');
+        }
+    }
+
+    // For thinning mechanisms (CO2, etc.)
+    if (data.rate !== undefined) {
+        const el = document.getElementById(`${prefix}_rate`);
+        if (el) el.textContent = typeof data.rate === 'number' ? data.rate.toFixed(2) : (data.rate || '--');
+    }
+
+    if (data.fugacity !== undefined) {
+        const el = document.getElementById(`${prefix}_fugacity`);
+        if (el) el.textContent = typeof data.fugacity === 'number' ? data.fugacity.toFixed(4) : (data.fugacity || '--');
+    }
+
+    if (data.df !== undefined) {
+        const el = document.getElementById(`${prefix}_df`);
+        if (el) el.textContent = typeof data.df === 'number' ? data.df.toFixed(2) : (data.df || '--');
+    }
+}
+
 console.log('[Caustic Formula App] Module loaded - API 581 compliant calculations ready');
+

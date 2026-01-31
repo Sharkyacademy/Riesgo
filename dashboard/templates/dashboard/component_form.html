@@ -1476,6 +1476,196 @@
                             </div>
                         </div>
 
+                        <!-- POF CALCULATION DETAILS (Collapsible) -->
+                        <details
+                            class="mb-6 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200 shadow-sm group">
+                            <summary
+                                class="cursor-pointer p-4 hover:bg-purple-100 rounded-lg transition-all duration-200 flex justify-between items-center">
+                                <h3 class="font-bold text-purple-900 flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                                    </svg>
+                                    POF Calculation Details / Verification
+                                </h3>
+                                <div class="text-gray-500 group-open:rotate-180 transition-transform duration-200">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                    </svg>
+                                </div>
+                            </summary>
+                            <div
+                                class="p-4 bg-white text-xs border-t border-gray-200 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+                                <!-- CRACKING MECHANISMS -->
+                                <div class="space-y-1">
+                                    <div class="font-bold text-blue-900 border-b border-gray-100 mb-1 pb-1">Caustic SCC
+                                    </div>
+                                    <div class="flex justify-between"><span>Susceptibility:</span> <span
+                                            id="pof_debug_caustic_susc"
+                                            class="font-mono bg-gray-100 px-1 rounded">--</span></div>
+                                    <div class="flex justify-between"><span>SVI:</span> <span id="pof_debug_caustic_svi"
+                                            class="font-mono bg-gray-100 px-1 rounded">--</span></div>
+                                    <div class="flex justify-between"><span>Inspection:</span> <span
+                                            id="pof_debug_caustic_insp"
+                                            class="font-mono bg-gray-100 px-1 rounded">--</span></div>
+                                    <div class="flex justify-between"><span>Base DF:</span> <span
+                                            id="pof_debug_caustic_base_df"
+                                            class="font-mono bg-gray-100 px-1 rounded">--</span></div>
+                                    <div class="flex justify-between font-bold"><span>Final DF:</span> <span
+                                            id="pof_debug_caustic_final_df"
+                                            class="font-mono bg-blue-100 px-1 rounded text-blue-900">--</span></div>
+                                </div>
+
+                                <div class="space-y-1">
+                                    <div class="font-bold text-blue-900 border-b border-gray-100 mb-1 pb-1">Amine SCC
+                                    </div>
+                                    <div class="flex justify-between"><span>Susceptibility:</span> <span
+                                            id="pof_debug_amine_susc"
+                                            class="font-mono bg-gray-100 px-1 rounded">--</span></div>
+                                    <div class="flex justify-between"><span>SVI:</span> <span id="pof_debug_amine_svi"
+                                            class="font-mono bg-gray-100 px-1 rounded">--</span></div>
+                                    <div class="flex justify-between"><span>Inspection:</span> <span
+                                            id="pof_debug_amine_insp"
+                                            class="font-mono bg-gray-100 px-1 rounded">--</span></div>
+                                    <div class="flex justify-between"><span>Base DF:</span> <span
+                                            id="pof_debug_amine_base_df"
+                                            class="font-mono bg-gray-100 px-1 rounded">--</span></div>
+                                    <div class="flex justify-between font-bold"><span>Final DF:</span> <span
+                                            id="pof_debug_amine_final_df"
+                                            class="font-mono bg-blue-100 px-1 rounded text-blue-900">--</span></div>
+                                </div>
+
+                                <div class="space-y-1">
+                                    <div class="font-bold text-blue-900 border-b border-gray-100 mb-1 pb-1">SSC</div>
+                                    <div class="flex justify-between"><span>Susceptibility:</span> <span
+                                            id="pof_debug_ssc_susc" class="font-mono bg-gray-100 px-1 rounded">--</span>
+                                    </div>
+                                    <div class="flex justify-between"><span>SVI:</span> <span id="pof_debug_ssc_svi"
+                                            class="font-mono bg-gray-100 px-1 rounded">--</span></div>
+                                    <div class="flex justify-between"><span>Inspection:</span> <span
+                                            id="pof_debug_ssc_insp" class="font-mono bg-gray-100 px-1 rounded">--</span>
+                                    </div>
+                                    <div class="flex justify-between"><span>Base DF:</span> <span
+                                            id="pof_debug_ssc_base_df"
+                                            class="font-mono bg-gray-100 px-1 rounded">--</span></div>
+                                    <div class="flex justify-between font-bold"><span>Final DF:</span> <span
+                                            id="pof_debug_ssc_final_df"
+                                            class="font-mono bg-blue-100 px-1 rounded text-blue-900">--</span></div>
+                                </div>
+
+                                <div class="space-y-1">
+                                    <div class="font-bold text-blue-900 border-b border-gray-100 mb-1 pb-1">HIC/SOHIC
+                                    </div>
+                                    <div class="flex justify-between"><span>Susceptibility:</span> <span
+                                            id="pof_debug_hic_susc" class="font-mono bg-gray-100 px-1 rounded">--</span>
+                                    </div>
+                                    <div class="flex justify-between"><span>SVI:</span> <span id="pof_debug_hic_svi"
+                                            class="font-mono bg-gray-100 px-1 rounded">--</span></div>
+                                    <div class="flex justify-between"><span>Inspection:</span> <span
+                                            id="pof_debug_hic_insp" class="font-mono bg-gray-100 px-1 rounded">--</span>
+                                    </div>
+                                    <div class="flex justify-between"><span>Base DF:</span> <span
+                                            id="pof_debug_hic_base_df"
+                                            class="font-mono bg-gray-100 px-1 rounded">--</span></div>
+                                    <div class="flex justify-between font-bold"><span>Final DF:</span> <span
+                                            id="pof_debug_hic_final_df"
+                                            class="font-mono bg-blue-100 px-1 rounded text-blue-900">--</span></div>
+                                </div>
+
+                                <div class="space-y-1">
+                                    <div class="font-bold text-blue-900 border-b border-gray-100 mb-1 pb-1">ACSCC</div>
+                                    <div class="flex justify-between"><span>Susceptibility:</span> <span
+                                            id="pof_debug_acscc_susc"
+                                            class="font-mono bg-gray-100 px-1 rounded">--</span></div>
+                                    <div class="flex justify-between"><span>SVI:</span> <span id="pof_debug_acscc_svi"
+                                            class="font-mono bg-gray-100 px-1 rounded">--</span></div>
+                                    <div class="flex justify-between"><span>Inspection:</span> <span
+                                            id="pof_debug_acscc_insp"
+                                            class="font-mono bg-gray-100 px-1 rounded">--</span></div>
+                                    <div class="flex justify-between"><span>Base DF:</span> <span
+                                            id="pof_debug_acscc_base_df"
+                                            class="font-mono bg-gray-100 px-1 rounded">--</span></div>
+                                    <div class="flex justify-between font-bold"><span>Final DF:</span> <span
+                                            id="pof_debug_acscc_final_df"
+                                            class="font-mono bg-blue-100 px-1 rounded text-blue-900">--</span></div>
+                                </div>
+
+                                <div class="space-y-1">
+                                    <div class="font-bold text-blue-900 border-b border-gray-100 mb-1 pb-1">PASCC</div>
+                                    <div class="flex justify-between"><span>Susceptibility:</span> <span
+                                            id="pof_debug_pascc_susc"
+                                            class="font-mono bg-gray-100 px-1 rounded">--</span></div>
+                                    <div class="flex justify-between"><span>SVI:</span> <span id="pof_debug_pascc_svi"
+                                            class="font-mono bg-gray-100 px-1 rounded">--</span></div>
+                                    <div class="flex justify-between"><span>Inspection:</span> <span
+                                            id="pof_debug_pascc_insp"
+                                            class="font-mono bg-gray-100 px-1 rounded">--</span></div>
+                                    <div class="flex justify-between"><span>Base DF:</span> <span
+                                            id="pof_debug_pascc_base_df"
+                                            class="font-mono bg-gray-100 px-1 rounded">--</span></div>
+                                    <div class="flex justify-between font-bold"><span>Final DF:</span> <span
+                                            id="pof_debug_pascc_final_df"
+                                            class="font-mono bg-blue-100 px-1 rounded text-blue-900">--</span></div>
+                                </div>
+
+                                <div class="space-y-1">
+                                    <div class="font-bold text-blue-900 border-b border-gray-100 mb-1 pb-1">ClSCC</div>
+                                    <div class="flex justify-between"><span>Susceptibility:</span> <span
+                                            id="pof_debug_clscc_susc"
+                                            class="font-mono bg-gray-100 px-1 rounded">--</span></div>
+                                    <div class="flex justify-between"><span>SVI:</span> <span id="pof_debug_clscc_svi"
+                                            class="font-mono bg-gray-100 px-1 rounded">--</span></div>
+                                    <div class="flex justify-between"><span>Inspection:</span> <span
+                                            id="pof_debug_clscc_insp"
+                                            class="font-mono bg-gray-100 px-1 rounded">--</span></div>
+                                    <div class="flex justify-between"><span>Base DF:</span> <span
+                                            id="pof_debug_clscc_base_df"
+                                            class="font-mono bg-gray-100 px-1 rounded">--</span></div>
+                                    <div class="flex justify-between font-bold"><span>Final DF:</span> <span
+                                            id="pof_debug_clscc_final_df"
+                                            class="font-mono bg-blue-100 px-1 rounded text-blue-900">--</span></div>
+                                </div>
+
+                                <div class="space-y-1">
+                                    <div class="font-bold text-blue-900 border-b border-gray-100 mb-1 pb-1">HSC-HF</div>
+                                    <div class="flex justify-between"><span>Susceptibility:</span> <span
+                                            id="pof_debug_hschf_susc"
+                                            class="font-mono bg-gray-100 px-1 rounded">--</span></div>
+                                    <div class="flex justify-between"><span>SVI:</span> <span id="pof_debug_hschf_svi"
+                                            class="font-mono bg-gray-100 px-1 rounded">--</span></div>
+                                    <div class="flex justify-between"><span>Inspection:</span> <span
+                                            id="pof_debug_hschf_insp"
+                                            class="font-mono bg-gray-100 px-1 rounded">--</span></div>
+                                    <div class="flex justify-between"><span>Base DF:</span> <span
+                                            id="pof_debug_hschf_base_df"
+                                            class="font-mono bg-gray-100 px-1 rounded">--</span></div>
+                                    <div class="flex justify-between font-bold"><span>Final DF:</span> <span
+                                            id="pof_debug_hschf_final_df"
+                                            class="font-mono bg-blue-100 px-1 rounded text-blue-900">--</span></div>
+                                </div>
+
+                                <!-- THINNING MECHANISMS -->
+                                <div class="space-y-1">
+                                    <div class="font-bold text-blue-900 border-b border-gray-100 mb-1 pb-1">CO2
+                                        Corrosion</div>
+                                    <div class="flex justify-between"><span>Rate (mpy):</span> <span
+                                            id="pof_debug_co2_rate" class="font-mono bg-gray-100 px-1 rounded">--</span>
+                                    </div>
+                                    <div class="flex justify-between"><span>Fugacity (bar):</span> <span
+                                            id="pof_debug_co2_fugacity"
+                                            class="font-mono bg-gray-100 px-1 rounded">--</span></div>
+                                    <div class="flex justify-between font-bold"><span>DF:</span> <span
+                                            id="pof_debug_co2_df"
+                                            class="font-mono bg-blue-100 px-1 rounded text-blue-900">--</span></div>
+                                </div>
+
+                            </div>
+                        </details>
+
                         <!-- Sub-tabs for Probability -->
                         <div class="flex gap-2 mb-6 bg-gray-100 p-2 rounded-lg border border-gray-200">
                             <button type="button" class="btn btn-sm bg-blue-950 text-white font-bold shadow-md"
