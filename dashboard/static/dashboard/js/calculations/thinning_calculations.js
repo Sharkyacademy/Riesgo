@@ -114,16 +114,35 @@ async function calculateCO2CorrosionRate() {
         // Save to model field
         document.getElementById('id_co2_corrosion_rate_mpy').value = crMpy.toFixed(2);
 
+        // Calculate proper Damage Factor per API 581
+        const commissioningDate = document.getElementById('id_commissioning_date')?.value;
+        const age = commissioningDate ? calculateAgeFromDate(commissioningDate) : 10;
+        const tMin = parseFloat(document.getElementById('id_min_required_thickness_in')?.value) || null;
+        const fca = parseFloat(document.getElementById('id_future_corrosion_allowance_in')?.value) || null;
+
+        let df;
+        if (tMin !== null && fca !== null) {
+            const denominator = tMin - fca;
+            df = denominator > 0 ? (crMpy * age) / denominator : 9999;
+        } else {
+            df = crMpy * age; // Simplified
+        }
+
         // Update debug panel
         if (typeof updateDebugFields === 'function') {
             updateDebugFields('co2', {
                 rate: crMpy,
                 fugacity: fCO2Bar,
-                df: 0 // DF calculation pending
+                df: df
             });
         }
 
-        console.log('[CO2] Calculation complete:', crMpy.toFixed(2), 'mpy');
+        // Update POF summary and chart
+        if (typeof updatePofSummary === 'function') {
+            updatePofSummary();
+        }
+
+        console.log('[CO2] Calculation complete:', crMpy.toFixed(2), 'mpy, DF:', df.toFixed(2));
 
     } catch (error) {
         console.error('[CO2] Calculation error:', error);

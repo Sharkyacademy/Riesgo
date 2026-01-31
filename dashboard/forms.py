@@ -169,9 +169,59 @@ class ComponentForm(forms.ModelForm):
             # CO2 Corrosion Inputs
             'co2_concentration_mol_percent', 'co2_shear_stress_pa', 'co2_corrosion_rate_mpy',
             
+            # HCl Corrosion Inputs
+            'hcl_concentration_wt_percent', 'hcl_velocity_fps', 'hcl_corrosion_rate_mpy',
+            
+            # H2SO4 Corrosion Inputs
+            'h2so4_concentration_wt_percent', 'h2so4_velocity_fps', 'h2so4_corrosion_rate_mpy',
+            
+            # HF Corrosion Inputs
+            'hf_concentration_wt_percent', 'hf_velocity_fps', 'hf_corrosion_rate_mpy',
+            
+            # Amine Corrosion Inputs
+            'amine_type', 'amine_concentration_wt_percent', 'amine_acid_gas_loading', 'amine_corrosion_rate_mpy',
+            
+            # Alkaline Water Corrosion
+            'alkaline_water_velocity_fps', 'alkaline_water_corrosion_rate_mpy',
+            
+            # Acid Water Corrosion
+            'acid_water_dissolved_o2_ppm', 'acid_water_corrosion_rate_mpy',
+            
+            # Soil Side Corrosion
+            'soil_coating_condition', 'soil_cathodic_protection', 'soil_resistivity_ohm_cm', 'soil_corrosion_rate_mpy',
+            
+            # High Temp H2S/H2
+            'ht_h2s_partial_pressure_psia', 'ht_h2_partial_pressure_psia', 'ht_h2s_h2_corrosion_rate_mpy',
+            
+            # Sulfidic/Naphthenic
+            'sulfidic_tan', 'sulfidic_sulfur_wt_percent', 'sulfidic_velocity_fps', 'sulfidic_corrosion_rate_mpy',
+            
             # Brittle Fracture
-            'mechanism_brittle_fracture_active', 'brittle_admin_controls', 'brittle_min_operating_temp_f',
-            'brittle_delta_fatt', 'brittle_cet_f', 'brittle_pwht',
+            'mechanism_brittle_fracture_active', 'brittle_admin_controls', 
+            'brittle_min_operating_temp_f', 'brittle_delta_fatt', 
+            'brittle_cet_f', 'brittle_pwht', 'brittle_damage_factor',
+             'brittle_curve', 'brittle_yield_strength_ksi', 'brittle_material_type',
+            
+            # External Damage
+            'mech_ext_corrosion_active', 'mech_cui_active', 'mech_ext_clscc_active', 'mech_cui_clscc_active',
+            'external_driver', 'external_corrosion_rate_mpy',
+            'cui_driver', 'insulation_condition', 'cui_corrosion_rate_mpy',
+            'complexity',
+            
+            # Brittle Fracture Checkboxes (Duplicate lines removed for clarity if present, but keeping context correct)
+            # Thinning Mechanism Active Checkboxes
+            'mech_thinning_co2_active', 'mech_thinning_hcl_active', 'mech_thinning_h2so4_active', 
+            'mech_thinning_hf_active', 'mech_thinning_amine_active', 'mech_thinning_alkaline_active',
+            'mech_thinning_acid_active', 'mech_thinning_soil_active', 'mech_thinning_h2s_h2_active', 
+            'mech_thinning_sulfidic_active',
+            
+            # Thinning DF Inputs (API 581)
+            'min_required_thickness_in', 'future_corrosion_allowance_in',
+            
+            # Brittle Fracture (Duplicate lines from view removed)
+            'mechanism_external_damage_active',
+            
+
 
             'mechanism_external_damage_active',
             
@@ -439,6 +489,15 @@ class ComponentForm(forms.ModelForm):
             'brittle_delta_fatt': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': 'Delta FATT'}),
             'brittle_cet_f': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.01', 'placeholder': 'CET (°F)'}),
             'brittle_pwht': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'brittle_curve': forms.Select(attrs={'class': 'select select-bordered w-full'}, choices=[
+                ('', '-- Select --'), ('A', 'Curve A'), ('B', 'Curve B'), ('C', 'Curve C'), ('D', 'Curve D')
+            ]),
+            'brittle_yield_strength_ksi': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.1', 'placeholder': 'ksi'}),
+            'brittle_material_type': forms.Select(attrs={'class': 'select select-bordered w-full'}, choices=[
+                ('', '-- Select --'),
+                ('Carbon Steel', 'Carbon Steel'),
+                ('Low Alloy Steel', 'Low Alloy Steel')
+            ]),
             
             'mechanism_external_damage_active': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
         }

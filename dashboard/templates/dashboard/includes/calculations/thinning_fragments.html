@@ -10,35 +10,141 @@
         </span>
     </div>
 
+    <!-- Damage Factor Design Inputs (API 581 Section 4.4) -->
+    <div class="card bg-base-100 border-2 border-blue-200 shadow-md">
+        <div class="card-body p-4">
+            <h3 class="font-bold text-lg text-blue-900 mb-3">📐 Damage Factor Inputs (API 581)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text font-semibold">Minimum Required Thickness (in)</span>
+                        <span class="label-text-alt text-xs text-gray-500">t_min per ASME</span>
+                    </label>
+                    {{ form.min_required_thickness_in }}
+                    <label class="label">
+                        <span class="label-text-alt text-xs text-gray-600">
+                            Per design calculation. If unknown, leave blank for simplified DF = CR × Age.
+                        </span>
+                    </label>
+                </div>
+
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text font-semibold">Future Corrosion Allowance (in)</span>
+                        <span class="label-text-alt text-xs text-gray-500">FCA per API 570</span>
+                    </label>
+                    {{ form.future_corrosion_allowance_in }}
+                    <label class="label">
+                        <span class="label-text-alt text-xs text-gray-600">
+                            Default: 0.125" (1/8") for moderate service. Use 0.250" (1/4") for severe.
+                        </span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="divider">Corrosion Mechanisms</div>
+
     <!-- Mechanism Selection -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <!-- CO2 Corrosion -->
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+        <!-- CO2 -->
         <div class="card bg-base-100 border shadow-sm hover:shadow-md transition-shadow cursor-pointer"
             onclick="document.getElementById('id_mech_thinning_co2_active').click()">
-            <div class="card-body p-4 flex flex-row items-center gap-3">
-                <input type="checkbox" id="id_mech_thinning_co2_active" class="checkbox checkbox-primary"
-                    onchange="toggleThinningMech('co2')" />
-                <span class="font-bold text-gray-700">CO2 Corrosion</span>
+            <div class="card-body p-3 flex flex-row items-center gap-2">
+                <input type="checkbox" name="mech_thinning_co2_active" id="id_mech_thinning_co2_active"
+                    class="checkbox checkbox-primary checkbox-sm" onchange="toggleThinningMech('co2')" {% if form.mech_thinning_co2_active.value %}checked{% endif %} />
+                <span class="font-bold text-gray-700 text-sm">CO2 Corrosion</span>
             </div>
         </div>
 
-        <!-- HCl Corrosion -->
+        <!-- HCl -->
         <div class="card bg-base-100 border shadow-sm hover:shadow-md transition-shadow cursor-pointer"
             onclick="document.getElementById('id_mech_thinning_hcl_active').click()">
-            <div class="card-body p-4 flex flex-row items-center gap-3">
-                <input type="checkbox" id="id_mech_thinning_hcl_active" class="checkbox checkbox-primary"
-                    onchange="toggleThinningMech('hcl')" />
-                <span class="font-bold text-gray-700">Hydrochloric Acid (HCl)</span>
+            <div class="card-body p-3 flex flex-row items-center gap-2">
+                <input type="checkbox" name="mech_thinning_hcl_active" id="id_mech_thinning_hcl_active"
+                    class="checkbox checkbox-primary checkbox-sm" onchange="toggleThinningMech('hcl')" {% if form.mech_thinning_hcl_active.value %}checked{% endif %} />
+                <span class="font-bold text-gray-700 text-sm">HCl Corrosion</span>
             </div>
         </div>
 
-        <!-- Sulfuric Acid -->
+        <!-- H2SO4 -->
         <div class="card bg-base-100 border shadow-sm hover:shadow-md transition-shadow cursor-pointer"
             onclick="document.getElementById('id_mech_thinning_h2so4_active').click()">
-            <div class="card-body p-4 flex flex-row items-center gap-3">
-                <input type="checkbox" id="id_mech_thinning_h2so4_active" class="checkbox checkbox-primary"
-                    onchange="toggleThinningMech('h2so4')" />
-                <span class="font-bold text-gray-700">Sulfuric Acid (H2SO4)</span>
+            <div class="card-body p-3 flex flex-row items-center gap-2">
+                <input type="checkbox" name="mech_thinning_h2so4_active" id="id_mech_thinning_h2so4_active"
+                    class="checkbox checkbox-primary checkbox-sm" onchange="toggleThinningMech('h2so4')" {% if form.mech_thinning_h2so4_active.value %}checked{% endif %} />
+                <span class="font-bold text-gray-700 text-sm">Sulfuric Acid</span>
+            </div>
+        </div>
+
+        <!-- HF -->
+        <div class="card bg-base-100 border shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+            onclick="document.getElementById('id_mech_thinning_hf_active').click()">
+            <div class="card-body p-3 flex flex-row items-center gap-2">
+                <input type="checkbox" name="mech_thinning_hf_active" id="id_mech_thinning_hf_active"
+                    class="checkbox checkbox-primary checkbox-sm" onchange="toggleThinningMech('hf')" {% if form.mech_thinning_hf_active.value %}checked{% endif %} />
+                <span class="font-bold text-gray-700 text-sm">HF Corrosion</span>
+            </div>
+        </div>
+
+        <!-- Amine -->
+        <div class="card bg-base-100 border shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+            onclick="document.getElementById('id_mech_thinning_amine_active').click()">
+            <div class="card-body p-3 flex flex-row items-center gap-2">
+                <input type="checkbox" name="mech_thinning_amine_active" id="id_mech_thinning_amine_active"
+                    class="checkbox checkbox-primary checkbox-sm" onchange="toggleThinningMech('amine')" {% if form.mech_thinning_amine_active.value %}checked{% endif %} />
+                <span class="font-bold text-gray-700 text-sm">Amine Corrosion</span>
+            </div>
+        </div>
+
+        <!-- Alkaline -->
+        <div class="card bg-base-100 border shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+            onclick="document.getElementById('id_mech_thinning_alkaline_active').click()">
+            <div class="card-body p-3 flex flex-row items-center gap-2">
+                <input type="checkbox" name="mech_thinning_alkaline_active" id="id_mech_thinning_alkaline_active"
+                    class="checkbox checkbox-primary checkbox-sm" onchange="toggleThinningMech('alkaline')" {% if form.mech_thinning_alkaline_active.value %}checked{% endif %} />
+                <span class="font-bold text-gray-700 text-sm">Alkaline Water</span>
+            </div>
+        </div>
+
+        <!-- Acid Water -->
+        <div class="card bg-base-100 border shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+            onclick="document.getElementById('id_mech_thinning_acid_active').click()">
+            <div class="card-body p-3 flex flex-row items-center gap-2">
+                <input type="checkbox" name="mech_thinning_acid_active" id="id_mech_thinning_acid_active"
+                    class="checkbox checkbox-primary checkbox-sm" onchange="toggleThinningMech('acid')" {% if form.mech_thinning_acid_active.value %}checked{% endif %} />
+                <span class="font-bold text-gray-700 text-sm">Acid Water</span>
+            </div>
+        </div>
+
+        <!-- Soil -->
+        <div class="card bg-base-100 border shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+            onclick="document.getElementById('id_mech_thinning_soil_active').click()">
+            <div class="card-body p-3 flex flex-row items-center gap-2">
+                <input type="checkbox" name="mech_thinning_soil_active" id="id_mech_thinning_soil_active"
+                    class="checkbox checkbox-primary checkbox-sm" onchange="toggleThinningMech('soil')" {% if form.mech_thinning_soil_active.value %}checked{% endif %} />
+                <span class="font-bold text-gray-700 text-sm">Soil Side</span>
+            </div>
+        </div>
+
+        <!-- H2S/H2 -->
+        <div class="card bg-base-100 border shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+            onclick="document.getElementById('id_mech_thinning_h2s_h2_active').click()">
+            <div class="card-body p-3 flex flex-row items-center gap-2">
+                <input type="checkbox" name="mech_thinning_h2s_h2_active" id="id_mech_thinning_h2s_h2_active"
+                    class="checkbox checkbox-primary checkbox-sm" onchange="toggleThinningMech('h2s_h2')" {% if form.mech_thinning_h2s_h2_active.value %}checked{% endif %} />
+                <span class="font-bold text-gray-700 text-sm">High Temp H2S/H2</span>
+            </div>
+        </div>
+
+        <!-- Sulfidic -->
+        <div class="card bg-base-100 border shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+            onclick="document.getElementById('id_mech_thinning_sulfidic_active').click()">
+            <div class="card-body p-3 flex flex-row items-center gap-2">
+                <input type="checkbox" name="mech_thinning_sulfidic_active" id="id_mech_thinning_sulfidic_active"
+                    class="checkbox checkbox-primary checkbox-sm" onchange="toggleThinningMech('sulfidic')" {% if   form.mech_thinning_sulfidic_active.value %}checked{% endif %} />
+                <span class="font-bold text-gray-700 text-sm">Sulfidic/Naphthenic</span>
             </div>
         </div>
     </div>
@@ -113,15 +219,419 @@
     </div>
 
     <!-- HCl Container -->
-    <div id="thinning_mech_hcl" class="thinning-mechanism-content hidden p-4 bg-gray-50 rounded-box border">
+    <div id="thinning_mech_hcl" class="thinning-mechanism-content hidden p-6 bg-gray-50 rounded-box border">
         <h3 class="font-bold text-lg mb-4 text-blue-900">HCl Corrosion Configuration</h3>
-        <p class="text-gray-500 italic">Configuration fields coming soon...</p>
+
+        <!-- Input Fields -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text font-semibold">HCl Concentration (wt %)</span>
+                </label>
+                {{ form.hcl_concentration_wt_percent }}
+            </div>
+
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text font-semibold">Velocity (ft/s)</span>
+                </label>
+                {{ form.hcl_velocity_fps }}
+            </div>
+        </div>
+
+        <!-- Shared Fields Info -->
+        <div class="alert alert-info mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-current shrink-0 w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <div>
+                <span class="font-semibold">Shared Inputs:</span>
+                <span>Operating Temperature (F) and pH are taken from the "Operating & Process" tab.</span>
+            </div>
+        </div>
+
+        <!-- Calculate Button -->
+        <button type="button" id="btn_calc_hcl" class="btn bg-blue-950 text-white hover:bg-blue-900 shadow-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                    d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V8z"
+                    clip-rule="evenodd" />
+            </svg>
+            Calculate HCl Corrosion Rate
+        </button>
+
+        <!-- Hidden field to store calculated rate -->
+        <div class="hidden">
+            {{ form.hcl_corrosion_rate_mpy }}
+        </div>
+
+        <!-- Result Display -->
+        <div id="hcl_result" class="hidden mt-4 p-4 bg-green-50 border-l-4 border-green-500 rounded">
+            <h4 class="font-bold text-green-900 mb-2">Calculated Corrosion Rate:</h4>
+            <p class="text-xl font-bold text-green-700" id="hcl_rate_display">-- mpy</p>
+        </div>
+
+        <!-- Error Display -->
+        <div id="hcl_error" class="hidden mt-4 alert alert-error">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span id="hcl_error_msg">Error message</span>
+        </div>
     </div>
 
     <!-- H2SO4 Container -->
-    <div id="thinning_mech_h2so4" class="thinning-mechanism-content hidden p-4 bg-gray-50 rounded-box border">
-        <h3 class="font-bold text-lg mb-4 text-blue-900">Sulfuric Acid Configuration</h3>
-        <p class="text-gray-500 italic">Configuration fields coming soon...</p>
+    <div id="thinning_mech_h2so4" class="thinning-mechanism-content hidden p-6 bg-gray-50 rounded-box border">
+        <h3 class="font-bold text-lg mb-4 text-blue-900">Sulfuric Acid (H2SO4) Configuration</h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text font-semibold">H2SO4 Concentration (wt %)</span>
+                </label>
+                {{ form.h2so4_concentration_wt_percent }}
+            </div>
+
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text font-semibold">Velocity (ft/s)</span>
+                </label>
+                {{ form.h2so4_velocity_fps }}
+            </div>
+        </div>
+
+        <div class="alert alert-info mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-current shrink-0 w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <div>
+                <span class="font-semibold">Shared Inputs:</span>
+                <span>Operating Temperature (F) is taken from the "Operating & Process" tab.</span>
+            </div>
+        </div>
+
+        <button type="button" id="btn_calc_h2so4" class="btn bg-blue-950 text-white hover:bg-blue-900 shadow-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                    d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V8z"
+                    clip-rule="evenodd" />
+            </svg>
+            Calculate H2SO4 Corrosion Rate
+        </button>
+
+        <div class="hidden">
+            {{ form.h2so4_corrosion_rate_mpy }}
+        </div>
+
+        <div id="h2so4_result" class="hidden mt-4 p-4 bg-green-50 border-l-4 border-green-500 rounded">
+            <h4 class="font-bold text-green-900 mb-2">Calculated Corrosion Rate:</h4>
+            <p class="text-xl font-bold text-green-700" id="h2so4_rate_display">-- mpy</p>
+        </div>
+
+        <div id="h2so4_error" class="hidden mt-4 alert alert-error">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span id="h2so4_error_msg">Error message</span>
+        </div>
+    </div>
+
+    <!-- HF Container -->
+    <div id="thinning_mech_hf" class="thinning-mechanism-content hidden p-6 bg-gray-50 rounded-box border">
+        <h3 class="font-bold text-lg mb-4 text-blue-900">HF Corrosion Configuration</h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text font-semibold">HF Concentration (wt %)</span>
+                </label>
+                {{ form.hf_concentration_wt_percent }}
+            </div>
+
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text font-semibold">Velocity (ft/s)</span>
+                </label>
+                {{ form.hf_velocity_fps }}
+            </div>
+        </div>
+
+        <div class="alert alert-info mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-current shrink-0 w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <div>
+                <span class="font-semibold">Shared Inputs:</span>
+                <span>Operating Temperature (F) is taken from the "Operating & Process" tab.</span>
+            </div>
+        </div>
+
+        <button type="button" id="btn_calc_hf" class="btn bg-blue-950 text-white hover:bg-blue-900 shadow-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                    d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V8z"
+                    clip-rule="evenodd" />
+            </svg>
+            Calculate HF Corrosion Rate
+        </button>
+
+        <div class="hidden">
+            {{ form.hf_corrosion_rate_mpy }}
+        </div>
+
+        <div id="hf_result" class="hidden mt-4 p-4 bg-green-50 border-l-4 border-green-500 rounded">
+            <h4 class="font-bold text-green-900 mb-2">Calculated Corrosion Rate:</h4>
+            <p class="text-xl font-bold text-green-700" id="hf_rate_display">-- mpy</p>
+        </div>
+
+        <div id="hf_error" class="hidden mt-4 alert alert-error">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span id="hf_error_msg">Error message</span>
+        </div>
+    </div>
+
+    <!-- PHASE 2: AMINE CORROSION -->
+    <div id="thinning_mech_amine" class="thinning-mechanism-content hidden p-6 bg-gray-50 rounded-box border">
+        <h3 class="font-bold text-lg mb-4 text-blue-900">Amine Corrosion Configuration</h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">Amine Type</span></label>
+                {{ form.amine_type }}
+            </div>
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">Concentration (wt %)</span></label>
+                {{ form.amine_concentration_wt_percent }}
+            </div>
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">Acid Gas Loading (mol/mol)</span></label>
+                {{ form.amine_acid_gas_loading }}
+            </div>
+        </div>
+
+        <div class="alert alert-info mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-current shrink-0 w-6 w-6">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span><strong>Shared:</strong> Operating Temperature from "Operating & Process" tab.</span>
+        </div>
+
+        <button type="button" id="btn_calc_amine"
+            class="btn bg-blue-950 text-white hover:bg-blue-900 shadow-md">Calculate Amine CR</button>
+        <div class="hidden">{{ form.amine_corrosion_rate_mpy }}</div>
+        <div id="amine_result" class="hidden mt-4 p-4 bg-green-50 border-l-4 border-green-500 rounded">
+            <h4 class="font-bold text-green-900 mb-2">Calculated Corrosion Rate:</h4>
+            <p class="text-xl font-bold text-green-700" id="amine_rate_display">-- mpy</p>
+        </div>
+        <div id="amine_error" class="hidden mt-4 alert alert-error">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span id="amine_error_msg">Error</span>
+        </div>
+    </div>
+
+    <!-- PHASE 2: ALKALINE WATER -->
+    <div id="thinning_mech_alkaline" class="thinning-mechanism-content hidden p-6 bg-gray-50 rounded-box border">
+        <h3 class="font-bold text-lg mb-4 text-blue-900">Alkaline Water Corrosion</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">Velocity (ft/s)</span></label>
+                {{ form.alkaline_water_velocity_fps }}
+            </div>
+        </div>
+        <div class="alert alert-info mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-current shrink-0 w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span><strong>Shared:</strong> Operating Temperature & pH (must be ≥ 7)</span>
+        </div>
+        <button type="button" id="btn_calc_alkaline_water"
+            class="btn bg-blue-950 text-white hover:bg-blue-900 shadow-md">Calculate Alkaline Water CR</button>
+        <div class="hidden">{{ form.alkaline_water_corrosion_rate_mpy }}</div>
+        <div id="alkaline_water_result" class="hidden mt-4 p-4 bg-green-50 border-l-4 border-green-500 rounded">
+            <h4 class="font-bold text-green-900 mb-2">Calculated CR:</h4>
+            <p class="text-xl font-bold text-green-700" id="alkaline_water_rate_display">-- mpy</p>
+        </div>
+        <div id="alkaline_water_error" class="hidden mt-4 alert alert-error">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span id="alkaline_water_error_msg">Error</span>
+        </div>
+    </div>
+
+    <!-- PHASE 2: ACID WATER -->
+    <div id="thinning_mech_acid" class="thinning-mechanism-content hidden p-6 bg-gray-50 rounded-box border">
+        <h3 class="font-bold text-lg mb-4 text-blue-900">Acid Water Corrosion</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">Dissolved O2 (ppm)</span></label>
+                {{ form.acid_water_dissolved_o2_ppm }}
+            </div>
+        </div>
+        <div class="alert alert-info mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-current shrink-0 w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span><strong>Shared:</strong> Operating Temperature & pH from "Operating & Process" tab</span>
+        </div>
+        <button type="button" id="btn_calc_acid_water"
+            class="btn bg-blue-950 text-white hover:bg-blue-900 shadow-md">Calculate Acid Water CR</button>
+        <div class="hidden">{{ form.acid_water_corrosion_rate_mpy }}</div>
+        <div id="acid_water_result" class="hidden mt-4 p-4 bg-green-50 border-l-4 border-green-500 rounded">
+            <h4 class="font-bold text-green-900 mb-2">Calculated CR:</h4>
+            <p class="text-xl font-bold text-green-700" id="acid_water_rate_display">-- mpy</p>
+        </div>
+        <div id="acid_water_error" class="hidden mt-4 alert alert-error">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span id="acid_water_error_msg">Error</span>
+        </div>
+    </div>
+
+    <!-- PHASE 3: SOIL SIDE -->
+    <div id="thinning_mech_soil" class="thinning-mechanism-content hidden p-6 bg-gray-50 rounded-box border">
+        <h3 class="font-bold text-lg mb-4 text-blue-900">Soil Side Corrosion</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">Coating Condition</span></label>
+                {{ form.soil_coating_condition }}
+            </div>
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">Cathodic Protection</span></label>
+                <label class="label cursor-pointer justify-start gap-2">
+                    {{ form.soil_cathodic_protection }}
+                    <span class="label-text">Active</span>
+                </label>
+            </div>
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">Soil Resistivity (ohm-cm)</span></label>
+                {{ form.soil_resistivity_ohm_cm }}
+            </div>
+        </div>
+        <button type="button" id="btn_calc_soil"
+            class="btn bg-blue-950 text-white hover:bg-blue-900 shadow-md">Calculate Soil CR</button>
+        <div class="hidden">{{ form.soil_corrosion_rate_mpy }}</div>
+        <div id="soil_result" class="hidden mt-4 p-4 bg-green-50 border-l-4 border-green-500 rounded">
+            <h4 class="font-bold text-green-900 mb-2">Calculated CR:</h4>
+            <p class="text-xl font-bold text-green-700" id="soil_rate_display">-- mpy</p>
+        </div>
+        <div id="soil_error" class="hidden mt-4 alert alert-error">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span id="soil_error_msg">Error</span>
+        </div>
+    </div>
+
+    <!-- PHASE 3: HIGH TEMP H2S/H2 -->
+    <div id="thinning_mech_h2s_h2" class="thinning-mechanism-content hidden p-6 bg-gray-50 rounded-box border">
+        <h3 class="font-bold text-lg mb-4 text-blue-900">High Temperature H2S/H2 Corrosion</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">H2S Partial Pressure (psia)</span></label>
+                {{ form.ht_h2s_partial_pressure_psia }}
+            </div>
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">H2 Partial Pressure (psia)</span></label>
+                {{ form.ht_h2_partial_pressure_psia }}
+            </div>
+        </div>
+        <div class="alert alert-warning">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span><strong>Note:</strong> This mechanism applies only to temperatures > 500°F</span>
+        </div>
+        <button type="button" id="btn_calc_ht_h2s_h2"
+            class="btn bg-blue-950 text-white hover:bg-blue-900 shadow-md">Calculate HT H2S/H2 CR</button>
+        <div class="hidden">{{ form.ht_h2s_h2_corrosion_rate_mpy }}</div>
+        <div id="ht_h2s_h2_result" class="hidden mt-4 p-4 bg-green-50 border-l-4 border-green-500 rounded">
+            <h4 class="font-bold text-green-900 mb-2">Calculated CR:</h4>
+            <p class="text-xl font-bold text-green-700" id="ht_h2s_h2_rate_display">-- mpy</p>
+        </div>
+        <div id="ht_h2s_h2_error" class="hidden mt-4 alert alert-error">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span id="ht_h2s_h2_error_msg">Error</span>
+        </div>
+    </div>
+
+    <!-- PHASE 3: SULFIDIC/NAPHTHENIC -->
+    <div id="thinning_mech_sulfidic" class="thinning-mechanism-content hidden p-6 bg-gray-50 rounded-box border">
+        <h3 class="font-bold text-lg mb-4 text-blue-900">Sulfidic/Naphthenic Acid Corrosion</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">TAN (Total Acid Number)</span></label>
+                {{ form.sulfidic_tan }}
+            </div>
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">Sulfur Content (wt %)</span></label>
+                {{ form.sulfidic_sulfur_wt_percent }}
+            </div>
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">Velocity (ft/s)</span></label>
+                {{ form.sulfidic_velocity_fps }}
+            </div>
+        </div>
+        <div class="alert alert-info mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-current shrink-0 w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span><strong>Typical Range:</strong> 450-750°F operating temperature for naphthenic acid attack</span>
+        </div>
+        <button type="button" id="btn_calc_sulfidic"
+            class="btn bg-blue-950 text-white hover:bg-blue-900 shadow-md">Calculate Sulfidic CR</button>
+        <div class="hidden">{{ form.sulfidic_corrosion_rate_mpy }}</div>
+        <div id="sulfidic_result" class="hidden mt-4 p-4 bg-green-50 border-l-4 border-green-500 rounded">
+            <h4 class="font-bold text-green-900 mb-2">Calculated CR:</h4>
+            <p class="text-xl font-bold text-green-700" id="sulfidic_rate_display">-- mpy</p>
+        </div>
+        <div id="sulfidic_error" class="hidden mt-4 alert alert-error">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span id="sulfidic_error_msg">Error</span>
+        </div>
     </div>
 
 </div>
@@ -135,6 +645,11 @@
                 container.classList.remove('hidden');
             } else {
                 container.classList.add('hidden');
+            }
+
+            // Update POF when checkbox changes
+            if (typeof updatePofSummary === 'function') {
+                updatePofSummary();
             }
         }
     }

@@ -28,7 +28,42 @@ async function initializeCausticData() {
         severityIndexData = await sviRes.json();
         baseDamageFactorData = await dfRes.json();
 
-        console.log('[Caustic] Data loaded successfully');
+        console.log('[Formula App Adapter] Loaded successfully');
+
+        // Initialize POF calculations on page load if data exists
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('[POF Init] Checking for saved thinning data...');
+
+            // Wait a bit for form to fully load
+            setTimeout(function () {
+                // Check if any thinning mechanism is active and has a calculated rate
+                const mechanisms = [
+                    'co2', 'hcl', 'h2so4', 'hf', 'amine',
+                    'alkaline', 'acid', 'soil', 'h2s_h2', 'sulfidic'
+                ];
+
+                let foundActiveData = false;
+
+                mechanisms.forEach(mech => {
+                    const checkbox = document.getElementById(`id_mech_thinning_${mech}_active`);
+                    const rateField = document.getElementById(`id_${mech}_corrosion_rate_mpy`);
+
+                    if (checkbox?.checked && rateField?.value && parseFloat(rateField.value) > 0) {
+                        foundActiveData = true;
+                        console.log(`[POF Init] Found active mechanism: ${mech} with rate ${rateField.value} mpy`);
+                    }
+                });
+
+                if (foundActiveData) {
+                    console.log('[POF Init] Recalculating POF from saved data...');
+                    if (typeof updatePofSummary === 'function') {
+                        updatePofSummary();
+                    }
+                } else {
+                    console.log('[POF Init] No active thinning data found');
+                }
+            }, 500); // Wait 500ms for DOM to be fully ready
+        });
         return true;
     } catch (error) {
         console.error('[Caustic] Error loading JSON data:', error);
@@ -72,12 +107,15 @@ function initPofChart() {
 }
 
 function updatePofSummary() {
-    const metalLoss = 0; // Placeholder
+    console.log('[POF Chart] Updating Summary...');
+    const metalLoss = calculateThinningPof();
     const cracking = calculateCrackingPof();
     const mechanical = 0; // Placeholder
-    const metallurgical = 0; // Placeholder
-    const external = 0; // Placeholder
+    const metallurgical = calculateMetallurgicalPof();
+    const external = calculateExternalPof();
     const other = 0; // Placeholder
+
+    console.log('[POF Chart] Results:', { metalLoss, cracking, metallurgical, external });
 
     updatePofDisplay('pof_metal_loss', metalLoss);
     updatePofDisplay('pof_cracking', cracking);
@@ -87,6 +125,7 @@ function updatePofSummary() {
     updatePofDisplay('pof_other', other);
 
     if (pofChart) {
+        console.log('[POF Chart] Updating pofChart instance with new data');
         pofChart.data.datasets[0].data = [metalLoss, cracking, mechanical, metallurgical, external, other];
         pofChart.data.datasets[0].backgroundColor = [
             metalLoss > 0 ? '#f97316' : '#9ca3af',
@@ -97,6 +136,8 @@ function updatePofSummary() {
             other > 0 ? '#f97316' : '#9ca3af'
         ];
         pofChart.update();
+    } else {
+        console.warn('[POF Chart] updatePofSummary called but pofChart is null');
     }
 }
 
@@ -106,6 +147,59 @@ function updatePofDisplay(elementId, value) {
 
     el.textContent = value > 0 ? value : '0';
     el.className = value > 0 ? 'text-2xl font-bold text-orange-600' : 'text-2xl font-bold text-gray-400';
+}
+
+/**
+ * Shared helper to calculate Thinning-like DF (Rate based)
+ */
+function calculateGeneralThinningDF(rateMpy) {
+    if (rateMpy <= 0) return 0;
+
+    const commissionVal = document.getElementById('id_commissioning_date')?.value;
+    // Helper to calc age (copied from calculateAgeFromDate logic or reused if visible)
+    // We can use calculateAgeFromDate since it is defined in global scope of this file
+    const age = commissionVal ? calculateAgeFromDate(commissionVal) : 10;
+
+    const tMin = parseFloat(document.getElementById('id_min_required_thickness_in')?.value) || null;
+    const fca = parseFloat(document.getElementById('id_future_corrosion_allowance_in')?.value) || null;
+
+    // Full API 581 formula if we have t_min and FCA
+    if (tMin !== null && fca !== null && (tMin - fca) > 0) {
+        const denominator = tMin - fca;
+        return (rateMpy * age) / denominator; // Art / (tmin - FCA)
+    } else {
+        return rateMpy * age; // Simplified
+    }
+}
+
+function calculateThinningPof() {
+    let maxDF = 0;
+
+    // Define all 10 thinning mechanisms
+    const mechanisms = [
+        { id: 'co2', checkbox: 'id_mech_thinning_co2_active', rate: 'id_co2_corrosion_rate_mpy' },
+        { id: 'hcl', checkbox: 'id_mech_thinning_hcl_active', rate: 'id_hcl_corrosion_rate_mpy' },
+        { id: 'h2so4', checkbox: 'id_mech_thinning_h2so4_active', rate: 'id_h2so4_corrosion_rate_mpy' },
+        { id: 'hf', checkbox: 'id_mech_thinning_hf_active', rate: 'id_hf_corrosion_rate_mpy' },
+        { id: 'amine', checkbox: 'id_mech_thinning_amine_active', rate: 'id_amine_corrosion_rate_mpy' },
+        { id: 'alkaline', checkbox: 'id_mech_thinning_alkaline_active', rate: 'id_alkaline_water_corrosion_rate_mpy' },
+        { id: 'acid', checkbox: 'id_mech_thinning_acid_active', rate: 'id_acid_water_corrosion_rate_mpy' },
+        { id: 'soil', checkbox: 'id_mech_thinning_soil_active', rate: 'id_soil_corrosion_rate_mpy' },
+        { id: 'h2s_h2', checkbox: 'id_mech_thinning_h2s_h2_active', rate: 'id_ht_h2s_h2_corrosion_rate_mpy' },
+        { id: 'sulfidic', checkbox: 'id_mech_thinning_sulfidic_active', rate: 'id_sulfidic_corrosion_rate_mpy' }
+    ];
+
+    // Check each mechanism and calculate DF
+    mechanisms.forEach(mech => {
+        const isActive = document.getElementById(mech.checkbox)?.checked;
+        if (isActive) {
+            const rate = parseFloat(document.getElementById(mech.rate)?.value) || 0;
+            const df = calculateGeneralThinningDF(rate);
+            if (df > maxDF) maxDF = df;
+        }
+    });
+
+    return dfToPof(maxDF);
 }
 
 function calculateCrackingPof() {
@@ -123,11 +217,59 @@ function calculateCrackingPof() {
         }
     });
 
-    if (maxDF === 0) return 0;
-    if (maxDF < 10) return 1;
-    if (maxDF < 100) return 2;
-    if (maxDF < 1000) return 3;
-    return 4;
+    return dfToPof(maxDF);
+}
+
+function calculateExternalPof() {
+    let maxDF = 0;
+
+    // External Corrosion
+    if (document.getElementById('id_mech_ext_corrosion_active')?.checked) {
+        const rate = parseFloat(document.getElementById('id_external_corrosion_rate_mpy')?.value) || 0;
+        const df = calculateGeneralThinningDF(rate);
+        if (df > maxDF) maxDF = df;
+    }
+
+    // CUI
+    if (document.getElementById('id_mech_cui_active')?.checked) {
+        const rate = parseFloat(document.getElementById('id_cui_corrosion_rate_mpy')?.value) || 0;
+        const df = calculateGeneralThinningDF(rate);
+        if (df > maxDF) maxDF = df;
+    }
+
+    return dfToPof(maxDF);
+}
+
+function calculateMetallurgicalPof() {
+    let maxDF = 0;
+
+    // Brittle Fracture
+    if (document.getElementById('id_mechanism_brittle_fracture_active')?.checked) {
+        const hiddenVal = document.getElementById('id_brittle_damage_factor')?.value;
+        const displayVal = document.getElementById('disp_brittle_df')?.innerText;
+
+        let df = 0;
+        if (hiddenVal && !isNaN(parseFloat(hiddenVal))) {
+            df = parseFloat(hiddenVal);
+        } else if (displayVal && !isNaN(parseFloat(displayVal))) {
+            df = parseFloat(displayVal);
+        }
+        console.log('[POF Calc] Brittle Fracture DF found:', df);
+        if (df > maxDF) maxDF = df;
+    }
+    const pof = dfToPof(maxDF);
+    console.log('[POF Calc] Metallurgical POF:', pof);
+    return pof;
+}
+
+
+
+function dfToPof(df) {
+    if (df <= 0) return 0;
+    if (df < 10) return 1;
+    if (df < 100) return 2;
+    if (df < 1000) return 3;
+    return 4; // Or 5 depending on config, usually 1-4 for old API, 5 for newer
 }
 
 // ============================================================================
@@ -1638,3 +1780,48 @@ function updateDebugFields(mechShortName, data) {
 
 console.log('[Caustic Formula App] Module loaded - API 581 compliant calculations ready');
 
+
+// ============================================================================
+// POF INITIALIZATION ON PAGE LOAD
+// ============================================================================
+
+function initializeThinningPOF() {
+    console.log('[POF Init] Checking for saved thinning data...');
+    const mechanisms = ['co2', 'hcl', 'h2so4', 'hf', 'amine', 'alkaline', 'acid', 'soil', 'h2s_h2', 'sulfidic'];
+    let foundActiveData = false;
+
+    mechanisms.forEach(mech => {
+        const checkbox = document.getElementById(`id_mech_thinning_${mech}_active`);
+        const rateField = document.getElementById(`id_${mech}_corrosion_rate_mpy`);
+
+        if (checkbox?.checked) {
+            // Unhide UI panel
+            const container = document.getElementById(`thinning_mech_${mech}`);
+            if (container) container.classList.remove('hidden');
+        }
+
+        if (checkbox?.checked && rateField?.value && parseFloat(rateField.value) > 0) {
+            foundActiveData = true;
+            console.log(`[POF Init] Found: ${mech} = ${rateField.value} mpy`);
+        }
+    });
+
+    if (foundActiveData) {
+        console.log('[POF Init] Recalculating POF...');
+        if (typeof updatePofSummary === 'function') {
+            updatePofSummary();
+        } else {
+            console.warn('[POF Init] updatePofSummary not ready, retrying...');
+            setTimeout(initializeThinningPOF, 200);
+        }
+    } else {
+        console.log('[POF Init] No active thinning data found');
+    }
+}
+
+// Execute initialization
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => setTimeout(initializeThinningPOF, 500));
+} else {
+    setTimeout(initializeThinningPOF, 500);
+}

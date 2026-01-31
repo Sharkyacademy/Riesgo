@@ -1,0 +1,157 @@
+<div id="external-damage-content" class="space-y-4">
+    <div class="alert alert-info shadow-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <span>
+            <strong>External Damage & CUI Configuration</strong><br>
+            Configure external corrosion and Corrosion Under Insulation (CUI) mechanisms.
+        </span>
+    </div>
+
+    <!-- Mechanism Selection Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- External Corrosion (Atmospheric) -->
+        <div class="card bg-base-100 border shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+            onclick="document.getElementById('id_mech_ext_corrosion_active').click()">
+            <div class="card-body p-4 flex flex-row items-center gap-3">
+                <input type="checkbox" name="mech_ext_corrosion_active" id="id_mech_ext_corrosion_active"
+                    class="checkbox checkbox-primary" onchange="toggleExternalMech('ext_corrosion')" {% if form.mech_ext_corrosion_active.value %} checked {% endif %} />
+                <span class="font-bold text-gray-700">External Corrosion (Atmospheric)</span>
+            </div>
+        </div>
+
+        <!-- CUI (Corrosion Under Insulation) -->
+        <div class="card bg-base-100 border shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+            onclick="document.getElementById('id_mech_cui_active').click()">
+            <div class="card-body p-4 flex flex-row items-center gap-3">
+                <input type="checkbox" name="mech_cui_active" id="id_mech_cui_active" class="checkbox checkbox-primary"
+                    onchange="toggleExternalMech('cui')" {% if form.mech_cui_active.value %} checked {% endif %} />
+                <span class="font-bold text-gray-700">Corrosion Under Insulation (CUI)</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="divider">Configuration</div>
+
+    <!-- External Corrosion Configuration -->
+    <div id="ext_mech_ext_corrosion" class="hidden p-6 bg-gray-50 rounded-box border">
+        <h3 class="font-bold text-lg mb-4 text-blue-900">External Corrosion Configuration</h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">Driver (Climate)</span></label>
+                {{ form.external_driver }}
+            </div>
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">Complexity / Interface</span></label>
+                {{ form.complexity }}
+            </div>
+        </div>
+
+        <button type="button" class="btn bg-blue-950 text-white hover:bg-blue-900 shadow-md"
+            onclick="calculateExternalDamage('ext_corrosion')">
+            Calculate Rate
+        </button>
+
+        <!-- Result -->
+        <div id="ext_corrosion_result" class="hidden mt-4 p-4 bg-green-50 border-l-4 border-green-500 rounded">
+            <h4 class="font-bold text-green-900 mb-2">Calculated Rate:</h4>
+            <p class="text-xl font-bold text-green-700" id="ext_corrosion_rate_display">-- mpy</p>
+        </div>
+        <div class="hidden">{{ form.external_corrosion_rate_mpy }}</div>
+    </div>
+
+    <!-- CUI Configuration -->
+    <div id="ext_mech_cui" class="hidden p-6 bg-gray-50 rounded-box border">
+        <h3 class="font-bold text-lg mb-4 text-blue-900">CUI Configuration</h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">CUI Driver (Environment)</span></label>
+                {{ form.cui_driver }}
+            </div>
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">Insulation Type</span></label>
+                <div class="text-sm text-gray-600 p-3 bg-gray-50 rounded border">
+                    <span class="font-bold text-blue-900" id="cui_insulation_type_display">--</span>
+                    <div class="text-xs text-gray-400 mt-1 italic">Determined by 'Insulation Type' in Design Data tab.
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">Insulation Condition</span></label>
+                {{ form.insulation_condition }}
+            </div>
+
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">Complexity / Interface</span></label>
+                {{ form.complexity }}
+            </div>
+
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">Equipment Design</span></label>
+                <select id="sel_cui_eq_design" class="select select-bordered w-full">
+                    <option value="1.0">No Water Pooling (1.0)</option>
+                    <option value="2.0">Allows Water Pooling (2.0)</option>
+                </select>
+            </div>
+
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">Interface (Soil/Water)</span></label>
+                <select id="sel_cui_interface" class="select select-bordered w-full">
+                    <option value="1.0">No Interface (1.0)</option>
+                    <option value="2.0">Interface Present (2.0)</option>
+                </select>
+            </div>
+
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">Operating Temperature (F)</span></label>
+                <input type="text" id="cui_operating_temp_display" class="input input-bordered w-full bg-gray-100"
+                    readonly value="--">
+                <label class="label-text-alt mt-1">From Operating Conditions</label>
+            </div>
+        </div>
+
+        <button type="button" class="btn bg-blue-950 text-white hover:bg-blue-900 shadow-md"
+            onclick="calculateExternalDamage('cui')">
+            Calculate CUI Rate
+        </button>
+
+        <!-- Result -->
+        <div id="cui_result" class="hidden mt-4 p-4 bg-green-50 border-l-4 border-green-500 rounded">
+            <h4 class="font-bold text-green-900 mb-2">Calculated CUI Rate:</h4>
+            <p class="text-xl font-bold text-green-700" id="cui_rate_display">-- mpy</p>
+        </div>
+        <div class="hidden">{{ form.cui_corrosion_rate_mpy }}</div>
+    </div>
+</div>
+
+<script>
+    function toggleExternalMech(mechType) {
+        const checkbox = document.getElementById(`id_mech_${mechType}_active`);
+        const container = document.getElementById(`ext_mech_${mechType}`);
+
+        if (checkbox && container) {
+            if (checkbox.checked) {
+                container.classList.remove('hidden');
+                // Auto-populate temp if CUI
+                if (mechType === 'cui') {
+                    const temp = document.getElementById('id_operating_temp_f')?.value;
+                    const display = document.getElementById('cui_operating_temp_display');
+                    if (display && temp) display.value = temp;
+                }
+            } else {
+                container.classList.add('hidden');
+            }
+        }
+    }
+
+    // Init visibility on load
+    document.addEventListener('DOMContentLoaded', function () {
+        toggleExternalMech('ext_corrosion');
+        toggleExternalMech('cui');
+    });
+</script>

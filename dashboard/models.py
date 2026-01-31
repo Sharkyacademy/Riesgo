@@ -270,6 +270,51 @@ class Component(models.Model):
                                                              choices=[('Low', 'Low'), ('Medium', 'Medium'), ('Medium-High', 'Medium-High'), ('High', 'High')])
     
     # Thickness Inspection
+    # =========================================================================
+    # EXTERNAL DAMAGE MECHANISMS
+    # =========================================================================
+    
+    # Mechanism Active Checkboxes
+    mech_ext_corrosion_active = models.BooleanField(default=False, verbose_name="External Corrosion Active")
+    mech_cui_active = models.BooleanField(default=False, verbose_name="CUI Active")
+    mech_ext_clscc_active = models.BooleanField(default=False, verbose_name="External ClSCC Active")
+    mech_cui_clscc_active = models.BooleanField(default=False, verbose_name="CUI ClSCC Active")
+    
+    # External Corrosion Inputs
+    external_driver = models.CharField(max_length=50, null=True, blank=True, verbose_name="External Corrosion Driver",
+                                      choices=[('None', 'None'), ('Marine', 'Marine'), ('Temperate', 'Temperate'), ('Arid/Dry', 'Arid/Dry'), ('Severe', 'Severe')])
+    external_corrosion_rate_mpy = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, verbose_name="External Corrosion Rate (mpy)")
+    
+    # CUI Inputs
+    cui_driver = models.CharField(max_length=50, null=True, blank=True, verbose_name="CUI Driver", 
+                                 choices=[('None', 'None'), ('Mild', 'Mild'), ('Moderate', 'Moderate'), ('Severe', 'Severe')])
+    insulation_condition = models.CharField(max_length=50, null=True, blank=True, verbose_name="Insulation Condition",
+                                           choices=[('Good', 'Good'), ('Average', 'Average'), ('Poor', 'Poor')])
+    cui_corrosion_rate_mpy = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, verbose_name="CUI Corrosion Rate (mpy)")
+    
+    # Complexity (for External DF adjustment)
+    complexity = models.CharField(max_length=50, null=True, blank=True, verbose_name="Complexity",
+                                 choices=[('High', 'High (Pipe, <1.5" OD)'), ('Medium', 'Medium'), ('Low', 'Low')])
+    
+    # =========================================================================
+    # THINNING (METAL LOSS) MECHANISMS
+    # =========================================================================
+    
+    # Mechanism Active Checkboxes (to persist UI state)
+    mech_thinning_co2_active = models.BooleanField(default=False, verbose_name="CO2 Corrosion Active")
+    mech_thinning_hcl_active = models.BooleanField(default=False, verbose_name="HCl Corrosion Active")
+    mech_thinning_h2so4_active = models.BooleanField(default=False, verbose_name="H2SO4 Corrosion Active")
+    mech_thinning_hf_active = models.BooleanField(default=False, verbose_name="HF Corrosion Active")
+    mech_thinning_amine_active = models.BooleanField(default=False, verbose_name="Amine Corrosion Active")
+    mech_thinning_alkaline_active = models.BooleanField(default=False, verbose_name="Alkaline Water Active")
+    mech_thinning_acid_active = models.BooleanField(default=False, verbose_name="Acid Water Active")
+    mech_thinning_soil_active = models.BooleanField(default=False, verbose_name="Soil Side Active")
+    mech_thinning_h2s_h2_active = models.BooleanField(default=False, verbose_name="High Temp H2S/H2 Active")
+    mech_thinning_sulfidic_active = models.BooleanField(default=False, verbose_name="Sulfidic/Naphthenic Active")
+    
+    # Shared Inputs (used across mechanisms)
+    min_required_thickness_in = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, verbose_name="Min Required Thickness (in)")
+    future_corrosion_allowance_in = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, verbose_name="Future Corrosion Allowance (in)")
     thickness_nominal_mm = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Nominal Thickness (mm)")
     thickness_minimum_required_mm = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Minimum Required Thickness (mm)")
     thickness_measured_mm = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Measured Thickness (mm)")
@@ -394,6 +439,10 @@ class Component(models.Model):
     brittle_delta_fatt = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Delta FATT")
     brittle_cet_f = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Critical Exposure Temp (CET) (°F)")
     brittle_pwht = models.BooleanField(default=False, verbose_name="PWHT (Brittle Specific)")
+    brittle_damage_factor = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Brittle Fracture DF")
+    brittle_curve = models.CharField(max_length=10, null=True, blank=True, verbose_name="Exemption Curve")
+    brittle_yield_strength_ksi = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Yield Strength (ksi)")
+    brittle_material_type = models.CharField(max_length=50, null=True, blank=True, verbose_name="Material Type")
 
     # External Damage (Uses mostly existing fields, but might need a toggle)
     mechanism_external_damage_active = models.BooleanField(default=False, verbose_name="Mech. Active: External Damage")
@@ -411,10 +460,81 @@ class Component(models.Model):
     mech_thinning_h2s_h2_active = models.BooleanField(default=False, verbose_name="Mech. Active: High Temp H2S/H2")
     mech_thinning_sulfidic_active = models.BooleanField(default=False, verbose_name="Mech. Active: Sulfidic/Naphthenic")
 
-    # CO2 Corrosion Fields
+    # CO2 Corrosion Inputs
     co2_concentration_mol_percent = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True, verbose_name="CO2 Concentration (mol %)")
-    co2_shear_stress_pa = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Shear Stress (Pa)")
+    co2_shear_stress_pa = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="CO2 Shear Stress (Pa)")
     co2_corrosion_rate_mpy = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="CO2 Corrosion Rate (mpy)")
+    
+    # HCl Corrosion Inputs
+    hcl_concentration_wt_percent = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True, verbose_name="HCl Concentration (wt %)")
+    hcl_velocity_fps = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True, verbose_name="HCl Velocity (ft/s)")
+    hcl_corrosion_rate_mpy = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="HCl Corrosion Rate (mpy)")
+    
+    # H2SO4 Corrosion Inputs
+    h2so4_concentration_wt_percent = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True, verbose_name="H2SO4 Concentration (wt %)")
+    h2so4_velocity_fps = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True, verbose_name="H2SO4 Velocity (ft/s)")
+    h2so4_corrosion_rate_mpy = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="H2SO4 Corrosion Rate (mpy)")
+    
+    # HF Corrosion Inputs
+    hf_concentration_wt_percent = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True, verbose_name="HF Concentration (wt %)")
+    hf_velocity_fps = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True, verbose_name="HF Velocity (ft/s)")
+    hf_corrosion_rate_mpy = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="HF Corrosion Rate (mpy)")
+    
+    # Amine Corrosion Inputs
+    AMINE_CHOICES = [
+        ('MEA', 'Monoethanolamine (MEA)'),
+        ('DEA', 'Diethanolamine (DEA)'),
+        ('MDEA', 'Methyldiethanolamine (MDEA)'),
+        ('DGA', 'Diglycolamine (DGA)'),
+    ]
+    amine_type = models.CharField(max_length=10, choices=AMINE_CHOICES, null=True, blank=True, verbose_name="Amine Type")
+    amine_concentration_wt_percent = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True, verbose_name="Amine Concentration (wt %)")
+    amine_acid_gas_loading = models.DecimalField(max_digits=6, decimal_places=3, null=True, blank=True, verbose_name="Acid Gas Loading (mol/mol)")
+    amine_corrosion_rate_mpy = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Amine Corrosion Rate (mpy)")
+    
+    # Alkaline Water Corrosion Inputs (uses shared pH)
+    alkaline_water_velocity_fps = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True, verbose_name="Alkaline Water Velocity (ft/s)")
+    alkaline_water_corrosion_rate_mpy = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Alkaline Water CR (mpy)")
+    
+    # Acid Water Corrosion Inputs
+    acid_water_dissolved_o2_ppm = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True, verbose_name="Dissolved O2 (ppm)")
+    acid_water_corrosion_rate_mpy = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Acid Water CR (mpy)")
+    
+    # Soil Side Corrosion Inputs
+    COATING_CHOICES = [
+        ('GOOD', 'Good'),
+        ('FAIR', 'Fair'),
+        ('POOR', 'Poor'),
+        ('NONE', 'No Coating'),
+    ]
+    soil_coating_condition = models.CharField(max_length=10, choices=COATING_CHOICES, null=True, blank=True, verbose_name="Coating Condition")
+    soil_cathodic_protection = models.BooleanField(default=False, verbose_name="Cathodic Protection Active")
+    soil_resistivity_ohm_cm = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Soil Resistivity (ohm-cm)")
+    soil_corrosion_rate_mpy = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Soil Side CR (mpy)")
+    
+    # High Temperature H2S/H2 Corrosion Inputs
+    ht_h2s_partial_pressure_psia = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="H2S Partial Pressure (psia)")
+    ht_h2_partial_pressure_psia = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="H2 Partial Pressure (psia)")
+    ht_h2s_h2_corrosion_rate_mpy = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="HT H2S/H2 CR (mpy)")
+    
+    # Sulfidic/Naphthenic Acid Corrosion Inputs
+    sulfidic_tan = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True, verbose_name="TAN (Total Acid Number)")
+    sulfidic_sulfur_wt_percent = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True, verbose_name="Sulfur Content (wt %)")
+    sulfidic_velocity_fps = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True, verbose_name="Velocity (ft/s)")
+    sulfidic_corrosion_rate_mpy = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Sulfidic CR (mpy)")
+    
+    # Thinning Damage Factor Inputs (API 581 Section 4.4)
+    min_required_thickness_in = models.DecimalField(
+        max_digits=6, decimal_places=3, null=True, blank=True, 
+        verbose_name="Minimum Required Thickness (in)",
+        help_text="Per ASME design calculation (t_min). If unknown, leave blank for simplified DF calculation."
+    )
+    future_corrosion_allowance_in = models.DecimalField(
+        max_digits=6, decimal_places=3, null=True, blank=True, 
+        default=0.125,  # API 570 typical default: 1/8" for moderate corrosive service
+        verbose_name="Future Corrosion Allowance (in)",
+        help_text="FCA per API 570. Typical: 0.125\" (1/8\") for moderate service, 0.250\" (1/4\") for severe."
+    )
 
     def __str__(self):
         return f"{self.rbix_component_type} - {self.equipment.number}"
