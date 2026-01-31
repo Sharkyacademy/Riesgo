@@ -172,6 +172,16 @@
                 </label>
             </div>
             <div id="scc_amine_container" class="hidden mt-4 space-y-4">
+                <!-- Alert for missing data -->
+                <div id="scc_amine_alerts" class="hidden alert alert-warning">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <span>Missing Data: <span id="scc_amine_missing_fields"></span></span>
+                </div>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="form-control">
                         <label class="label"><span class="label-text font-semibold">Are cracks observed?</span></label>
@@ -185,6 +195,11 @@
                     <div class="form-control">
                         <label class="label"><span class="label-text font-semibold">Stress Relieved?</span></label>
                         {{ form.scc_amine_stress_relieved }}
+                    </div>
+                    <div class="form-control">
+                        <label class="label"><span class="label-text font-semibold">Exposed to Lean
+                                Amine?</span></label>
+                        {{ form.scc_amine_lean_amine }}
                     </div>
                     <div class="form-control">
                         <label class="label"><span class="label-text font-semibold">Amine Solution Type</span></label>
@@ -214,6 +229,24 @@
                         {{ form.scc_amine_inspection_count_d }}
                     </div>
                 </div>
+
+                <div id="scc_amine_results_area" class="mt-6 p-4 bg-gray-50 rounded-lg border">
+                    <h4 class="font-bold text-gray-700 mb-3">Calculated Results</h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Susceptibility:</span>
+                            <span id="res_scc_amine_susceptibility" class="font-bold text-gray-800">--</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">SVI:</span>
+                            <span id="res_scc_amine_svi" class="font-bold text-gray-800">--</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Damage Factor:</span>
+                            <span id="res_scc_amine_df" class="font-bold text-blue-900 text-2xl">--</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -227,10 +260,7 @@
             </div>
             <div id="scc_ssc_container" class="hidden mt-4 space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="form-control">
-                        <label class="label"><span class="label-text font-semibold">pH</span></label>
-                        {{ form.scc_ssc_ph }}
-                    </div>
+                    <!-- pH is now read from 'Operating -> Chemical Properties' -->
                     <div class="form-control">
                         <label class="label"><span class="label-text font-semibold">H2S Content (ppm)</span></label>
                         {{ form.scc_ssc_h2s_ppm }}
@@ -239,10 +269,7 @@
                         <label class="label"><span class="label-text font-semibold">Max Hardness (HB)</span></label>
                         {{ form.scc_ssc_hardness_hb }}
                     </div>
-                    <div class="form-control">
-                        <label class="label"><span class="label-text font-semibold">PWHT?</span></label>
-                        {{ form.scc_ssc_pwht }}
-                    </div>
+                    <!-- PWHT is now read from 'Design / Installation -> Codes' -->
                     <div class="form-control">
                         <label class="label"><span class="label-text font-semibold">Cracks Observed?</span></label>
                         {{ form.scc_ssc_cracks_observed }}
@@ -271,6 +298,23 @@
                         {{ form.scc_ssc_inspection_count_d }}
                     </div>
                 </div>
+                <div id="scc_ssc_results_area" class="mt-6 p-4 bg-gray-50 rounded-lg border">
+                    <h4 class="font-bold text-gray-700 mb-3">Calculated Results</h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Susceptibility:</span>
+                            <span id="res_scc_ssc_susceptibility" class="font-bold text-gray-800">--</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">SVI:</span>
+                            <span id="res_scc_ssc_svi" class="font-bold text-gray-800">--</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Damage Factor:</span>
+                            <span id="res_scc_ssc_df" class="font-bold text-blue-900 text-2xl">--</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -285,8 +329,12 @@
             <div id="scc_hic_container" class="hidden mt-4 space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="form-control">
-                        <label class="label"><span class="label-text font-semibold">pH</span></label>
-                        {{ form.scc_hic_h2s_ph }}
+                        <!-- Redundant pH removed -->
+                        <!-- <label class="label"><span class="label-text font-semibold">pH</span></label> -->
+                        <!-- {{ form.scc_hic_h2s_ph }} -->
+                        <div class="alert alert-info text-xs py-2">
+                            <span>pH comes from Operating Tab</span>
+                        </div>
                     </div>
                     <div class="form-control">
                         <label class="label"><span class="label-text font-semibold">H2S (ppm)</span></label>
@@ -326,6 +374,24 @@
                     <div class="form-control">
                         <label class="label"><span class="label-text text-xs">Cat D</span></label>
                         {{ form.scc_hic_h2s_inspection_count_d }}
+                    </div>
+                </div>
+                <!-- Results Section -->
+                <div id="scc_hic_h2s_results_area" class="mt-6 p-4 bg-gray-50 rounded-lg border">
+                    <h4 class="font-bold text-gray-700 mb-3">Calculated Results</h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Susceptibility:</span>
+                            <span id="res_scc_hic_h2s_susceptibility" class="font-bold text-gray-800">--</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">SVI:</span>
+                            <span id="res_scc_hic_h2s_svi" class="font-bold text-gray-800">--</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Damage Factor:</span>
+                            <span id="res_scc_hic_h2s_df" class="font-bold text-blue-900 text-2xl">--</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -377,6 +443,24 @@
                         {{ form.scc_acscc_inspection_count_d }}
                     </div>
                 </div>
+                <!-- ACSCC Results -->
+                <div id="scc_acscc_results_area" class="mt-6 p-4 bg-gray-50 rounded-lg border">
+                    <h4 class="font-bold text-gray-700 mb-3">Calculated Results</h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Susceptibility:</span>
+                            <span id="res_scc_acscc_susceptibility" class="font-bold text-gray-800">--</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">SVI:</span>
+                            <span id="res_scc_acscc_svi" class="font-bold text-gray-800">--</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Damage Factor:</span>
+                            <span id="res_scc_acscc_df" class="font-bold text-blue-900 text-2xl">--</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -406,6 +490,10 @@
                         <label class="label"><span class="label-text font-semibold">Sulfur Exposure?</span></label>
                         {{ form.scc_pascc_sulfur_exposure }}
                     </div>
+                    <div class="form-control">
+                        <label class="label"><span class="label-text font-semibold">Downtime Protection?</span></label>
+                        {{ form.scc_pascc_downtime_protected }}
+                    </div>
                 </div>
                 <div class="divider">Inspection History</div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
@@ -424,6 +512,24 @@
                     <div class="form-control">
                         <label class="label"><span class="label-text text-xs">Cat D</span></label>
                         {{ form.scc_pascc_inspection_count_d }}
+                    </div>
+                </div>
+                <!-- PASCC Results -->
+                <div id="scc_pascc_results_area" class="mt-6 p-4 bg-gray-50 rounded-lg border">
+                    <h4 class="font-bold text-gray-700 mb-3">Calculated Results</h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Susceptibility:</span>
+                            <span id="res_scc_pascc_susceptibility" class="font-bold text-gray-800">--</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">SVI:</span>
+                            <span id="res_scc_pascc_svi" class="font-bold text-gray-800">--</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Damage Factor:</span>
+                            <span id="res_scc_pascc_df" class="font-bold text-blue-900 text-2xl">--</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -448,9 +554,13 @@
                         {{ form.scc_clscc_cracks_removed }}
                     </div>
                     <div class="form-control">
-                        <label class="label"><span class="label-text font-semibold">Cl Concentration
+                        <label class="label"><span class="label-text font-semibold">Cl- Concentration
                                 (ppm)</span></label>
                         {{ form.scc_clscc_cl_conc_ppm }}
+                    </div>
+                    <div class="form-control">
+                        <label class="label"><span class="label-text font-semibold">Deposits Present?</span></label>
+                        {{ form.scc_clscc_deposits_present }}
                     </div>
                 </div>
                 <div class="divider">Inspection History</div>
@@ -470,6 +580,24 @@
                     <div class="form-control">
                         <label class="label"><span class="label-text text-xs">Cat D</span></label>
                         {{ form.scc_clscc_inspection_count_d }}
+                    </div>
+                </div>
+                <!-- ClSCC Results -->
+                <div id="scc_clscc_results_area" class="mt-6 p-4 bg-gray-50 rounded-lg border">
+                    <h4 class="font-bold text-gray-700 mb-3">Calculated Results</h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Susceptibility:</span>
+                            <span id="res_scc_clscc_susceptibility" class="font-bold text-gray-800">--</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">SVI:</span>
+                            <span id="res_scc_clscc_svi" class="font-bold text-gray-800">--</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Damage Factor:</span>
+                            <span id="res_scc_clscc_df" class="font-bold text-blue-900 text-2xl">--</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -498,8 +626,12 @@
                         {{ form.scc_hsc_hf_hf_conc_percent }}
                     </div>
                     <div class="form-control">
-                        <label class="label"><span class="label-text font-semibold">Hardness (HRC)</span></label>
-                        {{ form.scc_hsc_hf_hardness_hrc }}
+                        <label class="label"><span class="label-text font-semibold">HF Present?</span></label>
+                        {{ form.scc_hsc_hf_present }}
+                    </div>
+                    <div class="form-control">
+                        <label class="label"><span class="label-text font-semibold">Hardness (HB)</span></label>
+                        {{ form.scc_hsc_hf_hardness_hb }}
                     </div>
                 </div>
                 <div class="divider">Inspection History</div>
@@ -519,6 +651,24 @@
                     <div class="form-control">
                         <label class="label"><span class="label-text text-xs">Cat D</span></label>
                         {{ form.scc_hsc_hf_inspection_count_d }}
+                    </div>
+                </div>
+                <!-- HSC-HF Results -->
+                <div id="scc_hsc_hf_results_area" class="mt-6 p-4 bg-gray-50 rounded-lg border">
+                    <h4 class="font-bold text-gray-700 mb-3">Calculated Results</h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Susceptibility:</span>
+                            <span id="res_scc_hsc_hf_susceptibility" class="font-bold text-gray-800">--</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">SVI:</span>
+                            <span id="res_scc_hsc_hf_svi" class="font-bold text-gray-800">--</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Damage Factor:</span>
+                            <span id="res_scc_hsc_hf_df" class="font-bold text-blue-900 text-2xl">--</span>
+                        </div>
                     </div>
                 </div>
             </div>

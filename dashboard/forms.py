@@ -119,7 +119,7 @@ class ComponentForm(forms.ModelForm):
             
             # SCC Amine
             'mechanism_scc_amine_active', 'scc_amine_cracks_observed', 'scc_amine_cracks_removed',
-            'scc_amine_stress_relieved', 'scc_amine_solution_type', 'scc_amine_steamed_out',
+            'scc_amine_stress_relieved', 'scc_amine_lean_amine', 'scc_amine_solution_type', 'scc_amine_steamed_out',
             'scc_amine_inspection_count_a', 'scc_amine_inspection_count_b', 'scc_amine_inspection_count_c',
             'scc_amine_inspection_count_d',
             
@@ -144,19 +144,19 @@ class ComponentForm(forms.ModelForm):
             
             # SCC PASCC
             'mechanism_scc_pascc_active', 'scc_pascc_cracks_observed', 'scc_pascc_cracks_removed',
-            'scc_pascc_sensitized', 'scc_pascc_sulfur_exposure',
+            'scc_pascc_sensitized', 'scc_pascc_sulfur_exposure', 'scc_pascc_downtime_protected',
             'scc_pascc_inspection_count_a', 'scc_pascc_inspection_count_b', 'scc_pascc_inspection_count_c',
             'scc_pascc_inspection_count_d',
             
             # SCC ClSCC
             'mechanism_scc_clscc_active', 'scc_clscc_cracks_observed', 'scc_clscc_cracks_removed',
-            'scc_clscc_cl_conc_ppm',
+            'scc_clscc_cl_conc_ppm', 'scc_clscc_deposits_present',
             'scc_clscc_inspection_count_a', 'scc_clscc_inspection_count_b', 'scc_clscc_inspection_count_c',
             'scc_clscc_inspection_count_d',
             
             # SCC HSC-HF
             'mechanism_scc_hsc_hf_active', 'scc_hsc_hf_cracks_observed', 'scc_hsc_hf_cracks_removed',
-            'scc_hsc_hf_hf_conc_percent', 'scc_hsc_hf_hardness_hrc',
+            'scc_hsc_hf_present', 'scc_hsc_hf_hf_conc_percent', 'scc_hsc_hf_hardness_hb',
             'scc_hsc_hf_inspection_count_a', 'scc_hsc_hf_inspection_count_b', 'scc_hsc_hf_inspection_count_c',
             'scc_hsc_hf_inspection_count_d',
             

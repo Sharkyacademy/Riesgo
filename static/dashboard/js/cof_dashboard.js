@@ -296,6 +296,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 continue;
             }
 
+            // Release Type Logic (API 581)
+            // d <= 0.25 inch -> Continuous
+            // Releasing > 10,000 lbs in 3 minutes (> 55.56 lb/s) -> Instantaneous
+            let rTypeS = "Continuous";
+            if (d[i] <= 0.25) {
+                rTypeS = "Continuous";
+            } else if (rateN > 55.56) {
+                rTypeS = "Instantaneous";
+            }
+            setText('debug_rtype' + (i + 1), rTypeS);
+
             const ldMaxMin = getLeakDuration(detClass, isoClass, d[i]);
             const ldMaxSec = 60 * ldMaxMin;
 
