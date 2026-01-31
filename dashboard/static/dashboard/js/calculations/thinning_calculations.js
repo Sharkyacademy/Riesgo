@@ -53,11 +53,10 @@ async function calculateCO2CorrosionRate() {
         const fCO2Bar = a * pCO2Bar;
 
         // Step 5: Lookup f(T, pH) from Table 2.B.13.2
-        // For now, we'll load this from JSON
         const fTpH = await interpolateFTpH(tempF, pH);
 
-        // Step 6: Calculate shear term
-        let shearTerm = 0;
+        // Step 6: Calculate shear term (default to 1.0 if shear stress is 0)
+        let shearTerm = 1.0; // Default per API 581
         if (shearPa > 0) {
             shearTerm = Math.pow((shearPa / 19), 0.146);
         }
@@ -74,6 +73,15 @@ async function calculateCO2CorrosionRate() {
 
         // Save to model field
         document.getElementById('id_co2_corrosion_rate_mpy').value = crMpy.toFixed(2);
+
+        // Update debug panel
+        if (typeof updateDebugFields === 'function') {
+            updateDebugFields('co2', {
+                rate: crMpy,
+                fugacity: fCO2Bar,
+                df: 0 // DF calculation pending
+            });
+        }
 
         console.log('[CO2] Calculation complete:', crMpy.toFixed(2), 'mpy');
 

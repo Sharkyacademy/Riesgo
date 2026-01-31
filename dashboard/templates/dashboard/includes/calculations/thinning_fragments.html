@@ -90,6 +90,11 @@
             Calculate CO2 Corrosion Rate
         </button>
 
+        <!-- Hidden field to store calculated rate -->
+        <div class="hidden">
+            {{ form.co2_corrosion_rate_mpy }}
+        </div>
+
         <!-- Result Display -->
         <div id="co2_result" class="hidden mt-4 p-4 bg-green-50 border-l-4 border-green-500 rounded">
             <h4 class="font-bold text-green-900 mb-2">Calculated Corrosion Rate:</h4>
