@@ -202,6 +202,15 @@ class ComponentForm(forms.ModelForm):
             'brittle_cet_f', 'brittle_pwht', 'brittle_damage_factor',
              'brittle_curve', 'brittle_yield_strength_ksi', 'brittle_material_type',
             
+            # HTHA Fields
+            'mechanism_htha_active', 'htha_material', 'htha_h2_partial_pressure_psia',
+            'htha_exposure_time_years', 'htha_damage_observed',
+            'htha_material_verification', 'htha_damage_factor',
+
+            # POF Calculation Fields (GFF + FMS)
+            'pof_category', 'gff_value', 'fms_factor', 'fms_pscore', 'final_pof',
+            'gff_equipment_type', 'gff_component_type',
+            
             # External Damage
             'mech_ext_corrosion_active', 'mech_cui_active', 'mech_ext_clscc_active', 'mech_cui_clscc_active',
             'external_driver', 'external_corrosion_rate_mpy',
@@ -496,8 +505,48 @@ class ComponentForm(forms.ModelForm):
             'brittle_material_type': forms.Select(attrs={'class': 'select select-bordered w-full'}, choices=[
                 ('', '-- Select --'),
                 ('Carbon Steel', 'Carbon Steel'),
-                ('Low Alloy Steel', 'Low Alloy Steel')
+                ('C-0.5Mo', 'C-0.5Mo (Annealed)'),
+                ('C-0.5Mo Normalized', 'C-0.5Mo (Normalized)'),
+                ('1Cr-0.5Mo', '1Cr-0.5Mo'),
+                ('1.25Cr-0.5Mo', '1.25Cr-0.5Mo'),
+                ('2.25Cr-1Mo', '2.25Cr-1Mo'),
+                ('3Cr-1Mo', '3Cr-1Mo'),
+                ('5Cr-0.5Mo', '5Cr-0.5Mo (Not subject to HTHA)'),
+                ('7Cr-0.5Mo', '7Cr-0.5Mo (Not subject to HTHA)'),
             ]),
+            
+            # HTHA Widgets
+            'mechanism_htha_active': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'htha_material': forms.Select(attrs={'class': 'select select-bordered w-full'}, choices=[
+                ('', '-- Select --'),
+                ('Carbon Steel', 'Carbon Steel'),
+                ('C-0.5Mo', 'C-0.5Mo (Annealed)'),
+                ('C-0.5Mo Normalized', 'C-0.5Mo (Normalized)'),
+                ('1Cr-0.5Mo', '1Cr-0.5Mo'),
+                ('1.25Cr-0.5Mo', '1.25Cr-0.5Mo'),
+                ('2.25Cr-1Mo', '2.25Cr-1Mo'),
+                ('3Cr-1Mo', '3Cr-1Mo'),
+                ('Other', 'Other (Consult API 941)')
+            ]),
+            'htha_h2_partial_pressure_psia': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.1', 'placeholder': 'psia'}),
+            'htha_exposure_time_years': forms.NumberInput(attrs={'class': 'input input-bordered w-full', 'step': '0.1', 'placeholder': 'years'}),
+            'htha_damage_observed': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'htha_material_verification': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
+            'htha_damage_factor': forms.NumberInput(attrs={'class': 'input input-bordered w-full bg-gray-100', 'readonly': 'readonly'}),
+
+            # POF Calculation Widgets
+            'pof_category': forms.Select(attrs={'class': 'select select-bordered w-full'}, choices=[
+                ('', '-- Auto --'), ('1', '1 - Very Low'), ('2', '2 - Low'), ('3', '3 - Medium'),
+                ('4', '4 - High'), ('5', '5 - Very High')
+            ]),
+            'gff_value': forms.NumberInput(attrs={'class': 'input input-bordered w-full bg-gray-100', 'readonly': 'readonly', 'step': 'any'}),
+            'fms_factor': forms.NumberInput(attrs={'class': 'input input-bordered w-full bg-gray-100', 'readonly': 'readonly', 'step': '0.001'}),
+            'fms_pscore': forms.NumberInput(attrs={'class': 'input input-bordered w-full bg-gray-100', 'readonly': 'readonly', 'step': '0.01'}),
+            'final_pof': forms.NumberInput(attrs={'class': 'input input-bordered w-full bg-gray-100', 'readonly': 'readonly', 'step': 'any'}),
+            
+            # GFF Equipment/Component Type
+            'gff_equipment_type': forms.Select(attrs={'class': 'select select-bordered w-full'}),
+            'gff_component_type': forms.Select(attrs={'class': 'select select-bordered w-full'}),
             
             'mechanism_external_damage_active': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-primary'}),
         }

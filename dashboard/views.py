@@ -448,3 +448,74 @@ def get_inspection_history(request, component_id):
         return JsonResponse({'success': False, 'error': str(e)}, status=400)
 
 
+# GFF API Endpoint - Fetch GFF from formula_app models
+@login_required
+def api_get_gff(request):
+    """Fetch GFF value based on equipment/component type and POF category"""
+    from formula_app.models import EquipmentType, ComponentType, ComponentGff
+    from django.http import JsonResponse
+    
+    equipment_id = request.GET.get('equipment_id')
+    component_id = request.GET.get('component_id')
+    pof_category = request.GET.get('pof_category', 'auto')
+    
+    if not equipment_id or not component_id:
+        return JsonResponse({'error': 'Missing equipment_id or component_id'}, status=400)
+    
+    try:
+        # Get equipment and component type names
+        equipment = EquipmentType.objects.filter(id=equipment_id).first()
+        component = ComponentType.objects.filter(id=component_id).first()
+        
+        if not equipment or not component:
+            return JsonResponse({'error': 'Equipment or Component not found'}, status=404)
+        
+        # Fetch GFF from ComponentGff model
+        gff_record = ComponentGff.objects.filter(component=component).first()
+        
+        if not gff_record:
+            return JsonResponse({'error': 'GFF data not found for this component type'}, status=404)
+        
+        # Use GFF total (default) or select based on hole size/POF category
+        # For simplicity, we'll use gff_total
+        gff_value = gff_record.gff_total
+        
+        return JsonResponse({
+            'gff_value': str(gff_value),
+            'equipment_type': equipment.name,
+            'component_type': component.name
+        })
+        
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+# Component Types API Endpoint - Fetch components for selected equipment
+@login_required
+def api_get_component_types(request):
+    """Fetch component types based on equipment type selection"""
+    from formula_app.models import EquipmentType, ComponentType
+    from django.http import JsonResponse
+    
+    equipment_id = request.GET.get('equipment_id')
+    
+    if not equipment_id:
+        return JsonResponse({'error': 'Missing equipment_id'}, status=400)
+    
+    try:
+        equipment = EquipmentType.objects.filter(id=equipment_id).first()
+        
+        if not equipment:
+            return JsonResponse({'error': 'Equipment not found'}, status=404)
+        
+        # Get all component types for this equipment
+        components = ComponentType.objects.filter(equipment=equipment).values('id', 'name')
+        
+        return JsonResponse({
+            'equipment_name': equipment.name,
+            'components': list(components)
+        })
+        
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+

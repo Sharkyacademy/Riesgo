@@ -24,4 +24,8 @@ urlpatterns = [
     path('components/inspection-history/add/', views.add_inspection_history, name='add_inspection_history'),
     path('components/inspection-history/<int:pk>/delete/', views.delete_inspection_history, name='delete_inspection_history'),
     path('components/<int:component_id>/inspection-history/', views.get_inspection_history, name='get_inspection_history'),
+    
+    # GFF API
+    path('api/get_gff/', views.api_get_gff, name='api_get_gff'),
+    path('api/get_component_types/', views.api_get_component_types, name='api_get_component_types'),
 ]

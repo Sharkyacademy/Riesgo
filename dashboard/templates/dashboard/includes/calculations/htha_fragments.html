@@ -1,0 +1,110 @@
+<div class="space-y-4">
+    <!-- Active Checkbox -->
+    <div class="form-control">
+        <label class="label cursor-pointer justify-start gap-4">
+            {{ form.mechanism_htha_active }}
+            <span class="label-text text-base font-bold text-red-900">Active: High Temperature Hydrogen Attack
+                (HTHA)</span>
+        </label>
+    </div>
+
+    <!-- Content Area -->
+    <div id="htha_content" class="hidden pl-6 border-l-4 border-red-200 mt-2 space-y-6">
+
+        <div class="alert alert-error shadow-sm bg-red-50 text-red-900">
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    class="stroke-current flex-shrink-0 w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span class="text-xs">Calculates Damage Factor (Df-htha) per API 581 Part 2, Section 6 (Nelson
+                    Curves).</span>
+            </div>
+        </div>
+
+        <!-- Section 1: Nelson Curve Parameters -->
+        <div class="card bg-base-100 border border-gray-200 p-4">
+            <h4 class="font-bold text-sm text-gray-700 mb-3 border-b pb-1">1. Determine Susceptibility (Nelson Curves)
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                <!-- Material Type -->
+                <div class="form-control">
+                    <label class="label"><span class="label-text font-semibold">Material Grade</span></label>
+                    {{ form.htha_material }}
+                    <div class="text-xs text-gray-400 mt-1">Select the closest matching material curve.</div>
+                </div>
+
+                <!-- Operating Temp (from Data section) -->
+                <div class="form-control">
+                    <label class="label"><span class="label-text font-semibold">Operating Temperature
+                            (°F)</span></label>
+                    <div class="input input-bordered w-full bg-gray-100" id="disp_htha_operating_temp">--</div>
+                    <div class="text-xs text-gray-400 mt-1">From "Data" section (read-only)</div>
+                </div>
+
+                <!-- H2 Partial Pressure -->
+                <div class="form-control">
+                    <label class="label"><span class="label-text font-semibold">H2 Partial Pressure
+                            (psia)</span></label>
+                    {{ form.htha_h2_partial_pressure_psia }}
+                </div>
+
+                <!-- Exposure Time (Time in Service) -->
+                <div class="form-control">
+                    <label class="label"><span class="label-text font-semibold">Time in Service (Years)</span></label>
+                    {{ form.htha_exposure_time_years }}
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Section 2: Inspections & Verification -->
+        <div class="card bg-base-100 border border-gray-200 p-4">
+            <h4 class="font-bold text-sm text-gray-700 mb-3 border-b pb-1">2. Inspection & Verification</h4>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Damage Observed -->
+                <div class="form-control">
+                    <label class="label cursor-pointer justify-start gap-3">
+                        {{ form.htha_damage_observed }}
+                        <span class="label-text font-medium">HTHA Damage Observed?</span>
+                    </label>
+                    <div class="text-xs text-gray-500 pl-8">If active, Susceptibility is automatically High.</div>
+                </div>
+
+                <!-- Material Verification -->
+                <div class="form-control">
+                    <label class="label cursor-pointer justify-start gap-3">
+                        {{ form.htha_material_verification }}
+                        <span class="label-text font-medium">Material Verified?</span>
+                    </label>
+                    <div class="text-xs text-gray-500 pl-8">Confirmation of correct metallurgy.</div>
+                </div>
+            </div>
+
+            <!-- Susceptibility Result Display -->
+            <div class="mt-4 p-2 bg-gray-50 rounded flex justify-between items-center">
+                <span class="text-xs font-bold text-gray-500 uppercase">Calculated Susceptibility</span>
+                <span id="disp_htha_susceptibility" class="font-mono font-bold text-red-800">--</span>
+            </div>
+
+        </div>
+
+        <!-- Result -->
+        <div class="alert bg-red-50 border-red-200">
+            <div class="w-full flex justify-between items-center">
+                <span class="font-bold text-red-900">HTHA Damage Factor (Df-htha)</span>
+                <div class="flex flex-col items-end">
+                    <span id="disp_htha_df" class="text-2xl font-extrabold text-red-900">--</span>
+                </div>
+            </div>
+            <!-- Ensure the form field is rendered (hidden or visible) to capture the value on POST -->
+            <div class="hidden">
+                {{ form.htha_damage_factor }}
+            </div>
+        </div>
+
+    </div>
+</div>

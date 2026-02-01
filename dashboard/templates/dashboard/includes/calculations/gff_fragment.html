@@ -1,0 +1,64 @@
+<div class="space-y-4">
+    <h2 class="text-xl font-bold text-blue-900 mb-4 pb-2 border-b">Generic Failure Frequency (GFF)</h2>
+    <p class="text-sm text-gray-500 mb-6">
+        GFF represents the base failure frequency for the equipment/component type based on API 581 Table 4.6.
+    </p>
+
+    <div class="alert alert-info shadow-sm bg-blue-50 text-blue-900 mb-6">
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-current flex-shrink-0 w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span class="text-xs">Select equipment and component type to retrieve GFF from API 581 Table 4.6.</span>
+        </div>
+    </div>
+
+    <!-- Equipment & Component Selection -->
+    <div class="card bg-base-100 border border-gray-200 p-4 mb-4">
+        <h4 class="font-bold text-sm text-gray-700 mb-3 border-b pb-1">Equipment & Component Type</h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">GFF Equipment Type <span
+                            class="text-red-500">*</span></span></label>
+                {{ form.gff_equipment_type }}
+                <div class="text-xs text-gray-400 mt-1">Select from API 581 equipment types</div>
+            </div>
+            <div class="form-control">
+                <label class="label"><span class="label-text font-semibold">GFF Component Type <span
+                            class="text-red-500">*</span></span></label>
+                {{ form.gff_component_type }}
+                <div class="text-xs text-gray-400 mt-1">Component type linked to equipment</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- POF Category Selection -->
+    <div class="card bg-base-100 border border-gray-200 p-4">
+        <h4 class="font-bold text-sm text-gray-700 mb-3 border-b pb-1">POF Category</h4>
+        <div class="form-control">
+            <label class="label"><span class="label-text font-semibold">POF Category (1-5)</span></label>
+            {{ form.pof_category }}
+            <div class="text-xs text-gray-500 mt-2">
+                Select "-- Auto --" to use the maximum POF category from all active damage mechanisms.
+                Or manually select a category (1=Very Low, 5=Very High).
+            </div>
+        </div>
+    </div>
+
+    <!-- GFF Result -->
+    <div class="alert bg-blue-50 border-blue-200 mt-4">
+        <div class="w-full flex justify-between items-center">
+            <span class="font-bold text-blue-900">Generic Failure Frequency (GFF)</span>
+            <div class="flex flex-col items-end">
+                <span id="disp_gff_value" class="text-2xl font-extrabold text-blue-900 font-mono">--</span>
+                <span class="text-xs text-gray-500">failures/year</span>
+            </div>
+        </div>
+        <!-- Hidden field for form submission -->
+        <div class="hidden">
+            {{ form.gff_value }}
+        </div>
+    </div>
+</div>

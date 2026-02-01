@@ -257,6 +257,20 @@ function calculateMetallurgicalPof() {
         console.log('[POF Calc] Brittle Fracture DF found:', df);
         if (df > maxDF) maxDF = df;
     }
+
+    // HTHA
+    if (document.getElementById('id_mechanism_htha_active')?.checked) {
+        const hiddenVal = document.getElementById('id_htha_damage_factor')?.value;
+        const displayVal = document.getElementById('disp_htha_df')?.innerText;
+        let df = 0;
+        if (hiddenVal && !isNaN(parseFloat(hiddenVal))) {
+            df = parseFloat(hiddenVal);
+        } else if (displayVal && !isNaN(parseFloat(displayVal))) {
+            df = parseFloat(displayVal);
+        }
+        console.log('[POF Calc] HTHA DF found:', df);
+        if (df > maxDF) maxDF = df;
+    }
     const pof = dfToPof(maxDF);
     console.log('[POF Calc] Metallurgical POF:', pof);
     return pof;

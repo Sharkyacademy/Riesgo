@@ -444,6 +444,40 @@ class Component(models.Model):
     brittle_yield_strength_ksi = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Yield Strength (ksi)")
     brittle_material_type = models.CharField(max_length=50, null=True, blank=True, verbose_name="Material Type")
 
+    # HTHA (High Temperature Hydrogen Attack)
+    mechanism_htha_active = models.BooleanField(default=False, verbose_name="Mech. Active: HTHA")
+    htha_material = models.CharField(max_length=100, null=True, blank=True, verbose_name="HTHA Material")
+    htha_h2_partial_pressure_psia = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="H2 Partial Pressure (psia)")
+    htha_exposure_time_years = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="HTHA Exposure Time (years)")
+    htha_damage_observed = models.BooleanField(default=False, verbose_name="HTHA Damage Observed?")
+    htha_material_verification = models.BooleanField(default=False, verbose_name="HTHA Material Verification Done?")
+    htha_damage_factor = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="HTHA Damage Factor")
+
+    # POF Calculation Fields (GFF + FMS)
+    pof_category = models.IntegerField(null=True, blank=True, verbose_name="POF Category (1-5)")
+    gff_value = models.DecimalField(max_digits=15, decimal_places=10, null=True, blank=True, verbose_name="Generic Failure Frequency")
+    fms_factor = models.DecimalField(max_digits=5, decimal_places=3, null=True, blank=True, verbose_name="FMS Factor")
+    fms_pscore = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, verbose_name="FMS P-Score")
+    final_pof = models.DecimalField(max_digits=15, decimal_places=10, null=True, blank=True, verbose_name="Final POF (failures/year)")
+    
+    # GFF Equipment/Component Type (Links to formula_app for API 581 data)
+    gff_equipment_type = models.ForeignKey(
+        'formula_app.EquipmentType', 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True,
+        related_name='dashboard_components',
+        verbose_name="GFF Equipment Type"
+    )
+    gff_component_type = models.ForeignKey(
+        'formula_app.ComponentType',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='dashboard_components',
+        verbose_name="GFF Component Type"
+    )
+
     # External Damage (Uses mostly existing fields, but might need a toggle)
     mechanism_external_damage_active = models.BooleanField(default=False, verbose_name="Mech. Active: External Damage")
     scc_hsc_hf_inspection_count_d = models.IntegerField(default=0, verbose_name="Insp. Count Cat D (HSC-HF)")
