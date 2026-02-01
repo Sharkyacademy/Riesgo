@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Risk Matrix Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .risk-matrix-container {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            background: white;
+            margin: 20px auto;
+            max-width: 800px;
+        }
+
+        .risk-matrix-grid {
+            display: grid !important;
+            grid-template-columns: 80px repeat(5, 90px) !important;
+            grid-template-rows: repeat(5, 90px) 60px !important;
+            gap: 2px !important;
+            background: #e5e7eb !important;
+            padding: 2px !important;
+            border: 3px solid red;
+        }
+
+        .risk-cell {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 20px;
+        }
+
+        .axis-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: #4b5563;
+            background: #f3f4f6;
+            text-align: center;
+            padding: 4px;
+        }
+
+        .risk-low {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .risk-medium {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        }
+
+        .risk-medium-high {
+            background: linear-gradient(135deg, #fb923c 0%, #ea580c 100%);
+        }
+
+        .risk-high {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Risk Matrix Grid Test</h1>
+    <p>You should see a 5x5 colored grid with numbers below:</p>
+
+    <div class="risk-matrix-container">
+        <div class="risk-matrix-grid" id="risk-matrix-grid">
+            <!-- Grid will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        function initRiskMatrix() {
+            const container = document.getElementById('risk-matrix-grid');
+            if (!container) {
+                console.error('Container not found');
+                return;
+            }
+
+            container.innerHTML = '';
+            console.log('Starting grid creation...');
+
+            const pofLevels = ['', '5', '4', '3', '2', '1'];
+            const pofLabels = ['POF', 'FREQUENT', 'LIKELY', 'OCCASIONAL', 'UNLIKELY', 'RARE'];
+            const cofCategories = ['', 'A', 'B', 'C', 'D', 'E'];
+            const cofLabels = ['COF', 'NEGLIGIBLE', 'MINOR', 'MODERATE', 'MAJOR', 'CATASTROPHIC'];
+
+            let cellCount = 0;
+
+            for (let row = 0; row < 6; row++) {
+                for (let col = 0; col < 6; col++) {
+                    const cell = document.createElement('div');
+
+                    // Y-axis labels (left column)
+                    if (col === 0) {
+                        cell.className = 'axis-label';
+                        if (row < 5) {
+                            cell.innerHTML = `<div><b>${pofLevels[row + 1]}</b><br><small>${pofLabels[row + 1]}</small></div>`;
+                        } else {
+                            cell.innerHTML = `<b>${pofLabels[0]}</b>`;
+                        }
+                        container.appendChild(cell);
+                        continue;
+                    }
+
+                    // X-axis labels (bottom row)
+                    if (row === 5 && col > 0) {
+                        cell.className = 'axis-label';
+                        cell.innerHTML = `<div><b>${cofCategories[col]}</b><br><small>${cofLabels[col]}</small></div>`;
+                        container.appendChild(cell);
+                        continue;
+                    }
+
+                    // Risk cells
+                    if (col > 0 && row < 5) {
+                        const pofValue = 6 - row;
+                        const riskScore = pofValue + col;
+
+                        cell.className = 'risk-cell';
+
+                        // Determine color
+                        if (riskScore <= 3) cell.classList.add('risk-low');
+                        else if (riskScore <= 5) cell.classList.add('risk-medium');
+                        else if (riskScore <= 7) cell.classList.add('risk-medium-high');
+                        else cell.classList.add('risk-high');
+
+                        cell.textContent = riskScore;
+                        container.appendChild(cell);
+                        cellCount++;
+                    }
+                }
+            }
+
+            console.log(`Created ${cellCount} cells`);
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initRiskMatrix);
+    </script>
+</body>
+
+</html>
