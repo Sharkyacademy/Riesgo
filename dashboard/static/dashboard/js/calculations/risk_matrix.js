@@ -4,6 +4,137 @@
  * API 580/581 Compliant
  */
 
+// =============================================================================
+// CONFIGURATION HELPERS
+// =============================================================================
+
+/**
+ * Get current matrix configuration from radio buttons
+ */
+function getMatrixConfig() {
+    return {
+        computationType: document.querySelector('input[name="computation_type"]:checked')?.value || 'quantitative',
+        consequenceMetric: document.querySelector('input[name="consequence_metric"]:checked')?.value || 'fc',
+        probabilityMetric: document.querySelector('input[name="probability_metric"]:checked')?.value || 'pf'
+    };
+}
+
+// =============================================================================
+// DAMAGE FACTOR (Df) CALCULATIONS
+// =============================================================================
+
+/**
+ * Calculate Df for thinning mechanisms
+ */
+function calculateThinningDfMax() {
+    const mechanisms = ['co2', 'hcl', 'h2so4', 'hf', 'amine',
+        'alkaline', 'acid', 'soil', 'h2s_h2', 'sulfidic'];
+    let maxDf = 0;
+    mechanisms.forEach(mech => {
+        const isActive = document.getElementById(`id_mech_thinning_${mech}_active`)?.checked;
+        if (isActive) {
+            const rate = parseFloat(document.getElementById(`id_${mech}_corrosion_rate_mpy`)?.value) || 0;
+            const df = calculateGeneralThinningDF(rate);
+            if (df > maxDf) maxDf = df;
+        }
+    });
+    return maxDf;
+}
+
+/**
+ * Calculate Df for cracking mechanisms
+ */
+function calculateCrackingDfMax() {
+    const mechanisms = ['scc_caustic', 'scc_amine', 'scc_ssc', 'scc_hic_h2s',
+        'scc_acscc', 'scc_pascc', 'scc_clscc', 'scc_hsc_hf'];
+    let maxDf = 0;
+    mechanisms.forEach(mechId => {
+        const isActive = document.getElementById(`id_mechanism_${mechId}_active`)?.checked;
+        if (isActive) {
+            const df = parseFloat(document.getElementById(`res_${mechId}_df`)?.textContent) || 0;
+            if (df > maxDf) maxDf = df;
+        }
+    });
+    return maxDf;
+}
+
+/**
+ * Calculate Df for external damage mechanisms  
+ */
+function calculateExternalDfMax() {
+    let maxDf = 0;
+
+    if (document.getElementById('id_mech_ext_corrosion_active')?.checked) {
+        const rate = parseFloat(document.getElementById('id_external_corrosion_rate_mpy')?.value) || 0;
+        const df = calculateGeneralThinningDF(rate);
+        if (df > maxDf) maxDf = df;
+    }
+
+    if (document.getElementById('id_mech_cui_active')?.checked) {
+        const rate = parseFloat(document.getElementById('id_cui_corrosion_rate_mpy')?.value) || 0;
+        const df = calculateGeneralThinningDF(rate);
+        if (df > maxDf) maxDf = df;
+    }
+
+    return maxDf;
+}
+
+/**
+ * Calculate Df for metallurgical mechanisms
+ */
+function calculateMetallurgicalDfMax() {
+    let maxDf = 0;
+
+    if (document.getElementById('id_mechanism_brittle_fracture_active')?.checked) {
+        const df = parseFloat(document.getElementById('id_brittle_damage_factor')?.value) || 0;
+        if (df > maxDf) maxDf = df;
+    }
+
+    if (document.getElementById('id_mechanism_htha_active')?.checked) {
+        const df = parseFloat(document.getElementById('id_htha_damage_factor')?.value) || 0;
+        if (df > maxDf) maxDf = df;
+    }
+
+    return maxDf;
+}
+
+/**
+ * Convert corrosion rate to Damage Factor
+ * Based on formula_app_adapter.js logic
+ */
+function calculateGeneralThinningDF(rateMpy) {
+    if (rateMpy <= 0) return 0;
+    if (rateMpy < 0.01) return 1;
+    if (rateMpy < 0.05) return 10;
+    if (rateMpy < 0.1) return 50;
+    if (rateMpy < 0.5) return 100;
+    return 1000;
+}
+
+/**
+ * Convert Df to POF category (1-4)
+ * Same logic as dfToPof() in formula_app_adapter.js
+ */
+function dfToPofCategory(df) {
+    if (df <= 0) return 0;
+    if (df < 10) return 1;
+    if (df < 100) return 2;
+    if (df < 1000) return 3;
+    return 4;
+}
+
+/**
+ * Get aggregated maximum Df from all mechanisms
+ */
+function calculateDfTotal() {
+    const thinningDf = calculateThinningDfMax();
+    const crackingDf = calculateCrackingDfMax();
+    const externalDf = calculateExternalDfMax();
+    const metallurgicalDf = calculateMetallurgicalDfMax();
+
+    return Math.max(thinningDf, crackingDf, externalDf, metallurgicalDf);
+}
+
 // Initialize Risk Matrix Grid
 function initRiskMatrix() {
     const container = document.getElementById('risk-matrix-grid');
@@ -14,26 +145,52 @@ function initRiskMatrix() {
 
     // Clear existing content
     container.innerHTML = '';
-    console.log('[Risk Matrix] Starting initialization...');
 
-    // Y-axis labels (POF) - from top to bottom: 5, 4, 3, 2, 1
-    const pofLevels = ['', '5', '4', '3', '2', '1'];
-    const pofLabels = ['POF', 'FREQUENT', 'LIKELY', 'OCCASIONAL', 'UNLIKELY', 'RARE'];
+    // Get current configuration
+    const config = getMatrixConfig();
+    console.log('[Risk Matrix] Starting initialization with config:', config);
 
-    // X-axis labels (COF)
-    const cofCategories = ['', 'A', 'B', 'C', 'D', 'E'];
-    const cofLabels = ['COF', 'NEGLIGIBLE', 'MINOR', 'MODERATE', 'MAJOR', 'CATASTROPHIC'];
+    // Determine axis labels based on mode
+    let pofLevels, pofLabels, yAxisLabel;
+
+    if (config.probabilityMetric === 'df') {
+        // Df mode - 4 ranges
+        pofLevels = ['', '4', '3', '2', '1'];  // Top to bottom
+        pofLabels = ['Df', '≥1000', '100-1000', '10-100', '<10'];
+        yAxisLabel = 'Df';
+    } else {
+        // Pf mode - 5 levels  
+        pofLevels = ['', '5', '4', '3', '2', '1'];
+        pofLabels = ['POF', 'FREQUENT', 'LIKELY', 'OCCASIONAL', 'UNLIKELY', 'RARE'];
+        yAxisLabel = 'POF';
+    }
+
+    // X-axis labels based on consequence metric
+    let cofCategories = ['', 'A', 'B', 'C', 'D', 'E'];
+    let cofLabels, xAxisLabel;
+
+    if (config.consequenceMetric === 'ca') {
+        cofLabels = ['CA', 'NEGLIGIBLE', 'MINOR', 'MODERATE', 'MAJOR', 'CATASTROPHIC'];
+        xAxisLabel = 'CA';
+    } else {
+        cofLabels = ['COF', 'NEGLIGIBLE', 'MINOR', 'MODERATE', 'MAJOR', 'CATASTROPHIC'];
+        xAxisLabel = 'FC';
+    }
+
+    const gridRows = pofLevels.length; // 5 or 6 depending on mode
+    const gridCols = 6; // Always 6 (label + 5 COF categories)
 
     let cellCount = 0;
 
-    // Build grid (6 rows x 6 cols = 36 cells)
-    for (let row = 0; row < 6; row++) {
-        for (let col = 0; col < 6; col++) {
+    // Build grid - dynamic rows based on mode
+    for (let row = 0; row < gridRows; row++) {
+        for (let col = 0; col < gridCols; col++) {
             const cell = document.createElement('div');
 
             // Y-axis labels (left column)
             if (col === 0 && row >= 0) {
-                cell.className = 'axis-label' + (row < 5 ? ' axis-label-y' : '');
+                const isDataRow = row < (gridRows - 1);
+                cell.className = 'axis-label' + (isDataRow ? ' axis-label-y' : '');
                 cell.style.cssText = `
                     display: flex;
                     align-items: center;
@@ -47,7 +204,7 @@ function initRiskMatrix() {
                     border-radius: 4px;
                     box-shadow: 0 1px 2px rgba(0,0,0,0.05);
                 `;
-                if (row < 5) {
+                if (isDataRow) {
                     cell.innerHTML = `<div class="text-center"><div class="font-bold" style="font-size: 14px; margin-bottom: 2px;">${pofLevels[row + 1]}</div><div style="font-size: 9px; line-height: 1.2;">${pofLabels[row + 1]}</div></div>`;
                 } else {
                     cell.innerHTML = `<div class="font-bold" style="font-size: 12px;">${pofLabels[0]}</div>`;
@@ -57,7 +214,7 @@ function initRiskMatrix() {
             }
 
             // X-axis labels (bottom row)
-            if (row === 5 && col > 0) {
+            if (row === (gridRows - 1) && col > 0) {
                 cell.className = 'axis-label';
                 cell.style.cssText = `
                     display: flex;
@@ -77,9 +234,11 @@ function initRiskMatrix() {
                 continue;
             }
 
-            // Risk cells
-            if (col > 0 && row < 5) {
-                const pofValue = 6 - row; // Invert for correct order (top = 5, bottom = 1)
+            // Risk cells (excluding axis labels)
+            const maxPofLevel = pofLevels.length - 2; // Max POF level (5 for Pf, 4 for Df)
+            if (col > 0 && row < (gridRows - 1)) {
+                // Calculate POF value for this cell (from top to bottom)
+                const pofValue = maxPofLevel + 1 - row; // Top row = max value
                 const cofCategory = cofCategories[col];
                 const riskScore = pofValue + col; // Calculate risk score for display
 
@@ -175,56 +334,106 @@ function getRiskColorClass(level) {
 function updateRiskMatrix() {
     console.log('[Risk Matrix] Updating...');
 
-    // Get max POF from all damage mechanisms
-    const pofMetalLoss = parseInt(document.getElementById('pof_metal_loss')?.textContent) || 0;
-    const pofCracking = parseInt(document.getElementById('pof_cracking')?.textContent) || 0;
-    const pofExternal = parseInt(document.getElementById('pof_external')?.textContent) || 0;
-    const pofMetallurgical = parseInt(document.getElementById('pof_metallurgical')?.textContent) || 0;
-    const pofMechanical = parseInt(document.getElementById('pof_mechanical')?.textContent) || 0;
-    const pofOther = parseInt(document.getElementById('pof_other')?.textContent) || 0;
+    // Get configuration
+    const config = getMatrixConfig();
+    console.log('[Risk Matrix] Configuration:', config);
 
-    const maxPOF = Math.max(pofMetalLoss, pofCracking, pofExternal, pofMetallurgical, pofMechanical, pofOther);
+    // Calculate POF/Df based on selected mode
+    let currentProbability, probabilityValue;
 
-    // Get COF category
-    const cofCategory = calculateCOFCategory();
+    if (config.probabilityMetric === 'df') {
+        // Use Damage Factor
+        const dfTotal = calculateDfTotal();
+        currentProbability = dfToPofCategory(dfTotal); // Convert to 1-4 scale
+        probabilityValue = dfTotal; // Keep original Df value for display
+        console.log(`[Risk Matrix] Df Total: ${dfTotal}, Category: ${currentProbability}`);
+    } else {
+        // Use Probability of Failure (Pf)
+        const pofMetalLoss = parseInt(document.getElementById('pof_metal_loss')?.textContent) || 0;
+        const pofCracking = parseInt(document.getElementById('pof_cracking')?.textContent) || 0;
+        const pofExternal = parseInt(document.getElementById('pof_external')?.textContent) || 0;
+        const pofMetallurgical = parseInt(document.getElementById('pof_metallurgical')?.textContent) || 0;
+        const pofMechanical = parseInt(document.getElementById('pof_mechanical')?.textContent) || 0;
+        const pofOther = parseInt(document.getElementById('pof_other')?.textContent) || 0;
 
-    console.log(`[Risk Matrix] Current values: POF=${maxPOF}, COF=${cofCategory}`);
+        currentProbability = Math.max(pofMetalLoss, pofCracking, pofExternal, pofMetallurgical, pofMechanical, pofOther);
+        probabilityValue = currentProbability;
+        console.log(`[Risk Matrix] POF: ${currentProbability}`);
+    }
+
+    // Calculate COF category based on selected metric
+    let cofCategory;
+
+    if (config.consequenceMetric === 'ca') {
+        // Use Consequence Area
+        cofCategory = calculateCACategory();
+    } else {
+        // Use Financial Consequence
+        cofCategory = calculateCOFCategory();
+    }
+
+    console.log(`[Risk Matrix] Current values: Probability=${currentProbability}, COF=${cofCategory}`);
+
+    // Regenerate matrix if mode changed
+    const container = document.getElementById('risk-matrix-grid');
+    if (container && container.dataset.currentMode !== config.probabilityMetric) {
+        console.log('[Risk Matrix] Mode changed, regenerating grid...');
+        container.dataset.currentMode = config.probabilityMetric;
+        initRiskMatrix();
+    }
 
     // Update summary cards
-    updatePOFCard(maxPOF);
-    updateCOFCard(cofCategory);
+    updatePOFCard(currentProbability, probabilityValue, config);
+    updateCOFCard(cofCategory, config);
 
     // Highlight current cell in matrix
-    highlightCurrentRisk(maxPOF, cofCategory);
+    highlightCurrentRisk(currentProbability, cofCategory);
 
     // Update risk level card
-    updateRiskLevelCard(maxPOF, cofCategory);
+    updateRiskLevelCard(currentProbability, cofCategory);
 
     // Update details breakdown
-    updateDetailsBreakdown(pofMetalLoss, pofCracking, pofExternal, pofMetallurgical, maxPOF, cofCategory);
+    updateDetailsBreakdown(currentProbability, cofCategory, config);
 }
 
-function updatePOFCard(maxPOF) {
-    const labels = {
-        0: 'Not Calculated',
-        1: 'Level 1 - Rare',
-        2: 'Level 2 - Unlikely',
-        3: 'Level 3 - Occasional',
-        4: 'Level 4 - Likely',
-        5: 'Level 5 - Frequent'
-    };
+function updatePOFCard(value, rawValue, config) {
+    const metric = config.probabilityMetric === 'df' ? 'Df' : 'POF';
 
-    document.getElementById('risk_pof_value').textContent = maxPOF || '--';
-    document.getElementById('risk_pof_label').textContent = labels[maxPOF] || 'Level --';
+    if (config.probabilityMetric === 'df') {
+        // Df mode - show range
+        const labels = {
+            0: 'Not Calculated',
+            1: 'Df Range 1 (<10)',
+            2: 'Df Range 2 (10-100)',
+            3: 'Df Range 3 (100-1000)',
+            4: 'Df Range 4 (≥1000)'
+        };
+        document.getElementById('risk_pof_value').textContent = rawValue || '--';
+        document.getElementById('risk_pof_label').textContent = labels[value] || 'Range --';
+    } else {
+        // Pf mode - show level
+        const labels = {
+            0: 'Not Calculated',
+            1: 'Level 1 - Rare',
+            2: 'Level 2 - Unlikely',
+            3: 'Level 3 - Occasional',
+            4: 'Level 4 - Likely',
+            5: 'Level 5 - Frequent'
+        };
+        document.getElementById('risk_pof_value').textContent = value || '--';
+        document.getElementById('risk_pof_label').textContent = labels[value] || 'Level --';
+    }
 }
 
-function updateCOFCard(cofCategory) {
+function updateCOFCard(cofCategory, config) {
+    const metric = config.consequenceMetric === 'ca' ? 'CA' : 'FC';
+
     const labels = {
-        'A': 'Category A - Negligible',
-        'B': 'Category B - Minor',
-        'C': 'Category C - Moderate',
-        'D': 'Category D - Major',
-        'E': 'Category E - Catastrophic'
+        'A': `Category A - Negligible (${metric})`,
+        'B': `Category B - Minor (${metric})`,
+        'C': `Category C - Moderate (${metric})`,
+        'D': `Category D - Major (${metric})`,
+        'E': `Category E - Catastrophic (${metric})`
     };
 
     document.getElementById('risk_cof_category').textContent = cofCategory || '--';
@@ -232,8 +441,7 @@ function updateCOFCard(cofCategory) {
 }
 
 function calculateCOFCategory() {
-    // Try to get COF from consequence tab if calculated
-    // Look for financial consequence total
+    // Financial Consequence - existing logic
     const fcTotalEl = document.getElementById('val_fc_total');
     if (!fcTotalEl) return 'A';
 
@@ -250,14 +458,39 @@ function calculateCOFCategory() {
     return 'E';
 }
 
+function calculateCACategory() {
+    // Consequence Area
+    const cmdArea = parseFloat(document.getElementById('val_final_cmd')?.textContent) || 0;
+    const injArea = parseFloat(document.getElementById('val_final_inj')?.textContent) || 0;
+
+    // Use maximum area
+    const totalArea = Math.max(cmdArea, injArea);
+
+    console.log('[Risk Matrix] Consequence Area - CMD:', cmdArea, 'INJ:', injArea, 'Max:', totalArea);
+
+    // API 581 Table C.2 - Consequence Area Categories (ft²)
+    // These thresholds may need adjustment based on API 581 standards
+    if (totalArea < 1000) return 'A';
+    if (totalArea < 5000) return 'B';
+    if (totalArea < 15000) return 'C';
+    if (totalArea < 40000) return 'D';
+    return 'E';
+}
+
 function highlightCurrentRisk(pof, cofCategory) {
-    // Remove previous highlight
+    // Remove previous highlight AND checkmarks
     document.querySelectorAll('[data-pof]').forEach(cell => {
         if (cell.dataset.pof && cell.dataset.cof) {
             cell.classList.remove('current-position-active');
             cell.style.border = 'none';
             cell.style.transform = 'scale(1)';
             cell.style.zIndex = '1';
+
+            // Remove any checkmarks from previous highlights
+            const oldCheckmark = cell.querySelector('div[data-checkmark]');
+            if (oldCheckmark) {
+                oldCheckmark.remove();
+            }
         }
     });
 
@@ -277,6 +510,7 @@ function highlightCurrentRisk(pof, cofCategory) {
 
         // Add checkmark
         const checkmark = document.createElement('div');
+        checkmark.dataset.checkmark = 'true'; // Add identifier for removal
         checkmark.style.cssText = `
             position: absolute;
             top: 4px;
@@ -344,26 +578,60 @@ function updateRiskLevelCard(pof, cofCategory) {
     }
 }
 
-function updateDetailsBreakdown(pofMetalLoss, pofCracking, pofExternal, pofMetallurgical, maxPOF, cofCategory) {
-    // Update POF details
-    document.getElementById('detail_pof_metal_loss').textContent = pofMetalLoss || '0';
-    document.getElementById('detail_pof_cracking').textContent = pofCracking || '0';
-    document.getElementById('detail_pof_external').textContent = pofExternal || '0';
-    document.getElementById('detail_pof_metallurgical').textContent = pofMetallurgical || '0';
-    document.getElementById('detail_pof_final').textContent = maxPOF || '0';
+function updateDetailsBreakdown(currentProbability, cofCategory, config) {
+    // Update POF/Df details based on mode
+    if (config.probabilityMetric === 'df') {
+        // Show Df breakdown
+        const thinningDf = calculateThinningDfMax();
+        const crackingDf = calculateCrackingDfMax();
+        const externalDf = calculateExternalDfMax();
+        const metallurgicalDf = calculateMetallurgicalDfMax();
 
-    // Update COF details - get from consequence tab if available
-    const fcFlam = document.getElementById('val_fc_flam')?.textContent || '$0';
-    const fcToxic = document.getElementById('val_fc_toxic')?.textContent || '$0';
-    const fcInj = document.getElementById('val_fc_inj')?.textContent || '$0';
-    const fcEnv = document.getElementById('val_fc_env')?.textContent || '$0';
-    const fcTotal = document.getElementById('val_fc_total')?.textContent || '$0';
+        document.getElementById('detail_pof_metal_loss').textContent = thinningDf || '0';
+        document.getElementById('detail_pof_cracking').textContent = crackingDf || '0';
+        document.getElementById('detail_pof_external').textContent = externalDf || '0';
+        document.getElementById('detail_pof_metallurgical').textContent = metallurgicalDf || '0';
+        document.getElementById('detail_pof_final').textContent = calculateDfTotal() || '0';
+    } else {
+        // Show POF breakdown
+        const pofMetalLoss = parseInt(document.getElementById('pof_metal_loss')?.textContent) || 0;
+        const pofCracking = parseInt(document.getElementById('pof_cracking')?.textContent) || 0;
+        const pofExternal = parseInt(document.getElementById('pof_external')?.textContent) || 0;
+        const pofMetallurgical = parseInt(document.getElementById('pof_metallurgical')?.textContent) || 0;
 
-    document.getElementById('detail_fc_flam').textContent = fcFlam;
-    document.getElementById('detail_fc_toxic').textContent = fcToxic;
-    document.getElementById('detail_fc_inj').textContent = fcInj;
-    document.getElementById('detail_fc_env').textContent = fcEnv;
-    document.getElementById('detail_fc_total').textContent = fcTotal;
+        document.getElementById('detail_pof_metal_loss').textContent = pofMetalLoss || '0';
+        document.getElementById('detail_pof_cracking').textContent = pofCracking || '0';
+        document.getElementById('detail_pof_external').textContent = pofExternal || '0';
+        document.getElementById('detail_pof_metallurgical').textContent = pofMetallurgical || '0';
+        document.getElementById('detail_pof_final').textContent = currentProbability || '0';
+    }
+
+    // Update COF details based on metric
+    if (config.consequenceMetric === 'ca') {
+        // Show Consequence Area details
+        const cmdArea = document.getElementById('val_final_cmd')?.textContent || '0 ft²';
+        const injArea = document.getElementById('val_final_inj')?.textContent || '0 ft²';
+
+        document.getElementById('detail_fc_flam').textContent = cmdArea;
+        document.getElementById('detail_fc_toxic').textContent = '—';
+        document.getElementById('detail_fc_inj').textContent = injArea;
+        document.getElementById('detail_fc_env').textContent = '—';
+        document.getElementById('detail_fc_total').textContent = Math.max(parseFloat(cmdArea) || 0, parseFloat(injArea) || 0) + ' ft²';
+    } else {
+        // Show Financial Consequence details
+        const fcFlam = document.getElementById('val_fc_flam')?.textContent || '$0';
+        const fcToxic = document.getElementById('val_fc_toxic')?.textContent || '$0';
+        const fcInj = document.getElementById('val_fc_inj')?.textContent || '$0';
+        const fcEnv = document.getElementById('val_fc_env')?.textContent || '$0';
+        const fcTotal = document.getElementById('val_fc_total')?.textContent || '$0';
+
+        document.getElementById('detail_fc_flam').textContent = fcFlam;
+        document.getElementById('detail_fc_toxic').textContent = fcToxic;
+        document.getElementById('detail_fc_inj').textContent = fcInj;
+        document.getElementById('detail_fc_env').textContent = fcEnv;
+        document.getElementById('detail_fc_total').textContent = fcTotal;
+    }
+
     document.getElementById('detail_cof_category').textContent = cofCategory || '--';
 }
 
@@ -382,6 +650,25 @@ if (typeof window !== 'undefined') {
             }
         };
     }
+
+    // Add event listeners for matrix configuration changes
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log('[Risk Matrix] Setting up configuration listeners...');
+
+        // Listen to all radio button changes
+        const radioButtons = document.querySelectorAll('input[name="computation_type"], input[name="consequence_metric"], input[name="probability_metric"]');
+
+        radioButtons.forEach(radio => {
+            radio.addEventListener('change', function () {
+                console.log('[Risk Matrix] Configuration changed:', this.name, '=', this.value);
+
+                // Update matrix with new configuration
+                updateRiskMatrix();
+            });
+        });
+
+        console.log('[Risk Matrix] Configuration listeners registered for', radioButtons.length, 'radio buttons');
+    });
 }
 
 console.log('[Risk Matrix] 📊 Module loaded successfully');
