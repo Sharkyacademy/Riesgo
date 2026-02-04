@@ -1799,6 +1799,147 @@ console.log('[Caustic Formula App] Module loaded - API 581 compliant calculation
 // POF INITIALIZATION ON PAGE LOAD
 // ============================================================================
 
+// ============================================================================
+// SCC INITIALIZATION FUNCTIONS (MISSING LOGIC RESTORED)
+// ============================================================================
+
+function initCaustic() {
+    const inputs = [
+        'id_scc_caustic_cracks_observed', 'id_scc_caustic_cracks_removed',
+        'id_scc_caustic_stress_relieved', 'id_scc_caustic_naoh_conc_percent',
+        'id_scc_caustic_steamed_out_prior', 'id_heat_traced', 'id_operating_temp_f',
+        'id_scc_caustic_inspection_count_a', 'id_scc_caustic_inspection_count_b',
+        'id_scc_caustic_inspection_count_c', 'id_scc_caustic_inspection_count_d'
+    ];
+    attachListeners(inputs, runCausticCalculationsFormulaApp);
+    setupToggle('id_mechanism_scc_caustic_active', 'scc_caustic_container', runCausticCalculationsFormulaApp);
+}
+
+function initSSC() {
+    const inputs = [
+        'id_scc_ssc_cracks_observed', 'id_scc_ssc_cracks_removed',
+        'id_scc_ssc_sulfur_content', 'id_scc_ssc_ph', 'id_scc_ssc_h2s_content_ppm',
+        'id_scc_ssc_cyanides', 'id_pwht',
+        'id_scc_ssc_inspection_count_a', 'id_scc_ssc_inspection_count_b',
+        'id_scc_ssc_inspection_count_c', 'id_scc_ssc_inspection_count_d'
+    ];
+    attachListeners(inputs, runSSCCalculations);
+    setupToggle('id_mechanism_scc_ssc_active', 'scc_ssc_container', runSSCCalculations);
+}
+
+function initHIC() {
+    const inputs = [
+        'id_scc_hic_cracks_observed', 'id_scc_hic_cracks_removed',
+        'id_scc_hic_sulfur_content', 'id_scc_hic_ph', 'id_scc_hic_h2s_content_ppm',
+        'id_scc_hic_cyanides', 'id_pwht',
+        'id_scc_hic_inspection_count_a', 'id_scc_hic_inspection_count_b',
+        'id_scc_hic_inspection_count_c', 'id_scc_hic_inspection_count_d'
+    ];
+    attachListeners(inputs, runHICCalculations);
+    setupToggle('id_mechanism_scc_hic_active', 'scc_hic_container', runHICCalculations);
+}
+
+function initACSCC() {
+    const inputs = [
+        'id_scc_acscc_cracks_observed', 'id_scc_acscc_cracks_removed',
+        'id_scc_acscc_ph', 'id_scc_acscc_co3_conc_ppm',
+        'id_scc_acscc_inspection_count_a', 'id_scc_acscc_inspection_count_b',
+        'id_scc_acscc_inspection_count_c', 'id_scc_acscc_inspection_count_d'
+    ];
+    attachListeners(inputs, runACSCCCalculations);
+    setupToggle('id_mechanism_scc_acscc_active', 'scc_acscc_container', runACSCCCalculations);
+}
+
+function initPASCC() {
+    const inputs = [
+        'id_scc_pascc_cracks_observed', 'id_scc_pascc_cracks_removed',
+        'id_scc_pascc_sensitized', 'id_scc_pascc_sulfur_exposure',
+        'id_scc_pascc_downtime_protected',
+        'id_scc_pascc_inspection_count_a', 'id_scc_pascc_inspection_count_b',
+        'id_scc_pascc_inspection_count_c', 'id_scc_pascc_inspection_count_d'
+    ];
+    attachListeners(inputs, runPASCCCalculations);
+    setupToggle('id_mechanism_scc_pascc_active', 'scc_pascc_container', runPASCCCalculations);
+}
+
+function initHSCHF() {
+    const inputs = [
+        'id_scc_hsc_hf_present', 'id_scc_hsc_hf_cracks_observed',
+        'id_scc_hsc_hf_cracks_removed', 'id_scc_hsc_hf_hardness_hb', 'id_pwht',
+        'id_scc_hsc_hf_inspection_count_a', 'id_scc_hsc_hf_inspection_count_b',
+        'id_scc_hsc_hf_inspection_count_c', 'id_scc_hsc_hf_inspection_count_d'
+    ];
+    attachListeners(inputs, runHSCHFCalculations);
+    setupToggle('id_mechanism_scc_hschf_active', 'scc_hsc_hf_container', runHSCHFCalculations);
+}
+
+
+// --- HELPER FUNCTIONS ---
+
+function attachListeners(ids, handler) {
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('change', handler);
+            el.addEventListener('input', handler);
+        }
+    });
+}
+
+function setupToggle(chkId, containerId, handler) {
+    const chk = document.getElementById(chkId);
+    const container = document.getElementById(containerId);
+    if (chk && container) {
+        chk.addEventListener('change', function () {
+            if (this.checked) {
+                container.classList.remove('hidden');
+                handler();
+            } else {
+                container.classList.add('hidden');
+                handler();
+            }
+        });
+        // Initial state is handled by master init loop
+    }
+}
+
+function initializeAllSCCListeners() {
+    console.log('[POF Init] Initializing all SCC listeners...');
+
+    // 1. Initialize Individual Mechanisms
+    if (typeof initCaustic === 'function') initCaustic();
+    if (typeof initAmine === 'function') initAmine();
+    if (typeof initSSC === 'function') initSSC();
+    if (typeof initHIC === 'function') initHIC();
+    if (typeof initACSCC === 'function') initACSCC();
+    if (typeof initPASCC === 'function') initPASCC();
+    if (typeof initClSCC === 'function') initClSCC();
+    if (typeof initHSCHF === 'function') initHSCHF();
+
+    // 2. Run Initial Calculations for Active Mechanisms
+    const runIfActive = (chkId, runFn) => {
+        if (document.getElementById(chkId)?.checked) {
+            console.log(`[POF Init] Auto-running ${chkId}...`);
+            runFn();
+        }
+    };
+
+    setTimeout(() => {
+        runIfActive('id_mechanism_scc_caustic_active', runCausticCalculationsFormulaApp);
+        runIfActive('id_mechanism_scc_amine_active', runAmineCalculations);
+        runIfActive('id_mechanism_scc_ssc_active', runSSCCalculations);
+        runIfActive('id_mechanism_scc_hic_active', runHICCalculations);
+        runIfActive('id_mechanism_scc_acscc_active', runACSCCCalculations);
+        runIfActive('id_mechanism_scc_pascc_active', runPASCCCalculations);
+        runIfActive('id_mechanism_scc_clscc_active', runClSCCCalculations);
+        runIfActive('id_mechanism_scc_hschf_active', runHSCHFCalculations);
+    }, 500);
+}
+
+// ============================================================================
+// POF INITIALIZATION ON PAGE LOAD
+// ============================================================================
+
 function initializeThinningPOF() {
     console.log('[POF Init] Checking for saved thinning data...');
     const mechanisms = ['co2', 'hcl', 'h2so4', 'hf', 'amine', 'alkaline', 'acid', 'soil', 'h2s_h2', 'sulfidic'];
@@ -1834,8 +1975,15 @@ function initializeThinningPOF() {
 }
 
 // Execute initialization
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => setTimeout(initializeThinningPOF, 500));
-} else {
-    setTimeout(initializeThinningPOF, 500);
-}
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        // Run Thinning Init
+        initializeThinningPOF();
+
+        // Run SCC Init
+        initializeAllSCCListeners();
+
+        // Initialize Chart
+        if (typeof initPofChart === 'function') initPofChart();
+    }, 500);
+});

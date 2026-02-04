@@ -227,11 +227,19 @@ document.addEventListener('DOMContentLoaded', function () {
         return 0;
     }
 
+    // Expose globally for Inspection Planning
+    window.calculateHTHADamageFactor = calculateHTHADamageFactor;
+
     function getSusceptibilityColor(susceptibility) {
         if (susceptibility === "High") return "text-red-600";
         if (susceptibility === "Medium") return "text-orange-500";
         if (susceptibility === "Low") return "text-yellow-600";
         return "text-green-600";
+    }
+
+    // Run calculation on load if active
+    if (activeCheck && activeCheck.checked) {
+        calculateHTHA();
     }
 
 });
