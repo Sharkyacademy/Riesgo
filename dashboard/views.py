@@ -157,6 +157,22 @@ def component_edit(request, pk):
     })
 
 @login_required
+def component_report(request, pk):
+    from .models import Component
+    from django.shortcuts import get_object_or_404
+    
+    component = get_object_or_404(Component, pk=pk, equipment__system__unit__facility__owner=request.user)
+    
+    # Context data for the report
+    context = {
+        'component': component,
+        # We can add calculated risks here if models support it,
+        # otherwise Javascript in the template will handle it like in the form.
+    }
+    
+    return render(request, 'dashboard/component_report.html', context)
+
+@login_required
 def systems(request):
     from .models import Facility, System
     from .forms import SystemForm

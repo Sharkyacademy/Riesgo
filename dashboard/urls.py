@@ -13,6 +13,7 @@ urlpatterns = [
     path('components/create/', views.component_create, name='component_create'),
     path('components/<int:pk>/edit/', views.component_edit, name='component_edit'),
     path('components/<int:pk>/delete/', views.component_delete, name='component_delete'),
+    path('components/<int:pk>/report/', views.component_report, name='component_report'),
     path('facility/<int:pk>/edit/', views.facility_edit, name='facility_edit'),
     path('unit/<int:pk>/edit/', views.unit_edit, name='unit_edit'),
     path('system/<int:pk>/edit/', views.system_edit, name='system_edit'),
