@@ -185,17 +185,74 @@ function updateInspectionChart() {
     const ctx = document.getElementById('inspection_chart');
     if (!ctx) return;
 
-    const maxDfVal = parseFloat(document.getElementById('inp_target_max_df')?.value) || DEFAULT_MAX_DF;
+    // 1. Get Risk Target (Area Risk Limit)
+    // Default 4.0 m2/yr if empty
+    const targetRiskVal = parseFloat(document.getElementById('inp_target_max_df')?.value) || 4.0;
 
     // Config: Max Y-Axis is Target * 4 (Zoom effect)
-    const yAxisMax = maxDfVal * 4;
+    const yAxisMax = targetRiskVal * 4;
+
+    // 2. Get GFF & FMS
+    // Try hidden inputs first (ID usually id_field_name), then fallback to display text
+    const gffInput = document.getElementById('id_gff_value') || document.getElementById('disp_gff_value');
+    let gff = 3.06E-05; // Default Generic fallback 
+    if (gffInput) {
+        let valStr = (gffInput.value !== undefined && gffInput.value !== '') ? gffInput.value : gffInput.textContent;
+        valStr = valStr.replace(/[^\d.E-]/g, '');
+        let parsed = parseFloat(valStr);
+        if (!isNaN(parsed)) gff = parsed;
+    }
+
+    const fmsInput = document.getElementById('id_fms_factor') || document.getElementById('disp_fms_factor');
+    let fms = 1.0;
+    if (fmsInput) {
+        let valStr = (fmsInput.value !== undefined && fmsInput.value !== '') ? fmsInput.value : fmsInput.textContent;
+        valStr = valStr.replace(/[^\d.]/g, '');
+        let parsed = parseFloat(valStr);
+        if (!isNaN(parsed)) fms = parsed;
+    }
+
+    // 3. Get COF (Area)
+    // We look for CMD and INJ area (ft2) and take the max, then convert to m2
+    // 1 ft2 = 0.092903 m2
+    const cmdAreaEl = document.getElementById('val_final_cmd');
+    const injAreaEl = document.getElementById('val_final_inj');
+
+    let cmdArea = 0;
+    if (cmdAreaEl && cmdAreaEl.textContent && !cmdAreaEl.textContent.includes('-')) {
+        cmdArea = parseFloat(cmdAreaEl.textContent) || 0;
+    }
+
+    let injArea = 0;
+    if (injAreaEl && injAreaEl.textContent && !injAreaEl.textContent.includes('-')) {
+        injArea = parseFloat(injAreaEl.textContent) || 0;
+    }
+
+    let maxAreaFt2 = Math.max(cmdArea, injArea);
+    if (maxAreaFt2 === 0) maxAreaFt2 = 100; // Fallback reasonable area to avoid flatline Risk=0
+
+    const cofM2 = maxAreaFt2 * 0.092903;
+
+    // Log calculation params for debugging
+    console.log(`[Risk Chart] Target: ${targetRiskVal}, GFF: ${gff}, FMS: ${fms}, COF(m2): ${cofM2.toFixed(2)}`);
 
     // Get Commission date for Age 0
     const commDateStr = document.getElementById('id_commissioning_date')?.value;
     const commDate = commDateStr ? new Date(commDateStr) : new Date();
-    const currentYear = new Date().getFullYear();
     const commYear = commDate.getFullYear();
     const currentAge = (new Date() - commDate) / (1000 * 60 * 60 * 24 * 365.25);
+
+    // Helper: Calculate Risk per Age
+    function calculateRisk(age) {
+        const df = calculateProjectedTotalDF(age);
+        // Risk = PoF * CoF
+        // PoF = GFF * FMS * DF
+        // Cap PoF at 1.0 generally
+        let pof = gff * fms * df;
+        if (pof > 1.0) pof = 1.0;
+
+        return pof * cofM2;
+    }
 
     // 1. Detect Intersection First (Precision Pass)
     let intersectionAge = null;
@@ -203,8 +260,8 @@ function updateInspectionChart() {
 
     // Scan closely from now to +50 years
     for (let age = currentAge; age <= currentAge + 50; age += 0.1) {
-        const totalDF = calculateProjectedTotalDF(age);
-        if (totalDF >= maxDfVal) {
+        const risk = calculateRisk(age);
+        if (risk >= targetRiskVal) {
             foundIntersection = true;
             intersectionAge = age;
             break;
@@ -215,7 +272,6 @@ function updateInspectionChart() {
     const labels = [];
     const dataPoints = [];
     const maxLimitPoints = [];
-    const inspectionPoints = []; // Only one point generally
 
     // Chart limits
     const startAge = Math.max(0, currentAge - 5);
@@ -225,61 +281,45 @@ function updateInspectionChart() {
     for (let age = startAge; age <= endAge; age += step) {
         const yearVal = commYear + age;
         labels.push(yearVal.toFixed(1));
-        maxLimitPoints.push(maxDfVal);
+        maxLimitPoints.push(targetRiskVal);
 
-        let totalDF = 0;
+        let currentRisk = 0;
 
         if (foundIntersection && age > intersectionAge) {
             // Post-Inspection Simulation (Sawtooth Drop)
-            // We assume inspection "resets" effective age for damage accumulation
-            // Effectively: NewAge = (Age - IntersectionAge) + small_offset
+            // Reset effective age
             const effectiveAge = (age - intersectionAge) + 1.0; // Assume 1 year base after repair/inspection
-
-            // Re-calculate using the same function but with "reset" age
-            // Note: This is a simplification. Real life involves thickness measurements updates etc.
-            totalDF = calculateProjectedTotalDF(effectiveAge);
-
-            // Mark the intersection point exactly once (closest step)
-            if (dataPoints.length > 0 && age - step <= intersectionAge && age > intersectionAge) {
-                // Push null to others to keep alignment? No, we use a scatter dataset for the point.
-            }
-
+            currentRisk = calculateRisk(effectiveAge);
         } else {
             // Normal Projection
-            totalDF = calculateProjectedTotalDF(age);
+            currentRisk = calculateRisk(age);
         }
 
-        dataPoints.push(totalDF);
+        dataPoints.push(currentRisk);
     }
 
-    // Create specific point for the Intersection (Scatter dataset)
+    // Create specific point for the Intersection
     let intersectionDateObj = null;
     if (foundIntersection) {
-        const intersectYear = commYear + intersectionAge;
         const intersectMs = commDate.getTime() + (intersectionAge * 365.25 * 24 * 60 * 60 * 1000);
         intersectionDateObj = new Date(intersectMs);
-
-        // Find index in labels to place point approx? 
-        // Or simpler: We create a validation point array that aligns with dataPoints
-        // Let's refine: We just put the point at the closest step for visual simplicity
-        // or we use a Scatter dataset with x: Year, y: Value.
-        // Mixed Line + Scatter is best.
     }
 
     // Render Chart
     if (inspectionChart) inspectionChart.destroy();
 
-    // Gradient
+    // Gradient (Green for Risk/Money/Safety)
     const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
-    gradient.addColorStop(0, 'rgba(59, 130, 246, 0.5)');
-    gradient.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
+    // Green-500: #22c55e
+    gradient.addColorStop(0, 'rgba(34, 197, 94, 0.5)');
+    gradient.addColorStop(1, 'rgba(34, 197, 94, 0.0)');
 
     const datasets = [
         {
             type: 'line',
-            label: 'Total Damage Factor',
+            label: 'Risk (m²/yr)',
             data: dataPoints,
-            borderColor: '#2563eb', // Blue-600
+            borderColor: '#65a30d', // Lime-600
             backgroundColor: gradient,
             borderWidth: 4,
             tension: 0.4,
@@ -301,28 +341,25 @@ function updateInspectionChart() {
 
     // Add Intersection Point if found
     if (foundIntersection) {
-        // We need to map the intersectionAge to the X-Axis "Label" index approx
-        // Or simpler: We create a validation point array that aligns with dataPoints
         const pointData = dataPoints.map((val, idx) => {
             const age = startAge + (idx * step);
-            // If this step is the closest to intersectionAge
             if (Math.abs(age - intersectionAge) < step / 2) {
-                return maxDfVal; // Place on the line
+                return targetRiskVal;
             }
             return null;
         });
 
         datasets.push({
             type: 'line',
-            label: 'Action Required',
+            label: 'Inspection Required',
             data: pointData,
-            borderColor: '#16a34a', // Green-600 points
+            borderColor: '#ef4444',
             backgroundColor: '#ffffff',
             borderWidth: 2,
-            pointRadius: 8, // Big visible point
+            pointRadius: 8,
             pointHoverRadius: 10,
             pointBorderWidth: 3,
-            showLine: false // Just the point
+            showLine: false
         });
     }
 
@@ -340,8 +377,8 @@ function updateInspectionChart() {
                 tooltip: {
                     callbacks: {
                         label: function (context) {
-                            if (context.dataset.label === 'Action Required') return `Inspect Here!`;
-                            return `${context.dataset.label}: ${context.raw.toFixed(1)}`;
+                            if (context.dataset.label === 'Inspection Required') return `Plan Inspection Here!`;
+                            return `${context.dataset.label}: ${context.raw.toFixed(4)}`;
                         }
                     }
                 }
@@ -353,10 +390,9 @@ function updateInspectionChart() {
                 },
                 y: {
                     grid: { color: '#f1f5f9' },
-                    // LIMIT Y-AXIS VISIBILITY as requested
                     min: 0,
-                    max: yAxisMax, // Zoom in
-                    title: { display: true, text: 'Damage Factor' }
+                    max: yAxisMax,
+                    title: { display: true, text: 'Risk (m²/yr)' }
                 }
             }
         }
@@ -373,14 +409,16 @@ function updateInspectionChart() {
         const diffYears = (diffDays / 365.25).toFixed(1);
         resultTime.textContent = `${diffYears} years (${diffDays} days)`;
         resultTime.className = diffYears < 1 ? "text-2xl font-bold text-red-600" : "text-2xl font-bold text-green-600";
-        resultDf.textContent = maxDfVal.toFixed(1);
+        resultDf.textContent = targetRiskVal.toFixed(2) + " m²/yr";
     } else {
         resultTitle.textContent = "> 25 Years";
         resultTime.textContent = "Safe for long term";
         resultTime.className = "text-2xl font-bold text-green-600";
-        resultDf.textContent = calculateProjectedTotalDF(endAge).toFixed(1) + " (at max range)";
+        const fnVal = dataPoints[dataPoints.length - 1] || 0;
+        resultDf.textContent = fnVal.toFixed(3) + " m²/yr (at max range)";
     }
 }
+
 // Hook into the global window for access
 window.initInspectionPlanning = initInspectionPlanning;
 window.updateInspectionPlanning = updateInspectionChart;
