@@ -234,7 +234,7 @@
                 <div class="p-4 border-b border-gray-100 bg-gray-50">
                     <h3 class="font-bold text-slate-800">Consequence Breakdown</h3>
                 </div>
-                <div class="p-6 relative flex justify-center items-center" style="min-height: 250px;">
+                <div class="p-4 relative flex justify-center items-center" style="height: 220px;">
                     <canvas id="cof_chart_mini"></canvas>
                 </div>
             </div>
@@ -305,6 +305,8 @@
                     }]
                 },
                 options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
                     cutout: '70%',
                     plugins: {
                         legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8 } }
