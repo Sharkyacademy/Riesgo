@@ -14,9 +14,12 @@
                     {{ component.rbix_component_type|default:"Component" }}
                 </span>
             </div>
-            <p class="text-slate-500 mt-1 font-medium">Tag: <span class="text-slate-700 font-bold">{% firstof
-                    component.tag component.rbix_component_type "N/A" %}</span> | Equipment: {{
-                component.equipment.number }}</p>
+            <p class="text-slate-500 mt-1 font-medium">Tag: 
+                <span class="text-slate-700 font-bold">
+                    {% firstof component.tag component.rbix_component_type "N/A" %}
+                </span> 
+                    | Equipment: {{component.equipment.number }}
+                </p>
         </div>
         <div class="flex gap-3">
             <button onclick="window.print()" class="btn btn-outline btn-sm gap-2">
@@ -235,23 +238,28 @@
                         <tbody>
                             <tr class="hover:bg-gray-50">
                                 <td class="text-gray-500 font-medium pl-6">Material</td>
-                                <td class="font-bold text-slate-700 text-right pr-6">{% firstof
-                                    component.material_construction component.material "-" %}</td>
+                                <td class="font-bold text-slate-700 text-right pr-6">
+                                    {% firstof component.material_construction component.material "-" %}
+                                </td>
                             </tr>
                             <tr class="hover:bg-gray-50">
                                 <td class="text-gray-500 font-medium pl-6">Design Temp</td>
-                                <td class="font-bold text-slate-700 text-right pr-6">{{
-                                    component.design_temp_f|default:"-" }} °F</td>
+                                <td class="font-bold text-slate-700 text-right pr-6">
+                                    {{ component.design_temp_f|default:"-" }} °F
+                                </td>
                             </tr>
                             <tr class="hover:bg-gray-50">
                                 <td class="text-gray-500 font-medium pl-6">Op. Pressure</td>
-                                <td class="font-bold text-slate-700 text-right pr-6">{% firstof
-                                    component.operating_pressure_psia component.design_pressure_psi "-" %} psia</td>
+                                <td class="font-bold text-slate-700 text-right pr-6">
+                                    {% firstof component.operating_pressure_psia component.design_pressure_psi "-" %}
+                                    psia
+                                </td>
                             </tr>
                             <tr class="hover:bg-gray-50">
                                 <td class="text-gray-500 font-medium pl-6">Efficiency</td>
-                                <td class="font-bold text-slate-700 text-right pr-6">{{
-                                    component.joint_efficiency|default:"1.0" }}</td>
+                                <td class="font-bold text-slate-700 text-right pr-6">
+                                    {{ component.joint_efficiency|default:"1.0" }}
+                                </td>
                             </tr>
                         </tbody>
                     </table>
