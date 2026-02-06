@@ -14,12 +14,12 @@
                     {{ component.rbix_component_type|default:"Component" }}
                 </span>
             </div>
-            <p class="text-slate-500 mt-1 font-medium">Tag: 
+            <p class="text-slate-500 mt-1 font-medium">Tag:
                 <span class="text-slate-700 font-bold">
                     {% firstof component.tag component.rbix_component_type "N/A" %}
-                </span> 
-                    | Equipment: {{component.equipment.number }}
-                </p>
+                </span>
+                | Equipment: {{component.equipment.number }}
+            </p>
         </div>
         <div class="flex gap-3">
             <button onclick="window.print()" class="btn btn-outline btn-sm gap-2">
@@ -79,15 +79,92 @@
 
         <!-- 3. Inspection Planning Inputs -->
         <input id="id_commissioning_date" value="{{ component.commissioning_date|date:'Y-m-d' }}">
-        <input id="inp_target_max_df" value="4.0">
+        <input id="inp_target_max_df" value="500.0">
         <div id="id_gff_value">{{ component.gff_value|default:"3.06E-05" }}</div>
         <div id="id_fms_factor">{{ component.fms_factor|default:"1.0" }}</div>
 
         <!-- Thinning -->
-        <input type="checkbox" id="id_mech_thinning_co2_active" {{ component.mech_thinning_co2_active|yesno:"checked,"
-            }}>
+        <input type="checkbox" id="id_mech_thinning_co2_active" 
+        {% if component.mech_thinning_co2_active or component.co2_corrosion_rate_mpy|default:0 %}checked{% endif %}>
         <input id="id_co2_corrosion_rate_mpy" value="{{ component.co2_corrosion_rate_mpy|default:0 }}">
-        <!-- Add other thinning fields if strictly necessary for other calcs, but inspection_planning.js uses main objects usually -->
+
+        <input type="checkbox" id="id_mech_thinning_hcl_active" 
+        {% if component.mech_thinning_hcl_active or component.hcl_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input id="id_hcl_corrosion_rate_mpy" value="{{ component.hcl_corrosion_rate_mpy|default:0 }}">
+
+        <input type="checkbox" id="id_mech_thinning_h2so4_active" 
+        {% if component.mech_thinning_h2so4_active or component.h2so4_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input id="id_h2so4_corrosion_rate_mpy" value="{{ component.h2so4_corrosion_rate_mpy|default:0 }}">
+
+        <input type="checkbox" id="id_mech_thinning_hf_active" 
+        {% if component.mech_thinning_hf_active or component.hf_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input id="id_hf_corrosion_rate_mpy" value="{{ component.hf_corrosion_rate_mpy|default:0 }}">
+
+        <input type="checkbox" id="id_mech_thinning_amine_active" 
+        {% if component.mech_thinning_amine_active or component.amine_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input id="id_amine_corrosion_rate_mpy" value="{{ component.amine_corrosion_rate_mpy|default:0 }}">
+
+        <input type="checkbox" id="id_mech_thinning_alkaline_active" 
+        {% if component.mech_thinning_alkaline_active or component.alkaline_water_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input id="id_alkaline_water_corrosion_rate_mpy"
+            value="{{ component.alkaline_water_corrosion_rate_mpy|default:0 }}">
+
+        <input type="checkbox" id="id_mech_thinning_acid_active" 
+        {% if component.mech_thinning_acid_active or component.acid_water_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input id="id_acid_water_corrosion_rate_mpy" value="{{ component.acid_water_corrosion_rate_mpy|default:0 }}">
+
+        <input type="checkbox" id="id_mech_thinning_soil_active" 
+        {% if component.mech_thinning_soil_active or component.soil_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input id="id_soil_corrosion_rate_mpy" value="{{ component.soil_corrosion_rate_mpy|default:0 }}">
+
+        <input type="checkbox" id="id_mech_thinning_h2s_h2_active" 
+        {% if component.mech_thinning_h2s_h2_active or component.ht_h2s_h2_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input id="id_ht_h2s_h2_corrosion_rate_mpy" value="{{ component.ht_h2s_h2_corrosion_rate_mpy|default:0 }}">
+
+        <input type="checkbox" id="id_mech_thinning_sulfidic_active" 
+        {% if component.mech_thinning_sulfidic_active or component.sulfidic_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input id="id_sulfidic_corrosion_rate_mpy" value="{{ component.sulfidic_corrosion_rate_mpy|default:0 }}">
+
+        <input id="id_min_required_thickness_in" value="{{ component.min_required_thickness_in|default:0 }}">
+        <input id="id_future_corrosion_allowance_in"
+            value="{{ component.future_corrosion_allowance_in|default:0.125 }}">
+
+        <!-- External Corrosion -->
+        <input type="checkbox" id="id_mech_ext_corrosion_active" 
+        {% if component.mech_ext_corrosion_active or component.external_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input id="id_external_corrosion_rate_mpy" value="{{ component.external_corrosion_rate_mpy|default:0 }}">
+
+        <input type="checkbox" id="id_mech_cui_active" 
+        {% if component.mech_cui_active or component.cui_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input id="id_cui_corrosion_rate_mpy" value="{{ component.cui_corrosion_rate_mpy|default:0 }}">
+
+        <!-- SCC Mechanisms -->
+        <input type="checkbox" id="id_mechanism_scc_caustic_active" 
+        {% if component.mechanism_scc_caustic_active %}checked{% endif %}>
+        <input type="checkbox" id="id_mechanism_scc_amine_active" 
+        {% if component.mechanism_scc_amine_active %}checked{% endif %}>
+        <input type="checkbox" id="id_mechanism_scc_ssc_active" 
+        {% if component.mechanism_scc_ssc_active %}checked{% endif %}>
+        <input type="checkbox" id="id_mechanism_scc_hic_active" 
+        {% if component.mechanism_scc_hic_active %}checked{% endif %}>
+        <input type="checkbox" id="id_mechanism_scc_acscc_active" 
+        {% if component.mechanism_scc_acscc_active %}checked{% endif %}>
+        <input type="checkbox" id="id_mechanism_scc_pascc_active" 
+        {% if component.mechanism_scc_pascc_active %}checked{% endif %}>
+        <input type="checkbox" id="id_mechanism_scc_clscc_active" 
+        {% if component.mechanism_scc_clscc_active %}checked{% endif %}>
+        <input type="checkbox" id="id_mechanism_scc_hsc_hf_active" 
+        {% if component.mechanism_scc_hsc_hf_active %}checked{% endif %}>
+
+        <!-- HTHA & Brittle -->
+        <input type="checkbox" id="id_mechanism_htha_active" 
+        {% if component.mechanism_htha_active %}checked{% endif %}>
+        <!-- HTHA Susceptibility Result if stored? Or just default calc? -->
+        <div id="res_htha_susceptibility">High</div> <!-- Placeholder fallback -->
+
+        <input type="checkbox" id="id_mechanism_brittle_fracture_active" 
+        {% if component.mechanism_brittle_fracture_active %}checked{% endif %}>
+        <input id="id_brittle_damage_factor" value="{{ component.brittle_damage_factor|default:0 }}">
     </div>
 
     <!-- Power BI Grid Layout -->
@@ -267,76 +344,84 @@
             </div>
         </div>
     </div>
-</div>
 
-<!-- SCRIPTS -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<!-- Load Inspection Planning Logic -->
-<script src="{% static 'dashboard/js/calculations/inspection_planning.js' %}"></script>
-<!-- Load Shared COF Logic (Reusing Component Form Logic) -->
-<script type="module" src="{% static 'dashboard/js/cof_dashboard.js' %}"></script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // Init Risk Chart
-        if (typeof initInspectionPlanning === 'function') {
-            initInspectionPlanning();
-        } else if (typeof updateInspectionChart === 'function') {
-            updateInspectionChart();
-        }
+    <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
-        // Init Mini COF Chart
-        // We wait for cof_dashboard.js to populate the val_* hidden divs
-        setTimeout(() => {
-            const getVal = (id) => {
-                const el = document.getElementById(id);
-                if (!el) return 0;
-                // Parse currency string "$1,234.56" -> 1234.56
-                const text = el.textContent || '0';
-                return parseFloat(text.replace(/[^0-9.-]+/g, "")) || 0;
-            };
+    <!-- SCRIPTS -->
+    <script src="{% static 'dashboard/js/calculations/risk_matrix.js' %}?v={% now 'U' %}"></script>
+    <script src="{% static 'dashboard/js/cof_calc_monolith.js' %}?v={% now 'U' %}"></script>
+    <script src="{% static 'dashboard/js/calculations/inspection_planning.js' %}?v={% now 'U' %}"></script>
 
-            const safe = getVal('val_fc_inj');      // Safety
-            const biz = getVal('val_fc_bus');       // Business
-            const env = getVal('val_fc_env');       // Environment
-
-            console.log("Extracted COF Values:", { safe, biz, env });
-
-            const ctxMini = document.getElementById('cof_chart_mini');
-            if (ctxMini && typeof Chart !== 'undefined') {
-                new Chart(ctxMini, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Safety', 'Business', 'Environment'],
-                        datasets: [{
-                            data: [safe, biz, env],
-                            backgroundColor: [
-                                '#f97316', // Orange (Safety)
-                                '#eab308', // Yellow (Business)
-                                '#22c55e'  // Green (Env)
-                            ],
-                            borderWidth: 0,
-                            hoverOffset: 4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: {
-                                    usePointStyle: true,
-                                    font: { size: 10 }
-                                }
-                            }
-                        },
-                        cutout: '70%',
-                    }
-                });
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Init Risk Chart immediately (might have defaults)
+            if (typeof initInspectionPlanning === 'function') {
+                initInspectionPlanning();
             }
-        }, 1500); // 1.5s delay to allow cof_dashboard.js to finish calc
-    });
-</script>
-{% endblock %}
+
+            // Init Charts with Delay to wait for cof_dashboard.js calculations
+            setTimeout(() => {
+                // 1. Re-Init Risk Chart with calculated COF
+                if (typeof initInspectionPlanning === 'function') {
+                    console.log("Reloading Risk Chart with calculated data...");
+                    initInspectionPlanning();
+                }
+
+                // 2. Init Mini COF Chart
+                const getVal = (id) => {
+                    const el = document.getElementById(id);
+                    if (!el) return 0;
+                    // Parse currency string "$1,234.56" -> 1234.56
+                    const text = el.textContent || '0';
+                    return parseFloat(text.replace(/[^0-9.-]+/g, "")) || 0;
+                };
+
+                const safe = getVal('val_fc_inj');      // Safety
+                const biz = getVal('val_fc_bus');       // Business
+                const env = getVal('val_fc_env');       // Environment
+
+                console.log("Extracted COF Values:", { safe, biz, env });
+
+                const ctxMini = document.getElementById('cof_chart_mini');
+                if (ctxMini && typeof Chart !== 'undefined') {
+                    // Destroy if exists? Chart.js usually handles canvas reuse or we should check instance.
+                    // For mini chart we assume first init. 
+
+                    new Chart(ctxMini, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Safety', 'Business', 'Environment'],
+                            datasets: [{
+                                data: [safe, biz, env],
+                                backgroundColor: [
+                                    '#f97316', // Orange (Safety)
+                                    '#eab308', // Yellow (Business)
+                                    '#22c55e'  // Green (Env)
+                                ],
+                                borderWidth: 0,
+                                hoverOffset: 4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        usePointStyle: true,
+                                        font: { size: 10 }
+                                    }
+                                }
+                            },
+                            cutout: '70%',
+                        }
+                    });
+                }
+            }, 1500); // 1.5s delay to allow cof_dashboard.js to finish calc
+        });
+    </script>
+    {% endblock %}

@@ -34,22 +34,23 @@ function calculateProjectedTotalDF(ageInYears) {
     ];
 
     thinningMechanisms.forEach(mech => {
-        const isActive = document.getElementById(mech.checkbox)?.checked;
-        if (isActive) {
-            let rate = parseFloat(document.getElementById(mech.rate)?.value) || 0;
+        const checkbox = document.getElementById(mech.checkbox);
+        const rateInput = document.getElementById(mech.rate);
 
-            // Fallback: Try reading from the display element (e.g., "5.5 mpy")
-            if (rate === 0) {
-                const displayId = `${mech.id}_rate_display`; // Convention: co2_rate_display
-                const displayEl = document.getElementById(displayId);
-                if (displayEl) {
-                    rate = parseFloat(displayEl.textContent) || 0;
-                }
-            }
+        const isActive = checkbox?.checked;
+        let rate = parseFloat(rateInput?.value) || 0;
 
-            if (rate > 0) {
-                totalDF += calculateGeneralThinningDF_Projected(rate, ageInYears);
+        // Fallback: Try reading from the display element (e.g., "5.5 mpy")
+        if (rate === 0) {
+            const displayId = `${mech.id}_rate_display`; // Convention: co2_rate_display
+            const displayEl = document.getElementById(displayId);
+            if (displayEl) {
+                rate = parseFloat(displayEl.textContent) || 0;
             }
+        }
+
+        if (isActive && rate > 0) {
+            totalDF += calculateGeneralThinningDF_Projected(rate, ageInYears);
         }
     });
 
@@ -89,7 +90,14 @@ function calculateProjectedTotalDF(ageInYears) {
         if (isActive) {
             // Try to get BaseDF from the debug table which holds the raw value
             const baseDfEl = document.getElementById(`pof_debug_${mech.id}_base_df`);
-            const baseDfVal = parseFloat(baseDfEl?.textContent) || 0;
+            let baseDfVal = parseFloat(baseDfEl?.textContent) || 0;
+
+            // FALLBACK if active but no base DF (Report Context where formula_app doesn't run)
+            if (baseDfVal === 0) {
+                baseDfVal = 50; // Default conservative Base DF for SCC
+                console.warn(`[Risk Proj] Using default BaseDF=${baseDfVal} for active SCC: ${mech.id}`);
+            }
+
             if (baseDfVal > 0) {
                 // Df(t) = BaseDF * (t)^1.1
                 const projected = baseDfVal * Math.pow(Math.max(ageInYears, 1.0), 1.1);
@@ -189,8 +197,13 @@ function updateInspectionChart() {
     // Default 4.0 m2/yr if empty
     const targetRiskVal = parseFloat(document.getElementById('inp_target_max_df')?.value) || 4.0;
 
-    // Config: Max Y-Axis is Target * 4 (Zoom effect)
-    const yAxisMax = targetRiskVal * 4;
+    // Config: Max Y-Axis
+    // Dynamic scaling: If current risk is huge (e.g. 3000), we must scale up.
+    // We'll compute this later after data points are generated, or use a placeholder.
+    // Let's defer yAxisMax setting or set it to auto?
+    // ChartJS 'suggestedMax' is better. But we want strict control for visual intersection.
+    // Let's calculate max from dataPoints later.
+    let yAxisMax = targetRiskVal * 4;
 
     // 2. Get GFF & FMS
     // Try hidden inputs first (ID usually id_field_name), then fallback to display text
@@ -244,7 +257,11 @@ function updateInspectionChart() {
 
     // Helper: Calculate Risk per Age
     function calculateRisk(age) {
-        const df = calculateProjectedTotalDF(age);
+        // Enforce Minimum DF of 1.0 (Baseline GFF)
+        // If totalDF comes back 0 (no active mechanisms), we use 1.0
+        let df = calculateProjectedTotalDF(age);
+        if (df < 1.0) df = 1.0;
+
         // Risk = PoF * CoF
         // PoF = GFF * FMS * DF
         // Cap PoF at 1.0 generally
@@ -296,6 +313,36 @@ function updateInspectionChart() {
         }
 
         dataPoints.push(currentRisk);
+    }
+
+    // Dynamic Axis Scaling
+    const maxRisk = Math.max(...dataPoints);
+    console.log('[Risk Chart] Max Calculated Risk:', maxRisk);
+
+    // Auto-scale: If maxRisk is very low, scale to fit it + margin. 
+    // If maxRisk is somewhat high but below target, verify.
+    // If maxRisk > target, scale to maxRisk.
+
+    // Logic: 
+    // 1. If maxRisk > target, yMax = maxRisk * 1.1
+    // 2. If maxRisk < target, default to showing target (yMax = target * 1.5) so we see how far we are.
+    // BUT if maxRisk is TINY (e.g. 0.009 vs 4.0), the line is invisible. 
+    // Ideally we want to see the line. 
+    // So let's ensure yMax is at least decent, but maybe we can use a second axis? No, keep simple.
+    // Let's stick to showing the Target as the visual anchor. If risk is low, it's low. Good news.
+    // But we'll log it.
+
+    if (maxRisk > yAxisMax) {
+        yAxisMax = maxRisk * 1.1;
+    }
+    // OPTIONAL: If risk is tiny, maybe set max to target usually. 
+    // Current logic: yAxisMax = targetRiskVal * 4; (Default) -> This squashes small risks.
+    // Let's set default max to Target * 1.2 to use more vertical space?
+    // User complaint "graph doesn't work" might simply mean "I see nothing". 
+    // Reducing range makes it visible.
+
+    if (maxRisk < targetRiskVal) {
+        yAxisMax = targetRiskVal * 1.5; // Reduced from 4x to 1.5x to show the line better
     }
 
     // Create specific point for the Intersection
@@ -378,7 +425,7 @@ function updateInspectionChart() {
                     callbacks: {
                         label: function (context) {
                             if (context.dataset.label === 'Inspection Required') return `Plan Inspection Here!`;
-                            return `${context.dataset.label}: ${context.raw.toFixed(4)}`;
+                            return `${context.dataset.label}: ${context.raw.toFixed(6)}`;
                         }
                     }
                 }
@@ -415,7 +462,7 @@ function updateInspectionChart() {
         resultTime.textContent = "Safe for long term";
         resultTime.className = "text-2xl font-bold text-green-600";
         const fnVal = dataPoints[dataPoints.length - 1] || 0;
-        resultDf.textContent = fnVal.toFixed(3) + " m²/yr (at max range)";
+        resultDf.textContent = fnVal.toFixed(4) + " m²/yr";
     }
 }
 
