@@ -14,7 +14,9 @@
                     {{ component.rbix_component_type|default:"Component" }}
                 </span>
             </div>
-            <p class="text-slate-500 mt-1 font-medium">Tag: <span class="text-slate-700 font-bold">{% firstof component.tag component.rbix_component_type "N/A" %}</span> | Equipment: {{ component.equipment.number }}</p>
+            <p class="text-slate-500 mt-1 font-medium">Tag: <span class="text-slate-700 font-bold">{% firstof
+                    component.tag component.rbix_component_type "N/A" %}</span> | Equipment: {{
+                component.equipment.number }}</p>
         </div>
         <div class="flex gap-3">
             <button onclick="window.print()" class="btn btn-outline btn-sm gap-2">
@@ -32,73 +34,57 @@
         </div>
     </div>
 
-    <!-- Hidden Data Context for JS Calculations -->
+    <!-- Hidden Context for Shared Logic (cof_dashboard.js & inspection_planning.js) -->
     <div class="hidden">
-        <!-- Core Inputs required by inspection_planning.js -->
-        <input id="id_commissioning_date" value="{{ component.commissioning_date|date:'Y-m-d' }}">
-        <input id="inp_target_max_df" value="4.0"> <!-- Default Target Risk -->
+        <!-- 1. Calculation Inputs (Must match IDs in cof_dashboard.js) -->
+        <!-- Process & Design -->
+        <input id="id_rbix_fluid" value="{{ component.rbix_fluid }}">
+        <input id="id_operational_fluid_phase" value="{{ component.operational_fluid_phase }}">
+        <input id="id_operating_temp_f" value="{{ component.operating_temp_f|default:0 }}">
+        <input id="id_component_diameter" value="{{ component.component_diameter|default:0 }}">
+        <input id="id_rbix_component_type" value="{{ component.rbix_component_type }}">
+        <input id="id_operating_pressure_psia" value="{{ component.operating_pressure_psia|default:0 }}">
+        <input id="id_atm_pressure" value="14.7">
+        <input id="id_discharge_coeff" value="0.61">
+        <input id="id_viscosity_correction" value="1.0">
 
-        <!-- Risk Factors -->
+        <!-- Inventory -->
+        <input id="id_component_group_fluid_mass_lb" value="{{ component.component_group_fluid_mass_lb|default:0 }}">
+        <input id="id_component_fluid_mass_lb" value="{{ component.component_fluid_mass_lb|default:0 }}">
+
+        <!-- Mitigation -->
+        <input id="id_detection_class" value="{{ component.detection_class|default:'C' }}">
+        <input id="id_isolation_class" value="{{ component.isolation_class|default:'C' }}">
+        <input id="id_mitigation_system" value="{{ component.mitigation_system|default:'None' }}">
+
+        <!-- Financial Factors -->
+        <input id="id_material_construction" value="{{ component.material_construction|default:'Carbon Steel' }}">
+        <input id="id_cost_factor" value="{{ component.cost_factor|default:1.0 }}">
+        <input id="id_equipment_cost_per_sqft" value="{{ component.equipment_cost_per_sqft|default:0 }}">
+        <input id="id_injury_cost_per_person" value="{{ component.injury_cost_per_person|default:0 }}">
+        <input id="id_environmental_cost_per_bbl" value="{{ component.environmental_cost_per_bbl|default:0 }}">
+        <input id="id_production_cost_per_day" value="{{ component.production_cost_per_day|default:0 }}">
+        <input id="id_outage_multiplier" value="{{ component.outage_multiplier|default:0 }}">
+
+        <!-- 2. Calculation Outputs (cof_dashboard.js writes to these) -->
+        <div id="val_final_cmd">0</div>
+        <div id="val_final_inj">0</div>
+        <div id="val_fc_inj">0</div>
+        <div id="val_fc_env">0</div>
+        <div id="val_fc_bus">0</div>
+        <div id="val_fc_total">0</div>
+
+        <!-- 3. Inspection Planning Inputs -->
+        <input id="id_commissioning_date" value="{{ component.commissioning_date|date:'Y-m-d' }}">
+        <input id="inp_target_max_df" value="4.0">
         <div id="id_gff_value">{{ component.gff_value|default:"3.06E-05" }}</div>
         <div id="id_fms_factor">{{ component.fms_factor|default:"1.0" }}</div>
 
-        <!-- COF Areas -->
-        <div id="val_final_cmd">100</div>
-        <div id="val_final_inj">100</div>
-
-        <!-- Mechanisms Active/Rates -->
-        <!-- Using yesno filter to avoid TemplateSyntaxError with if blocks -->
+        <!-- Thinning -->
         <input type="checkbox" id="id_mech_thinning_co2_active" {{ component.mech_thinning_co2_active|yesno:"checked,"
             }}>
         <input id="id_co2_corrosion_rate_mpy" value="{{ component.co2_corrosion_rate_mpy|default:0 }}">
-
-        <input type="checkbox" id="id_mech_thinning_hcl_active" {{ component.mech_thinning_hcl_active|yesno:"checked,"
-            }}>
-        <input id="id_hcl_corrosion_rate_mpy" value="{{ component.hcl_corrosion_rate_mpy|default:0 }}">
-
-        <input type="checkbox" id="id_mech_thinning_h2so4_active" {{
-            component.mech_thinning_h2so4_active|yesno:"checked," }}>
-        <input id="id_h2so4_corrosion_rate_mpy" value="{{ component.h2so4_corrosion_rate_mpy|default:0 }}">
-
-        <input type="checkbox" id="id_mech_thinning_hf_active" {{ component.mech_thinning_hf_active|yesno:"checked," }}>
-        <input id="id_hf_corrosion_rate_mpy" value="{{ component.hf_corrosion_rate_mpy|default:0 }}">
-
-        <input type="checkbox" id="id_mech_thinning_amine_active" {{
-            component.mech_thinning_amine_active|yesno:"checked," }}>
-        <input id="id_amine_corrosion_rate_mpy" value="{{ component.amine_corrosion_rate_mpy|default:0 }}">
-
-        <input type="checkbox" id="id_mech_thinning_alkaline_active" {{
-            component.mech_thinning_alkaline_active|yesno:"checked," }}>
-        <input id="id_alkaline_water_corrosion_rate_mpy"
-            value="{{ component.alkaline_water_corrosion_rate_mpy|default:0 }}">
-
-        <input type="checkbox" id="id_mech_thinning_acid_active" {{ component.mech_thinning_acid_active|yesno:"checked,"
-            }}>
-        <input id="id_acid_water_corrosion_rate_mpy" value="{{ component.acid_water_corrosion_rate_mpy|default:0 }}">
-
-        <input type="checkbox" id="id_mech_thinning_soil_active" {{ component.mech_thinning_soil_active|yesno:"checked,"
-            }}>
-        <input id="id_soil_corrosion_rate_mpy" value="{{ component.soil_corrosion_rate_mpy|default:0 }}">
-
-        <input type="checkbox" id="id_mech_thinning_h2s_h2_active" {{
-            component.mech_thinning_h2s_h2_active|yesno:"checked," }}>
-        <input id="id_ht_h2s_h2_corrosion_rate_mpy" value="{{ component.ht_h2s_h2_corrosion_rate_mpy|default:0 }}">
-
-        <input type="checkbox" id="id_mech_thinning_sulfidic_active" {{
-            component.mech_thinning_sulfidic_active|yesno:"checked," }}>
-        <input id="id_sulfidic_corrosion_rate_mpy" value="{{ component.sulfidic_corrosion_rate_mpy|default:0 }}">
-
-        <input id="id_min_required_thickness_in" value="{{ component.min_required_thickness_in|default:0 }}">
-        <input id="id_future_corrosion_allowance_in"
-            value="{{ component.future_corrosion_allowance_in|default:0.125 }}">
-
-        <!-- External Corrosion -->
-        <input type="checkbox" id="id_mech_ext_corrosion_active" {{ component.mech_ext_corrosion_active|yesno:"checked,"
-            }}>
-        <input id="id_external_corrosion_rate_mpy" value="{{ component.external_corrosion_rate_mpy|default:0 }}">
-
-        <input type="checkbox" id="id_mech_cui_active" {{ component.mech_cui_active|yesno:"checked," }}>
-        <input id="id_cui_corrosion_rate_mpy" value="{{ component.cui_corrosion_rate_mpy|default:0 }}">
+        <!-- Add other thinning fields if strictly necessary for other calcs, but inspection_planning.js uses main objects usually -->
     </div>
 
     <!-- Power BI Grid Layout -->
@@ -249,19 +235,23 @@
                         <tbody>
                             <tr class="hover:bg-gray-50">
                                 <td class="text-gray-500 font-medium pl-6">Material</td>
-                                <td class="font-bold text-slate-700 text-right pr-6">{% firstof component.material_construction component.material "-" %}</td>
+                                <td class="font-bold text-slate-700 text-right pr-6">{% firstof
+                                    component.material_construction component.material "-" %}</td>
                             </tr>
                             <tr class="hover:bg-gray-50">
                                 <td class="text-gray-500 font-medium pl-6">Design Temp</td>
-                                <td class="font-bold text-slate-700 text-right pr-6">{{ component.design_temp_f|default:"-" }} °F</td>
+                                <td class="font-bold text-slate-700 text-right pr-6">{{
+                                    component.design_temp_f|default:"-" }} °F</td>
                             </tr>
                             <tr class="hover:bg-gray-50">
                                 <td class="text-gray-500 font-medium pl-6">Op. Pressure</td>
-                                <td class="font-bold text-slate-700 text-right pr-6">{% firstof component.operating_pressure_psia component.design_pressure_psi "-" %} psia</td>
+                                <td class="font-bold text-slate-700 text-right pr-6">{% firstof
+                                    component.operating_pressure_psia component.design_pressure_psi "-" %} psia</td>
                             </tr>
                             <tr class="hover:bg-gray-50">
                                 <td class="text-gray-500 font-medium pl-6">Efficiency</td>
-                                <td class="font-bold text-slate-700 text-right pr-6">{{ component.joint_efficiency|default:"1.0" }}</td>
+                                <td class="font-bold text-slate-700 text-right pr-6">{{
+                                    component.joint_efficiency|default:"1.0" }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -276,6 +266,8 @@
 
 <!-- Load Inspection Planning Logic -->
 <script src="{% static 'dashboard/js/calculations/inspection_planning.js' %}"></script>
+<!-- Load Shared COF Logic (Reusing Component Form Logic) -->
+<script type="module" src="{% static 'dashboard/js/cof_dashboard.js' %}"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -287,33 +279,56 @@
         }
 
         // Init Mini COF Chart
-        const ctxMini = document.getElementById('cof_chart_mini');
-        if (ctxMini) {
-            new Chart(ctxMini, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Safety', 'Business', 'Environment'],
-                    datasets: [{
-                        data: [
-                            30, // Placeholder
-                            50, // Placeholder
-                            20  // Placeholder
-                        ],
-                        backgroundColor: ['#ef4444', '#3b82f6', '#10b981'],
-                        borderWidth: 0,
-                        hoverOffset: 10
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '70%',
-                    plugins: {
-                        legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8 } }
+        // We wait for cof_dashboard.js to populate the val_* hidden divs
+        setTimeout(() => {
+            const getVal = (id) => {
+                const el = document.getElementById(id);
+                if (!el) return 0;
+                // Parse currency string "$1,234.56" -> 1234.56
+                const text = el.textContent || '0';
+                return parseFloat(text.replace(/[^0-9.-]+/g, "")) || 0;
+            };
+
+            const safe = getVal('val_fc_inj');      // Safety
+            const biz = getVal('val_fc_bus');       // Business
+            const env = getVal('val_fc_env');       // Environment
+
+            console.log("Extracted COF Values:", { safe, biz, env });
+
+            const ctxMini = document.getElementById('cof_chart_mini');
+            if (ctxMini && typeof Chart !== 'undefined') {
+                new Chart(ctxMini, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Safety', 'Business', 'Environment'],
+                        datasets: [{
+                            data: [safe, biz, env],
+                            backgroundColor: [
+                                '#f97316', // Orange (Safety)
+                                '#eab308', // Yellow (Business)
+                                '#22c55e'  // Green (Env)
+                            ],
+                            borderWidth: 0,
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    usePointStyle: true,
+                                    font: { size: 10 }
+                                }
+                            }
+                        },
+                        cutout: '70%',
                     }
-                }
-            });
-        }
+                });
+            }
+        }, 1500); // 1.5s delay to allow cof_dashboard.js to finish calc
     });
 </script>
 {% endblock %}
