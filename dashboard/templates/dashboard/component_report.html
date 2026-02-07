@@ -43,18 +43,19 @@
         <!-- Process & Design -->
         <input id="id_rbix_fluid" value="{{ component.rbix_fluid }}">
         <input id="id_operational_fluid_phase" value="{{ component.operational_fluid_phase }}">
-        <input id="id_operating_temp_f" value="{{ component.operating_temp_f|default:0 }}">
-        <input id="id_component_diameter" value="{{ component.component_diameter|default:0 }}">
+        <input id="id_operating_temp_f" value="{{ component.operating_temp_f|default_if_none:'' }}">
+        <input id="id_component_diameter" value="{{ component.component_diameter|default_if_none:'' }}">
         <input id="id_rbix_component_type" value="{{ component.rbix_component_type }}">
-        <input id="id_operating_pressure_psia" value="{{ component.operating_pressure_psia|default:0 }}">
+        <input id="id_operating_pressure_psia" value="{{ component.operating_pressure_psia|default_if_none:'' }}">
         <input id="id_atm_pressure" value="14.7">
         <input id="id_discharge_coeff" value="0.61">
         <input id="id_viscosity_correction" value="1.0">
         <input type="checkbox" id="id_heat_traced" {% if component.heat_traced %}checked{% endif %}>
 
         <!-- Inventory -->
-        <input id="id_component_group_fluid_mass_lb" value="{{ component.component_group_fluid_mass_lb|default:0 }}">
-        <input id="id_component_fluid_mass_lb" value="{{ component.component_fluid_mass_lb|default:0 }}">
+        <input id="id_component_group_fluid_mass_lb"
+            value="{{ component.component_group_fluid_mass_lb|default_if_none:'' }}">
+        <input id="id_component_fluid_mass_lb" value="{{ component.component_fluid_mass_lb|default_if_none:'' }}">
 
         <!-- Mitigation -->
         <input id="id_detection_class" value="{{ component.detection_class|default:'C' }}">
@@ -64,11 +65,11 @@
         <!-- Financial Factors -->
         <input id="id_material_construction" value="{{ component.material_construction|default:'Carbon Steel' }}">
         <input id="id_cost_factor" value="{{ component.cost_factor|default:1.0 }}">
-        <input id="id_equipment_cost_per_sqft" value="{{ component.equipment_cost_per_sqft|default:0 }}">
-        <input id="id_injury_cost_per_person" value="{{ component.injury_cost_per_person|default:0 }}">
-        <input id="id_environmental_cost_per_bbl" value="{{ component.environmental_cost_per_bbl|default:0 }}">
-        <input id="id_production_cost_per_day" value="{{ component.production_cost_per_day|default:0 }}">
-        <input id="id_outage_multiplier" value="{{ component.outage_multiplier|default:0 }}">
+        <input id="id_equipment_cost_per_sqft" value="{{ component.equipment_cost_per_sqft|default_if_none:'' }}">
+        <input id="id_injury_cost_per_person" value="{{ component.injury_cost_per_person|default_if_none:'' }}">
+        <input id="id_environmental_cost_per_bbl" value="{{ component.environmental_cost_per_bbl|default_if_none:'' }}">
+        <input id="id_production_cost_per_day" value="{{ component.production_cost_per_day|default_if_none:'' }}">
+        <input id="id_outage_multiplier" value="{{ component.outage_multiplier|default_if_none:'' }}">
 
         <!-- 2. Calculation Outputs (cof_dashboard.js writes to these) -->
         <div id="val_final_cmd">0</div>
@@ -85,72 +86,53 @@
         <div id="id_fms_factor">{{ component.fms_factor|default:"1.0" }}</div>
 
         <!-- Thinning -->
-        <input type="checkbox" id="id_mech_thinning_co2_active" 
-            {% if component.mech_thinning_co2_active or component.co2_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input type="checkbox" id="id_mech_thinning_co2_active" {% if component.mech_thinning_co2_active or component.co2_corrosion_rate_mpy|default:0 %}checked{% endif %}>
         <input id="id_co2_corrosion_rate_mpy" value="{{ component.co2_corrosion_rate_mpy|default:0 }}">
 
-        <input type="checkbox" id="id_mech_thinning_hcl_active" 
-            {% if component.mech_thinning_hcl_active or component.hcl_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input type="checkbox" id="id_mech_thinning_hcl_active" {% if component.mech_thinning_hcl_active or component.hcl_corrosion_rate_mpy|default:0 %}checked{% endif %}>
         <input id="id_hcl_corrosion_rate_mpy" value="{{ component.hcl_corrosion_rate_mpy|default:0 }}">
 
-        <input type="checkbox" id="id_mech_thinning_h2so4_active" 
-            {% if component.mech_thinning_h2so4_active or component.h2so4_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input type="checkbox" id="id_mech_thinning_h2so4_active" {% if component.mech_thinning_h2so4_active or component.h2so4_corrosion_rate_mpy|default:0 %}checked{% endif %}>
         <input id="id_h2so4_corrosion_rate_mpy" value="{{ component.h2so4_corrosion_rate_mpy|default:0 }}">
 
-        <input type="checkbox" id="id_mech_thinning_hf_active" 
-            {% if component.mech_thinning_hf_active or component.hf_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input type="checkbox" id="id_mech_thinning_hf_active" {% if component.mech_thinning_hf_active or component.hf_corrosion_rate_mpy|default:0 %}checked{% endif %}>
         <input id="id_hf_corrosion_rate_mpy" value="{{ component.hf_corrosion_rate_mpy|default:0 }}">
 
-        <input type="checkbox" id="id_mech_thinning_amine_active" 
-            {% if component.mech_thinning_amine_active or component.amine_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input type="checkbox" id="id_mech_thinning_amine_active" {% if component.mech_thinning_amine_active or component.amine_corrosion_rate_mpy|default:0 %}checked{% endif %}>
         <input id="id_amine_corrosion_rate_mpy" value="{{ component.amine_corrosion_rate_mpy|default:0 }}">
 
-        <input type="checkbox" id="id_mech_thinning_alkaline_active" 
-            {% if component.mech_thinning_alkaline_active or component.alkaline_water_corrosion_rate_mpy|default:0 %}checked{% endif %}>
-        <input id="id_alkaline_water_corrosion_rate_mpy"
-            value="{{ component.alkaline_water_corrosion_rate_mpy|default:0 }}">
+        <input type="checkbox" id="id_mech_thinning_alkaline_active" {% if component.mech_thinning_alkaline_active or component.alkaline_water_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input id="id_alkaline_water_corrosion_rate_mpy" value="{{ component.alkaline_water_corrosion_rate_mpy|default:0 }}">
 
-        <input type="checkbox" id="id_mech_thinning_acid_active" 
-            {% if component.mech_thinning_acid_active or component.acid_water_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input type="checkbox" id="id_mech_thinning_acid_active" {% if component.mech_thinning_acid_active or component.acid_water_corrosion_rate_mpy|default:0 %}checked{% endif %}>
         <input id="id_acid_water_corrosion_rate_mpy" value="{{ component.acid_water_corrosion_rate_mpy|default:0 }}">
 
-        <input type="checkbox" id="id_mech_thinning_soil_active" 
-            {% if component.mech_thinning_soil_active or component.soil_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input type="checkbox" id="id_mech_thinning_soil_active" {% if component.mech_thinning_soil_active or component.soil_corrosion_rate_mpy|default:0 %}checked{% endif %}>
         <input id="id_soil_corrosion_rate_mpy" value="{{ component.soil_corrosion_rate_mpy|default:0 }}">
 
-        <input type="checkbox" id="id_mech_thinning_h2s_h2_active" 
-            {% if component.mech_thinning_h2s_h2_active or component.ht_h2s_h2_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input type="checkbox" id="id_mech_thinning_h2s_h2_active" {% if component.mech_thinning_h2s_h2_active or component.ht_h2s_h2_corrosion_rate_mpy|default:0 %}checked{% endif %}>
         <input id="id_ht_h2s_h2_corrosion_rate_mpy" value="{{ component.ht_h2s_h2_corrosion_rate_mpy|default:0 }}">
 
-        <input type="checkbox" id="id_mech_thinning_sulfidic_active" 
-            {% if component.mech_thinning_sulfidic_active or component.sulfidic_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input type="checkbox" id="id_mech_thinning_sulfidic_active" {% if component.mech_thinning_sulfidic_active or component.sulfidic_corrosion_rate_mpy|default:0 %}checked{% endif %}>
         <input id="id_sulfidic_corrosion_rate_mpy" value="{{ component.sulfidic_corrosion_rate_mpy|default:0 }}">
 
         <input id="id_min_required_thickness_in" value="{{ component.min_required_thickness_in|default:0 }}">
-        <input id="id_future_corrosion_allowance_in"
-            value="{{ component.future_corrosion_allowance_in|default:0.125 }}">
+        <input id="id_future_corrosion_allowance_in" value="{{ component.future_corrosion_allowance_in|default:0.125 }}">
 
         <!-- External Corrosion -->
-        <input type="checkbox" id="id_mech_ext_corrosion_active" 
-            {% if component.mech_ext_corrosion_active or component.external_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input type="checkbox" id="id_mech_ext_corrosion_active" {% if component.mech_ext_corrosion_active or component.external_corrosion_rate_mpy|default:0 %}checked{% endif %}>
         <input id="id_external_corrosion_rate_mpy" value="{{ component.external_corrosion_rate_mpy|default:0 }}">
 
-        <input type="checkbox" id="id_mech_cui_active" 
-            {% if component.mech_cui_active or component.cui_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input type="checkbox" id="id_mech_cui_active" {% if component.mech_cui_active or component.cui_corrosion_rate_mpy|default:0 %}checked{% endif %}>
         <input id="id_cui_corrosion_rate_mpy" value="{{ component.cui_corrosion_rate_mpy|default:0 }}">
 
         <!-- SCC Mechanisms Inputs for formula_app_adapter.js -->
         <!-- CAUSTIC -->
-        <input type="checkbox" id="id_mechanism_scc_caustic_active" 
-            {% if component.mechanism_scc_caustic_active %}checked{% endif %}>
-        <input type="checkbox" id="id_scc_caustic_cracks_observed" 
-            {% if component.scc_caustic_cracks_observed %}checked{% endif %}>
-        <input type="checkbox" id="id_scc_caustic_cracks_removed" 
-            {% if component.scc_caustic_cracks_removed %}checked{% endif %}>
-        <input type="checkbox" id="id_scc_caustic_stress_relieved" 
-            {% if component.scc_caustic_stress_relieved %}checked{% endif %}>
-        <input type="checkbox" id="id_scc_caustic_steamed_out_prior" 
-            {% if component.scc_caustic_steamed_out_prior %}checked{% endif %}>
+        <input type="checkbox" id="id_mechanism_scc_caustic_active" {% if component.mechanism_scc_caustic_active %}checked{% endif %}>
+        <input type="checkbox" id="id_scc_caustic_cracks_observed" {% if component.scc_caustic_cracks_observed %}checked{% endif %}>
+        <input type="checkbox" id="id_scc_caustic_cracks_removed" {% if component.scc_caustic_cracks_removed %}checked{% endif %}>
+        <input type="checkbox" id="id_scc_caustic_stress_relieved" {% if component.scc_caustic_stress_relieved %}checked{% endif %}>
+        <input type="checkbox" id="id_scc_caustic_steamed_out_prior" {% if component.scc_caustic_steamed_out_prior %}checked{% endif %}>
         <input id="id_scc_caustic_naoh_conc_percent" value="{{ component.scc_caustic_naoh_conc_percent|default:0 }}">
         <input id="id_scc_caustic_inspection_count_a" value="{{ component.scc_caustic_inspection_count_a|default:0 }}">
         <input id="id_scc_caustic_inspection_count_b" value="{{ component.scc_caustic_inspection_count_b|default:0 }}">
@@ -162,18 +144,12 @@
         <div id="res_scc_caustic_df"></div>
 
         <!-- AMINE -->
-        <input type="checkbox" id="id_mechanism_scc_amine_active" 
-            {% if component.mechanism_scc_amine_active %}checked{% endif %}>
-        <input type="checkbox" id="id_scc_amine_cracks_observed" 
-            {% if component.scc_amine_cracks_observed %}checked{% endif %}>
-        <input type="checkbox" id="id_scc_amine_cracks_removed" 
-            {% if component.scc_amine_cracks_removed %}checked{% endif %}>
-        <input type="checkbox" id="id_scc_amine_stress_relieved" 
-            {% if component.scc_amine_stress_relieved %}checked{% endif %}>
-        <input type="checkbox" id="id_scc_amine_lean_amine" 
-            {% if component.scc_amine_lean_amine %}checked{% endif %}>
-        <input type="checkbox" id="id_scc_amine_steamed_out" 
-            {% if component.scc_amine_steamed_out %}checked{% endif %}>
+        <input type="checkbox" id="id_mechanism_scc_amine_active" {% if component.mechanism_scc_amine_active %}checked{% endif %}>
+        <input type="checkbox" id="id_scc_amine_cracks_observed" {% if component.scc_amine_cracks_observed %}checked{% endif %}>
+        <input type="checkbox" id="id_scc_amine_cracks_removed" {% if component.scc_amine_cracks_removed %}checked{% endif %}>
+        <input type="checkbox" id="id_scc_amine_stress_relieved" {% if component.scc_amine_stress_relieved %}checked{% endif %}>
+        <input type="checkbox" id="id_scc_amine_lean_amine" {% if component.scc_amine_lean_amine %}checked{% endif %}>
+        <input type="checkbox" id="id_scc_amine_steamed_out" {% if component.scc_amine_steamed_out %}checked{% endif %}>
         <input id="id_scc_amine_solution_type" value="{{ component.scc_amine_solution_type|default:'MEA_DIPA' }}">
         <input id="id_scc_amine_inspection_count_a" value="{{ component.scc_amine_inspection_count_a|default:0 }}">
         <input id="id_scc_amine_inspection_count_b" value="{{ component.scc_amine_inspection_count_b|default:0 }}">
@@ -185,12 +161,9 @@
         <div id="res_scc_amine_df"></div>
 
         <!-- SSC -->
-        <input type="checkbox" id="id_mechanism_scc_ssc_active" 
-            {% if component.mechanism_scc_ssc_active %}checked{% endif %}>
-        <input type="checkbox" id="id_scc_ssc_cracks_observed" 
-            {% if component.scc_ssc_cracks_observed %}checked{% endif %}>
-        <input type="checkbox" id="id_scc_ssc_cracks_removed" 
-            {% if component.scc_ssc_cracks_removed %}checked{% endif %}>
+        <input type="checkbox" id="id_mechanism_scc_ssc_active" {% if component.mechanism_scc_ssc_active %}checked{% endif %}>
+        <input type="checkbox" id="id_scc_ssc_cracks_observed" {% if component.scc_ssc_cracks_observed %}checked{% endif %}>
+        <input type="checkbox" id="id_scc_ssc_cracks_removed" {% if component.scc_ssc_cracks_removed %}checked{% endif %}>
         <input id="id_scc_ssc_h2s_ppm" value="{{ component.scc_ssc_h2s_ppm|default:50 }}">
         <input id="id_scc_ssc_hardness_hb" value="{{ component.scc_ssc_hardness_hb|default:200 }}">
         <input id="id_scc_ssc_inspection_count_a" value="{{ component.scc_ssc_inspection_count_a|default:0 }}">
@@ -202,14 +175,10 @@
         <div id="res_scc_ssc_df"></div>
 
         <!-- HIC/SOHIC -->
-        <input type="checkbox" id="id_mechanism_scc_hic_h2s_active" 
-            {% if component.mechanism_scc_hic_active %}checked{% endif %}>
-        <input type="checkbox" id="id_scc_hic_h2s_cyanide_present" 
-            {% if component.scc_hic_h2s_cyanide_present %}checked{% endif %}>
-        <input type="checkbox" id="id_scc_hic_h2s_cracks_observed" 
-            {% if component.scc_hic_h2s_cracks_observed %}checked{% endif %}>
-        <input type="checkbox" id="id_scc_hic_h2s_cracks_removed" 
-            {% if component.scc_hic_h2s_cracks_removed %}checked{% endif %}>
+        <input type="checkbox" id="id_mechanism_scc_hic_h2s_active" {% if component.mechanism_scc_hic_active %}checked{% endif %}>
+        <input type="checkbox" id="id_scc_hic_h2s_cyanide_present" {% if component.scc_hic_h2s_cyanide_present %}checked{% endif %}>
+        <input type="checkbox" id="id_scc_hic_h2s_cracks_observed" {% if component.scc_hic_h2s_cracks_observed %}checked{% endif %}>
+        <input type="checkbox" id="id_scc_hic_h2s_cracks_removed" {% if component.scc_hic_h2s_cracks_removed %}checked{% endif %}>
         <input id="id_scc_hic_h2s_h2s_ppm" value="{{ component.scc_hic_h2s_h2s_ppm|default:0 }}">
         <input id="id_scc_hic_h2s_banding_severity" value="{{ component.scc_hic_h2s_banding_severity|default:'Low' }}">
         <input id="id_scc_hic_h2s_inspection_count_a" value="{{ component.scc_hic_h2s_inspection_count_a|default:0 }}">
@@ -221,14 +190,10 @@
         <div id="res_scc_hic_h2s_df"></div>
 
         <!-- ACSCC -->
-        <input type="checkbox" id="id_mechanism_scc_acscc_active" 
-            {% if component.mechanism_scc_acscc_active %}checked{% endif %}>
-        <input type="checkbox" id="id_scc_acscc_cracks_observed" 
-            {% if component.scc_acscc_cracks_observed %}checked{% endif %}>
-        <input type="checkbox" id="id_scc_acscc_cracks_removed" 
-            {% if component.scc_acscc_cracks_removed %}checked{% endif %}>
-        <input type="checkbox" id="id_scc_acscc_stress_relieved" 
-            {% if component.scc_acscc_stress_relieved %}checked{% endif %}>
+        <input type="checkbox" id="id_mechanism_scc_acscc_active" {% if component.mechanism_scc_acscc_active %}checked{% endif %}>
+        <input type="checkbox" id="id_scc_acscc_cracks_observed" {% if component.scc_acscc_cracks_observed %}checked{% endif %}>
+        <input type="checkbox" id="id_scc_acscc_cracks_removed" {% if component.scc_acscc_cracks_removed %}checked{% endif %}>
+        <input type="checkbox" id="id_scc_acscc_stress_relieved" {% if component.scc_acscc_stress_relieved %}checked{% endif %}>
         <input id="id_scc_acscc_co3_conc_percent" value="{{ component.scc_acscc_co3_conc_percent|default:0 }}">
         <input id="id_scc_acscc_inspection_count_a" value="{{ component.scc_acscc_inspection_count_a|default:0 }}">
         <input id="id_scc_acscc_inspection_count_b" value="{{ component.scc_acscc_inspection_count_b|default:0 }}">
@@ -239,18 +204,12 @@
         <div id="res_scc_acscc_df"></div>
 
         <!-- PASCC -->
-        <input type="checkbox" id="id_mechanism_scc_pascc_active" 
-            {% if component.mechanism_scc_pascc_active %}checked{% endif %}>
-        <input type="checkbox" id="id_scc_pascc_cracks_observed" 
-            {% if component.scc_pascc_cracks_observed %}checked{% endif %}>
-        <input type="checkbox" id="id_scc_pascc_cracks_removed" 
-            {% if component.scc_pascc_cracks_removed %}checked{% endif %}>
-        <input type="checkbox" id="id_scc_pascc_sensitized" 
-            {% if component.scc_pascc_sensitized %}checked{% endif %}>
-        <input type="checkbox" id="id_scc_pascc_sulfur_exposure" 
-            {% if component.scc_pascc_sulfur_exposure %}checked{% endif %}>
-        <input type="checkbox" id="id_scc_pascc_downtime_protected" 
-            {% if component.scc_pascc_downtime_protected %}checked{% endif %}>
+        <input type="checkbox" id="id_mechanism_scc_pascc_active" {% if component.mechanism_scc_pascc_active %}checked{% endif %}>
+        <input type="checkbox" id="id_scc_pascc_cracks_observed" {% if component.scc_pascc_cracks_observed %}checked{% endif %}>
+        <input type="checkbox" id="id_scc_pascc_cracks_removed" {% if component.scc_pascc_cracks_removed %}checked{% endif %}>
+        <input type="checkbox" id="id_scc_pascc_sensitized" {% if component.scc_pascc_sensitized %}checked{% endif %}>
+        <input type="checkbox" id="id_scc_pascc_sulfur_exposure" {% if component.scc_pascc_sulfur_exposure %}checked{% endif %}>
+        <input type="checkbox" id="id_scc_pascc_downtime_protected" {% if component.scc_pascc_downtime_protected %}checked{% endif %}>
         <input id="id_scc_pascc_inspection_count_a" value="{{ component.scc_pascc_inspection_count_a|default:0 }}">
         <input id="id_scc_pascc_inspection_count_b" value="{{ component.scc_pascc_inspection_count_b|default:0 }}">
         <input id="id_scc_pascc_inspection_count_c" value="{{ component.scc_pascc_inspection_count_c|default:0 }}">
@@ -260,14 +219,10 @@
         <div id="res_scc_pascc_df"></div>
 
         <!-- ClSCC -->
-        <input type="checkbox" id="id_mechanism_scc_clscc_active" 
-            {% if component.mechanism_scc_clscc_active %}checked{% endif %}>
-        <input type="checkbox" id="id_scc_clscc_cracks_observed" 
-            {% if component.scc_clscc_cracks_observed %}checked{% endif %}>
-        <input type="checkbox" id="id_scc_clscc_cracks_removed" 
-            {% if component.scc_clscc_cracks_removed %}checked{% endif %}>
-        <input type="checkbox" id="id_scc_clscc_deposits_present" 
-            {% if component.scc_clscc_deposits_present %}checked{% endif %}>
+        <input type="checkbox" id="id_mechanism_scc_clscc_active" {% if component.mechanism_scc_clscc_active %}checked{% endif %}>
+        <input type="checkbox" id="id_scc_clscc_cracks_observed" {% if component.scc_clscc_cracks_observed %}checked{% endif %}>
+        <input type="checkbox" id="id_scc_clscc_cracks_removed" {% if component.scc_clscc_cracks_removed %}checked{% endif %}>
+        <input type="checkbox" id="id_scc_clscc_deposits_present" {% if component.scc_clscc_deposits_present %}checked{% endif %}>
         <input id="id_scc_clscc_cl_conc_ppm" value="{{ component.scc_clscc_cl_conc_ppm|default:0 }}">
         <input id="id_scc_clscc_inspection_count_a" value="{{ component.scc_clscc_inspection_count_a|default:0 }}">
         <input id="id_scc_clscc_inspection_count_b" value="{{ component.scc_clscc_inspection_count_b|default:0 }}">
@@ -278,12 +233,9 @@
         <div id="res_scc_clscc_df"></div>
 
         <!-- HSC-HF -->
-        <input type="checkbox" id="id_mechanism_scc_hsc_hf_active" 
-            {% if component.mechanism_scc_hsc_hf_active %}checked{% endif %}>
-        <input type="checkbox" id="id_scc_hsc_hf_cracks_observed" 
-            {% if component.scc_hsc_hf_cracks_observed %}checked{% endif %}>
-        <input type="checkbox" id="id_scc_hsc_hf_cracks_removed" 
-            {% if component.scc_hsc_hf_cracks_removed %}checked{% endif %}>
+        <input type="checkbox" id="id_mechanism_scc_hsc_hf_active" {% if component.mechanism_scc_hsc_hf_active %}checked{% endif %}>
+        <input type="checkbox" id="id_scc_hsc_hf_cracks_observed" {% if component.scc_hsc_hf_cracks_observed %}checked{% endif %}>
+        <input type="checkbox" id="id_scc_hsc_hf_cracks_removed" {% if component.scc_hsc_hf_cracks_removed %}checked{% endif %}>
         <input type="checkbox" id="id_scc_hsc_hf_present" {% if component.scc_hsc_hf_present %}checked{% endif %}>
         <input id="id_scc_hsc_hf_hf_conc_percent" value="{{ component.scc_hsc_hf_hf_conc_percent|default:0 }}">
         <input id="id_scc_hsc_hf_hardness_hb" value="{{ component.scc_hsc_hf_hardness_hb|default:0 }}">
@@ -301,15 +253,13 @@
         <input id="id_htha_h2_partial_pressure_psia" value="{{ component.htha_h2_partial_pressure_psia|default:0 }}">
         <input id="id_htha_exposure_time_years" value="{{ component.htha_exposure_time_years|default:0 }}">
         <input type="checkbox" id="id_htha_damage_observed" {% if component.htha_damage_observed %}checked{% endif %}>
-        <input type="checkbox" id="id_htha_material_verification" 
-            {% if component.htha_material_verification %}checked{% endif %}>
+        <input type="checkbox" id="id_htha_material_verification" {% if component.htha_material_verification %}checked{% endif %}>
         <!-- HTHA Result Containers -->
         <div id="disp_htha_susceptibility"></div>
         <div id="disp_htha_df"></div>
         <input id="id_htha_damage_factor" value="{{ component.htha_damage_factor|default:0 }}">
 
-        <input type="checkbox" id="id_mechanism_brittle_fracture_active" 
-            {% if component.mechanism_brittle_fracture_active %}checked{% endif %}>
+        <input type="checkbox" id="id_mechanism_brittle_fracture_active" {% if component.mechanism_brittle_fracture_active %}checked{% endif %}>
         <input id="id_brittle_damage_factor" value="{{ component.brittle_damage_factor|default:0 }}">
         <div id="disp_brittle_df"></div>
 
@@ -499,6 +449,42 @@
                     </table>
                 </div>
             </div>
+
+            <!-- DEBUG PANEL -->
+            <div class="card bg-base-100 shadow-xl border border-warning">
+                <div class="card-body p-4">
+                    <details>
+                        <summary class="cursor-pointer font-bold text-warning text-xs uppercase tracking-wider">
+                            Show Debug Data
+                        </summary>
+                        <div class="mt-4 text-xs font-mono grid grid-cols-2 gap-2 text-gray-600">
+                            <!-- COF Debug -->
+                            <div class="col-span-2 font-bold text-gray-800 border-b mt-2">COF Calculation</div>
+                            <div>Pressure: <span id="dbg_pressure">--</span></div>
+                            <div>Temp: <span id="dbg_temp">--</span></div>
+                            <div>Fluid: <span id="dbg_fluid">--</span></div>
+                            <div>Hole: <span id="dbg_hole">--</span></div>
+                            <div>Rate: <span id="dbg_rate">--</span></div>
+                            <div>Area: <span id="dbg_area">--</span></div>
+                            <div>Total Cost: <span id="dbg_cost">--</span></div>
+                            <div>Target Risk: <span id="dbg_target">--</span></div>
+
+                            <!-- POF Debug -->
+                            <div class="col-span-2 font-bold text-gray-800 border-b mt-2">Active Mechanisms</div>
+                            <div class="col-span-2">
+                                Thinning (CO2): {{ component.mech_thinning_co2_active|yesno:"Yes,No" }}
+                                ({{ component.co2_corrosion_rate_mpy }} mpy)<br>
+                                Ext. Corrosion: {{ component.mech_ext_corrosion_active|yesno:"Yes,No" }}<br>
+                                Caustic: {{ component.mechanism_scc_caustic_active|yesno:"Yes,No" }}<br>
+                                Amine: {{ component.mechanism_scc_amine_active|yesno:"Yes,No" }}<br>
+                                SSC: {{ component.mechanism_scc_ssc_active|yesno:"Yes,No" }}<br>
+                                HTHA: {{ component.mechanism_htha_active|yesno:"Yes,No" }}
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -509,7 +495,7 @@
 
     <!-- SCRIPTS -->
     <script src="{% static 'dashboard/js/calculations/risk_matrix.js' %}?v={% now 'U' %}"></script>
-    <script src="{% static 'dashboard/js/cof_dashboard.js' %}?v={% now 'U' %}"></script>
+    <script type="module" src="{% static 'dashboard/js/cof_dashboard.js' %}?v={% now 'U' %}"></script>
 
     <!-- New Calculation Scripts for Report -->
     <script src="{% static 'dashboard/js/calculations/htha.js' %}?v={% now 'U' %}"></script>

@@ -255,18 +255,33 @@ async function runCofCalculations() {
 
         // DEBUG PANEL UPDATES
         try {
-            if (document.getElementById('dbg_pressure')) document.getElementById('dbg_pressure').textContent = Ps;
-            if (document.getElementById('dbg_temp')) document.getElementById('dbg_temp').textContent = Ts_F;
-            if (document.getElementById('dbg_fluid')) document.getElementById('dbg_fluid').textContent = fluidKey;
-            if (document.getElementById('dbg_hole')) document.getElementById('dbg_hole').textContent = d_final + '"';
-            if (document.getElementById('dbg_rate')) document.getElementById('dbg_rate').textContent = rateN.toFixed(4) + ' lb/s';
-            if (document.getElementById('dbg_area')) document.getElementById('dbg_area').textContent = cmdArea.toFixed(2) + ' ft2';
-            if (document.getElementById('dbg_cost')) document.getElementById('dbg_cost').textContent = '$' + costTotal.toLocaleString();
+            const setVal = (id, val, suffix = '') => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = val + suffix;
+            };
 
-            const riskTgt = getValue('inp_target_max_df', 4.0);
-            if (document.getElementById('dbg_target')) document.getElementById('dbg_target').textContent = riskTgt;
+            setVal('dbg_pressure', Ps);
+            setVal('dbg_temp', Ts_F);
+            setVal('dbg_fluid', fluidKey);
+            setVal('dbg_hole', d_final, '"');
+            setVal('dbg_rate', rateN.toFixed(4), ' lb/s');
+            setVal('dbg_area', cmdArea.toFixed(2), ' ft2');
+            setVal('dbg_cost', '$' + costTotal.toLocaleString());
+            setVal('dbg_target', getValue('inp_target_max_df', 4.0));
 
-        } catch (e) { console.error("Debug update failed", e); }
+            // VISUAL CONFIRMATION
+            const summary = document.querySelector('details summary');
+            if (summary && !summary.innerText.includes('Active')) {
+                summary.innerText = "Show Debug Data (Active)";
+                summary.style.color = "green";
+            }
+            console.log('[COF Debug] Debug panel updated');
+
+        } catch (e) {
+            console.error("Debug update failed", e);
+            const summary = document.querySelector('details summary');
+            if (summary) summary.innerText = "Debug Error";
+        }
 
         console.log('[COF Dashboard] Complete.', { rateN, cmdArea, costTotal });
     } catch (e) {
