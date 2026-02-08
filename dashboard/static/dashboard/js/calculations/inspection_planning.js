@@ -474,19 +474,55 @@ function updateInspectionChart() {
     const resultTime = document.getElementById('insp_res_time_remaining');
     const resultDf = document.getElementById('insp_res_proj_df');
 
+    // KPI Cards: Next Inspection
+    const dashNextDate = document.getElementById('dash_next_date');
+
     if (foundIntersection && intersectionDateObj) {
-        resultTitle.textContent = intersectionDateObj.toLocaleDateString();
+        const dateStr = intersectionDateObj.toLocaleDateString();
+        resultTitle.textContent = dateStr;
+        if (dashNextDate) dashNextDate.textContent = dateStr;
+
         const diffDays = Math.floor((intersectionDateObj - new Date()) / (1000 * 60 * 60 * 24));
         const diffYears = (diffDays / 365.25).toFixed(1);
         resultTime.textContent = `${diffYears} years (${diffDays} days)`;
         resultTime.className = diffYears < 1 ? "text-2xl font-bold text-red-600" : "text-2xl font-bold text-green-600";
         resultDf.textContent = targetRiskVal.toFixed(2) + " m²/yr";
     } else {
-        resultTitle.textContent = "> 25 Years";
+        const safeText = "> 25 Years";
+        resultTitle.textContent = safeText;
+        if (dashNextDate) dashNextDate.textContent = safeText;
+
         resultTime.textContent = "Safe for long term";
         resultTime.className = "text-2xl font-bold text-green-600";
         const fnVal = dataPoints[dataPoints.length - 1] || 0;
         resultDf.textContent = fnVal.toFixed(4) + " m²/yr";
+    }
+
+    // KPI Cards: Current Risk
+    const dashRiskVal = document.getElementById('dash_risk_value');
+    const dashRiskLbl = document.getElementById('dash_risk_label');
+
+    // Calculate accurate current risk (at current age)
+    let currentRiskVal = 0;
+    // Find value closest to currentAge in dataPoints logic or recalculate
+    // calculateRisk(currentAge) is available inside this scope? No, it's inside updateInspectionChart but defined locally.
+    // We can define it, or just use the first point if startAge is close to currentAge.
+    // Better to recalculate for precision:
+    currentRiskVal = calculateRisk(currentAge);
+
+    if (dashRiskVal) dashRiskVal.textContent = currentRiskVal.toFixed(4) + " m²/yr";
+
+    if (dashRiskLbl) {
+        if (currentRiskVal > targetRiskVal) {
+            dashRiskLbl.textContent = "CRITICAL";
+            dashRiskLbl.className = "badge badge-error text-white";
+        } else if (currentRiskVal > targetRiskVal * 0.8) {
+            dashRiskLbl.textContent = "HIGH";
+            dashRiskLbl.className = "badge badge-warning text-white";
+        } else {
+            dashRiskLbl.textContent = "LOW";
+            dashRiskLbl.className = "badge badge-success text-white";
+        }
     }
 }
 

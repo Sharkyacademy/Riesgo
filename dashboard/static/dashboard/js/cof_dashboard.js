@@ -253,6 +253,12 @@ async function runCofCalculations() {
         const costTotal = costBus + calcSafe + costEnv;
         if (document.getElementById('val_fc_total')) document.getElementById('val_fc_total').innerText = `${costTotal.toFixed(2)}`;
 
+        // KPI: Financial Exposure
+        const dashFinRisk = document.getElementById('dash_fin_risk');
+        if (dashFinRisk) {
+            dashFinRisk.textContent = '$' + costTotal.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        }
+
         // DEBUG PANEL UPDATES
         try {
             const setVal = (id, val, suffix = '') => {
