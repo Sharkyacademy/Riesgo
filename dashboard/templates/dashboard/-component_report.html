@@ -1,0 +1,620 @@
+{%extends 'theme/base.html'%}
+
+{% load static %}
+
+{% block content %}
+<div class="h-full w-full overflow-y-auto bg-slate-50 p-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-8">
+        <div>
+            <div class="flex items-center gap-3">
+                <h1 class="text-3xl font-black text-slate-800 tracking-tight">Asset Integrity Report</h1>
+                <span
+                    class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-bold uppercase tracking-wide">
+                    {{ component.rbix_component_type|default:"Component" }}
+                </span>
+            </div>
+            <p class="text-slate-500 mt-1 font-medium">Tag:
+                <span class="text-slate-700 font-bold">
+                    {% firstof component.tag component.rbix_component_type "N/A" %}
+                </span>
+                | Equipment: {{component.equipment.number }}
+            </p>
+        </div>
+        <div class="flex gap-3">
+            <button onclick="window.print()" class="btn btn-outline btn-sm gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                </svg>
+                Print PDF
+            </button>
+            <a href="{% url 'component_edit' component.pk %}"
+                class="btn bg-blue-600 hover:bg-blue-700 text-white btn-sm border-none gap-2 px-6">
+                Edit Component
+            </a>
+        </div>
+    </div>
+
+    <!-- Hidden Context for Shared Logic (cof_dashboard.js & inspection_planning.js) -->
+    <div class="hidden">
+        <!-- 1. Calculation Inputs (Must match IDs in cof_dashboard.js) -->
+        <!-- Process & Design -->
+        <input id="id_rbix_fluid" value="{{ component.rbix_fluid }}">
+        <input id="id_operational_fluid_phase" value="{{ component.operational_fluid_phase }}">
+        <input id="id_operating_temp_f" value="{{ component.operating_temp_f|default_if_none:'' }}">
+        <input id="id_component_diameter" value="{{ component.component_diameter|default_if_none:'' }}">
+        <input id="id_rbix_component_type" value="{{ component.rbix_component_type }}">
+        <input id="id_operating_pressure_psia" value="{{ component.operating_pressure_psia|default_if_none:'' }}">
+        <input id="id_atm_pressure" value="14.7">
+        <input id="id_discharge_coeff" value="0.61">
+        <input id="id_viscosity_correction" value="1.0">
+        <input type="checkbox" id="id_heat_traced" {% if component.heat_traced %}checked{% endif %}>
+
+        <!-- Inventory -->
+        <input id="id_component_group_fluid_mass_lb"
+            value="{{ component.component_group_fluid_mass_lb|default_if_none:'' }}">
+        <input id="id_component_fluid_mass_lb" value="{{ component.component_fluid_mass_lb|default_if_none:'' }}">
+
+        <!-- Mitigation -->
+        <input id="id_detection_class" value="{{ component.detection_class|default:'C' }}">
+        <input id="id_isolation_class" value="{{ component.isolation_class|default:'C' }}">
+        <input id="id_mitigation_system" value="{{ component.mitigation_system|default:'None' }}">
+
+        <!-- Financial Factors -->
+        <input id="id_material_construction" value="{{ component.material_construction|default:'Carbon Steel' }}">
+        <input id="id_cost_factor" value="{{ component.cost_factor|default:1.0 }}">
+        <input id="id_equipment_cost_per_sqft" value="{{ component.equipment_cost_per_sqft|default_if_none:'' }}">
+        <input id="id_injury_cost_per_person" value="{{ component.injury_cost_per_person|default_if_none:'' }}">
+        <input id="id_environmental_cost_per_bbl" value="{{ component.environmental_cost_per_bbl|default_if_none:'' }}">
+        <input id="id_production_cost_per_day" value="{{ component.production_cost_per_day|default_if_none:'' }}">
+        <input id="id_outage_multiplier" value="{{ component.outage_multiplier|default_if_none:'' }}">
+
+        <!-- 2. Calculation Outputs (cof_dashboard.js writes to these) -->
+        <div id="val_final_cmd">0</div>
+        <div id="val_final_inj">0</div>
+        <div id="val_fc_inj">0</div>
+        <div id="val_fc_env">0</div>
+        <div id="val_fc_bus">0</div>
+        <div id="val_fc_total">0</div>
+
+        <!-- 3. Inspection Planning Inputs -->
+        <input type="hidden" id="id_commissioning_date" value="{{ component.commissioning_date|date:'Y-m-d' }}">
+        <!-- Added Last Inspection Date for Sawtooth Projection -->
+        {% with latest_inspection=component.inspectionhistory_set.all|dictsortreversed:"date"|first %}
+        <input type="hidden" id="id_last_inspection_date" value="{{ latest_inspection.date|date:'Y-m-d'|default:'' }}">
+        {% endwith %}
+        <input type="hidden" id="id_design_life" value="{{ component.design_life_years|default:25 }}">
+        <input id="inp_target_max_df" value="550.0">
+        <div id="id_gff_value">{{ component.gff_value|default:"3.06E-05" }}</div>
+        <div id="id_fms_factor">{{ component.fms_factor|default:"1.0" }}</div>
+
+        <!-- Thinning -->
+        <input type="checkbox" id="id_mech_thinning_co2_active" {% if component.mech_thinning_co2_active or
+            component.co2_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input id="id_co2_corrosion_rate_mpy" value="{{ component.co2_corrosion_rate_mpy|default:0 }}">
+
+        <input type="checkbox" id="id_mech_thinning_hcl_active" {% if component.mech_thinning_hcl_active or
+            component.hcl_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input id="id_hcl_corrosion_rate_mpy" value="{{ component.hcl_corrosion_rate_mpy|default:0 }}">
+
+        <input type="checkbox" id="id_mech_thinning_h2so4_active" {% if component.mech_thinning_h2so4_active or
+            component.h2so4_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input id="id_h2so4_corrosion_rate_mpy" value="{{ component.h2so4_corrosion_rate_mpy|default:0 }}">
+
+        <input type="checkbox" id="id_mech_thinning_hf_active" {% if component.mech_thinning_hf_active or
+            component.hf_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input id="id_hf_corrosion_rate_mpy" value="{{ component.hf_corrosion_rate_mpy|default:0 }}">
+
+        <input type="checkbox" id="id_mech_thinning_amine_active" {% if component.mech_thinning_amine_active or
+            component.amine_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input id="id_amine_corrosion_rate_mpy" value="{{ component.amine_corrosion_rate_mpy|default:0 }}">
+
+        <input type="checkbox" id="id_mech_thinning_alkaline_active" {% if component.mech_thinning_alkaline_active or
+            component.alkaline_water_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input id="id_alkaline_water_corrosion_rate_mpy"
+            value="{{ component.alkaline_water_corrosion_rate_mpy|default:0 }}">
+
+        <input type="checkbox" id="id_mech_thinning_acid_active" {% if component.mech_thinning_acid_active or
+            component.acid_water_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input id="id_acid_water_corrosion_rate_mpy" value="{{ component.acid_water_corrosion_rate_mpy|default:0 }}">
+
+        <input type="checkbox" id="id_mech_thinning_soil_active" {% if component.mech_thinning_soil_active or
+            component.soil_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input id="id_soil_corrosion_rate_mpy" value="{{ component.soil_corrosion_rate_mpy|default:0 }}">
+
+        <input type="checkbox" id="id_mech_thinning_h2s_h2_active" {% if component.mech_thinning_h2s_h2_active or
+            component.ht_h2s_h2_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input id="id_ht_h2s_h2_corrosion_rate_mpy" value="{{ component.ht_h2s_h2_corrosion_rate_mpy|default:0 }}">
+
+        <input type="checkbox" id="id_mech_thinning_sulfidic_active" {% if component.mech_thinning_sulfidic_active or
+            component.sulfidic_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input id="id_sulfidic_corrosion_rate_mpy" value="{{ component.sulfidic_corrosion_rate_mpy|default:0 }}">
+
+
+
+        <!-- External Corrosion -->
+        <input type="checkbox" id="id_mech_ext_corrosion_active" {% if component.mech_ext_corrosion_active or
+            component.external_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input id="id_external_corrosion_rate_mpy" value="{{ component.external_corrosion_rate_mpy|default:0 }}">
+
+        <input type="checkbox" id="id_mech_cui_active" {% if component.mech_cui_active or
+            component.cui_corrosion_rate_mpy|default:0 %}checked{% endif %}>
+        <input id="id_cui_corrosion_rate_mpy" value="{{ component.cui_corrosion_rate_mpy|default:0 }}">
+
+        <!-- SCC Mechanisms Inputs (Minified for Sync-Only Mode) -->
+        <!-- CAUSTIC -->
+        <input type="checkbox" id="id_mechanism_scc_caustic_active" {% if component.mechanism_scc_caustic_active
+            %}checked{% endif %}>
+
+        <!-- AMINE -->
+        <input type="checkbox" id="id_mechanism_scc_amine_active" {% if component.mechanism_scc_amine_active %}checked{%
+            endif %}>
+
+        <!-- SSC -->
+        <input type="checkbox" id="id_mechanism_scc_ssc_active" {% if component.mechanism_scc_ssc_active %}checked{%
+            endif %}>
+
+        <!-- HIC/SOHIC -->
+        <input type="checkbox" id="id_mechanism_scc_hic_h2s_active" {% if component.mechanism_scc_hic_active %}checked{%
+            endif %}>
+
+        <!-- ACSCC -->
+        <input type="checkbox" id="id_mechanism_scc_acscc_active" {% if component.mechanism_scc_acscc_active %}checked{%
+            endif %}>
+
+        <!-- PASCC -->
+        <input type="checkbox" id="id_mechanism_scc_pascc_active" {% if component.mechanism_scc_pascc_active %}checked{%
+            endif %}>
+
+        <!-- ClSCC -->
+        <input type="checkbox" id="id_mechanism_scc_clscc_active" {% if component.mechanism_scc_clscc_active %}checked{%
+            endif %}>
+
+        <!-- HSC-HF -->
+        <input type="checkbox" id="id_mechanism_scc_hsc_hf_active" {% if component.mechanism_scc_hsc_hf_active
+            %}checked{% endif %}>
+
+        <!-- HTHA -->
+        <input type="checkbox" id="id_mechanism_htha_active" {% if component.mechanism_htha_active %}checked{% endif %}>
+        <input id="id_htha_damage_factor" value="{{ component.htha_damage_factor|default:0 }}">
+
+        <!-- Brittle Fracture -->
+        <input type="checkbox" id="id_mechanism_brittle_fracture_active" {% if
+            component.mechanism_brittle_fracture_active %}checked{% endif %}>
+        <input id="id_brittle_damage_factor" value="{{ component.brittle_damage_factor|default:0 }}">
+    </div>
+
+    <!-- Power BI Grid Layout -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+
+        <!-- KPI Card 1: Risk Level -->
+        <div class="card bg-white shadow-xl border-l-8 border-green-500 rounded-lg overflow-hidden">
+            <div class="card-body p-5">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Current Risk</p>
+                        <h3 class="text-3xl font-black text-gray-800">
+                            <span id="kpi_risk_val">Safe</span>
+                        </h3>
+                    </div>
+                    <div class="p-2 bg-green-50 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-xs text-gray-400">
+                    <span class="text-green-600 font-bold mr-1">{{ component.final_pof|default:"Low" }}</span> PoF Rate
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI Card 2: Next Inspection -->
+        <div class="card bg-white shadow-xl border-l-8 border-blue-500 rounded-lg overflow-hidden">
+            <div class="card-body p-5">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Next Inspection</p>
+                        <h3 class="text-2xl font-black text-gray-800" id="insp_res_date">
+                            Calculating...
+                        </h3>
+                    </div>
+                    <div class="p-2 bg-blue-50 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-xs text-gray-400">
+                    <span id="insp_res_time_remaining" class="font-bold mr-1">--</span> remaining
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI Card 3: Financial COF -->
+        <div class="card bg-white shadow-xl border-l-8 border-purple-500 rounded-lg overflow-hidden">
+            <div class="card-body p-5">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Cost Factor</p>
+                        <h3 class="text-3xl font-black text-gray-800">
+                            {{ component.cost_factor|default:"1.0" }}
+                        </h3>
+                    </div>
+                    <div class="p-2 bg-purple-50 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-xs text-gray-400">
+                    Material: {{ component.material_construction|default:"-" }}
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI Card 4: Data Quality -->
+        <div class="card bg-white shadow-xl border-l-8 border-orange-400 rounded-lg overflow-hidden">
+            <div class="card-body p-5">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Data Confidence</p>
+                        <h3 class="text-3xl font-black text-gray-800">
+                            {{ component.fms_score|yesno:"High,Avg" }}
+                        </h3>
+                    </div>
+                    <div class="p-2 bg-orange-50 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-orange-500" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-xs text-gray-400">
+                    FMS Score: {{ component.fms_score|default:"N/A" }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6 h-full">
+
+        <!-- Main Chart: Risk Projection (Span 2) -->
+        <div class="card bg-white shadow-xl rounded-xl lg:col-span-2 flex flex-col">
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-xl">
+                <div>
+                    <h3 class="font-bold text-lg text-slate-800">Risk Limit Projection</h3>
+                    <p class="text-xs text-slate-500">Predicted Risk (m²/yr) over time vs Target Limit</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="badge badge-success gap-1 text-white font-bold p-3">
+                        <span class="w-2 h-2 rounded-full bg-white"></span> Live Forecast
+                    </span>
+                </div>
+            </div>
+            <div class="p-4 flex-grow relative" style="min-height: 400px;">
+
+                <!-- Debug Panel for Report Discrepancy -->
+                <div
+                    class="mb-4 p-2 bg-yellow-50 border-b border-yellow-200 text-xs absolute top-0 left-0 z-10 opacity-90">
+                    <h5 class="font-bold text-yellow-800">Report Chart Debug (Live):</h5>
+                    <div class="grid grid-cols-2 gap-2 mt-1">
+                        <div>GFF: <span id="debug_rep_gff" class="font-mono font-bold">--</span></div>
+                        <div>FMS: <span id="debug_rep_fms" class="font-mono font-bold">--</span></div>
+                        <div>COF (CMD): <span id="debug_rep_cof_cmd" class="font-mono font-bold">--</span></div>
+                        <div>Risk (Yr 0): <span id="debug_rep_risk_0" class="font-mono font-bold">--</span></div>
+                        <div>Age: <span id="debug_rep_age" class="font-mono font-bold text-blue-600">--</span></div>
+                        <div>Max Rate: <span id="debug_rep_rate" class="font-mono font-bold text-red-600">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <canvas id="inspection_chart"></canvas>
+            </div>
+            <!-- Hidden Results for JS to Populate -->
+            <div class="hidden">
+                <span id="insp_res_proj_df"></span>
+
+                <!-- Hidden Debug Fields for SCC Projection (Required by inspection_planning.js) -->
+                <!-- If these are missing, calculation defaults to 50 (High) -->
+                <div id="pof_debug_store">
+                    <span id="pof_debug_caustic_base_df">0</span>
+                    <span id="pof_debug_amine_base_df">0</span>
+                    <span id="pof_debug_ssc_base_df">0</span>
+                    <span id="pof_debug_hic_base_df">0</span>
+                    <span id="pof_debug_acscc_base_df">0</span>
+                    <span id="pof_debug_pascc_base_df">0</span>
+                    <span id="pof_debug_clscc_base_df">0</span>
+                    <span id="pof_debug_hschf_base_df">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar: Info & Properties -->
+        <div class="flex flex-col gap-6">
+
+            <!-- COF Breakdown Chart -->
+            <div class="card bg-white shadow-xl rounded-xl overflow-hidden flex-grow">
+                <div class="p-4 border-b border-gray-100 bg-gray-50">
+                    <h3 class="font-bold text-slate-800">Consequence Breakdown</h3>
+                </div>
+                <div class="p-4 relative flex justify-center items-center" style="height: 220px;">
+                    <canvas id="cof_chart_mini"></canvas>
+                </div>
+            </div>
+
+            <!-- Details List -->
+            <div class="card bg-white shadow-xl rounded-xl overflow-hidden">
+                <div class="p-4 border-b border-gray-100 bg-gray-50">
+                    <h3 class="font-bold text-slate-800">Asset Properties</h3>
+                </div>
+                <div class="p-0">
+                    <table class="table w-full text-sm">
+                        <tbody>
+                            <tr class="hover:bg-gray-50">
+                                <td class="text-gray-500 font-medium pl-6">Material</td>
+                                <td class="font-bold text-slate-700 text-right pr-6">
+                                    {% firstof component.material_construction component.material "-" %}
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="text-gray-500 font-medium pl-6">Design Temp</td>
+                                <td class="font-bold text-slate-700 text-right pr-6">
+                                    {{ component.design_temp_f|default:"-" }} °F
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="text-gray-500 font-medium pl-6">Op. Pressure</td>
+                                <td class="font-bold text-slate-700 text-right pr-6">
+                                    {% firstof component.operating_pressure_psia component.design_pressure_psi "-" %}
+                                    psia
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="text-gray-500 font-medium pl-6">Efficiency</td>
+                                <td class="font-bold text-slate-700 text-right pr-6">
+                                    {{ component.joint_efficiency|default:"1.0" }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- DEBUG PANEL -->
+            <div class="card bg-base-100 shadow-xl border border-warning">
+                <div class="card-body p-4">
+                    <details>
+                        <summary class="cursor-pointer font-bold text-warning text-xs uppercase tracking-wider">
+                            Show Debug Data
+                        </summary>
+                        <div class="mt-4 text-xs font-mono grid grid-cols-2 gap-2 text-gray-600">
+                            <!-- COF Debug -->
+                            <div class="col-span-2 font-bold text-gray-800 border-b mt-2">COF Calculation</div>
+                            <div>Pressure: <span id="dbg_pressure">--</span></div>
+                            <div>Temp: <span id="dbg_temp">--</span></div>
+                            <div>Fluid: <span id="dbg_fluid">--</span></div>
+                            <div>Hole: <span id="dbg_hole">--</span></div>
+                            <div>Rate: <span id="dbg_rate">--</span></div>
+                            <div>Area: <span id="dbg_area">--</span></div>
+                            <div>Total Cost: <span id="dbg_cost">--</span></div>
+                            <div>Target Risk: <span id="dbg_target">--</span></div>
+
+                            <!-- POF Debug -->
+                            <div class="col-span-2 font-bold text-gray-800 border-b mt-2">Active Mechanisms</div>
+                            <div class="col-span-2">
+                                Thinning (CO2): {{ component.mech_thinning_co2_active|yesno:"Yes,No" }}
+                                ({{ component.co2_corrosion_rate_mpy }} mpy)<br>
+                                Ext. Corrosion: {{ component.mech_ext_corrosion_active|yesno:"Yes,No" }}<br>
+                                Caustic: {{ component.mechanism_scc_caustic_active|yesno:"Yes,No" }}<br>
+                                Amine: {{ component.mechanism_scc_amine_active|yesno:"Yes,No" }}<br>
+                                SSC: {{ component.mechanism_scc_ssc_active|yesno:"Yes,No" }}<br>
+                                HTHA: {{ component.mechanism_htha_active|yesno:"Yes,No" }}
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+    <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <!-- SCRIPTS -->
+    <script src="{% static 'dashboard/js/calculations/risk_matrix.js' %}?v={% now 'U' %}"></script>
+    <script type="module" src="{% static 'dashboard/js/cof_dashboard.js' %}?v={% now 'U' %}"></script>
+
+    <!-- SCRIPTS -->
+    <script src="{% static 'dashboard/js/calculations/risk_matrix.js' %}?v={% now 'U' %}"></script>
+    <script type="module" src="{% static 'dashboard/js/cof_dashboard.js' %}?v={% now 'U' %}"></script>
+
+    <!-- Chart.js Init (Empty Shell for Sync) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Force COF Calc (KEEPING AS REQUESTED)
+            if (typeof runCofCalculations === 'function') {
+                runCofCalculations();
+            }
+
+            // Init Empty Risk Chart (Target for Sync)
+            const ctx = document.getElementById('inspection_chart');
+            if (ctx) {
+                window.inspectionChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: []
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false,
+                        },
+                        scales: {
+                            x: {
+                                type: 'linear',
+                                title: { display: true, text: 'Age (Years)' },
+                                min: 0,
+                                max: 50 // Default, will be overwritten by sync
+                            },
+                            y: {
+                                type: 'logarithmic',
+                                title: { display: true, text: 'Risk (ft²/yr)' },
+                                min: 0.1,
+                            }
+                        },
+                        plugins: {
+                            legend: { position: 'bottom' },
+                            title: { display: true, text: 'Risk Projection (Syncing...)' }
+                        }
+                    }
+                });
+            }
+
+            // Init Charts with Delay to wait for cof_dashboard.js calculations
+            setTimeout(() => {
+                // 1. Re-run COF just in case
+                if (typeof runCofCalculations === 'function') {
+                    runCofCalculations();
+                }
+
+                // 2. Init Mini COF Chart
+                const getVal = (id) => {
+                    const el = document.getElementById(id);
+                    if (!el) return 0;
+                    // Parse currency string "$1,234.56" -> 1234.56
+                    const text = el.textContent || '0';
+                    return parseFloat(text.replace(/[^0-9.-]+/g, "")) || 0;
+                };
+
+                const safe = getVal('val_fc_inj');      // Safety
+                const biz = getVal('val_fc_bus');       // Business
+                const env = getVal('val_fc_env');       // Environment
+
+                console.log("Extracted COF Values:", { safe, biz, env });
+
+                const ctxMini = document.getElementById('cof_chart_mini');
+                if (ctxMini && typeof Chart !== 'undefined') {
+                    // Destroy if exists? Chart.js usually handles canvas reuse or we should check instance.
+                    // For mini chart we assume first init. 
+
+                    new Chart(ctxMini, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Safety', 'Business', 'Environment'],
+                            datasets: [{
+                                data: [safe, biz, env],
+                                backgroundColor: [
+                                    '#f97316', // Orange (Safety)
+                                    '#eab308', // Yellow (Business)
+                                    '#22c55e'  // Green (Env)
+                                ],
+                                borderWidth: 0,
+                                hoverOffset: 4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        usePointStyle: true,
+                                        font: { size: 10 }
+                                    }
+                                }
+                            },
+                            cutout: '70%',
+                        }
+                    });
+                }
+            }, 1500); // 1.5s delay to allow cof_dashboard.js to finish calc
+        });
+    </script>
+    <!-- Background Render / Scraping Mechanism (User Requested Solution for Parity) -->
+    <div id="chart_sync_status" class="text-xs text-gray-400 italic mt-2 text-center">Syncing with source data...</div>
+    <iframe id="source_data_frame" src="{% url 'component_edit' component.pk %}"
+        style="display:none; width:0; height:0; border:0;"></iframe>
+
+    <script>
+        // --- 1. SYNC LOGIC (Render Form in Background) ---
+        document.getElementById('source_data_frame').onload = function () {
+            try {
+                const sourceDoc = this.contentDocument || this.contentWindow.document;
+                const sourceWin = this.contentWindow;
+
+                // A. Sync Text Results
+                const sourceDate = sourceDoc.getElementById('insp_res_date')?.textContent;
+                const sourceTime = sourceDoc.getElementById('insp_res_time_remaining')?.textContent;
+                const sourceDf = sourceDoc.getElementById('insp_res_proj_df')?.textContent;
+
+                if (sourceDate) document.getElementById('insp_res_date').textContent = sourceDate;
+                if (sourceTime) {
+                    const el = document.getElementById('insp_res_time_remaining');
+                    if (el) {
+                        el.textContent = sourceTime;
+                        // Copy class for color (green/red)
+                        el.className = sourceDoc.getElementById('insp_res_time_remaining').className;
+                    }
+                }
+                if (sourceDf) document.getElementById('insp_res_proj_df').textContent = sourceDf;
+
+                // B. Sync Chart Data
+                // Wait slightly for chart to render in source frame if needed, but usually data is ready
+                // We access the global Chart instance from the source window
+                // Check inspection_planning.js -> window.inspectionChart
+
+                setTimeout(() => {
+                    if (sourceWin.inspectionChart && window.inspectionChart) {
+                        console.log("[Chart Sync] Found source chart data");
+
+                        // Update Data
+                        window.inspectionChart.data.labels = sourceWin.inspectionChart.data.labels;
+                        window.inspectionChart.data.datasets = sourceWin.inspectionChart.data.datasets;
+
+                        // Update Scales
+                        window.inspectionChart.options.scales.y.max = sourceWin.inspectionChart.options.scales.y.max;
+
+                        // Re-render
+                        window.inspectionChart.update();
+
+                        const statusEl = document.getElementById('chart_sync_status');
+                        if (statusEl) {
+                            statusEl.textContent = "Synced with live data";
+                            statusEl.classList.remove('text-gray-400');
+                            statusEl.classList.add('text-green-600');
+                        }
+                    } else {
+                        console.warn("[Chart Sync] Source chart not found or local chart not ready");
+                        const statusEl = document.getElementById('chart_sync_status');
+                        if (statusEl) statusEl.textContent = "Sync failed (Chart not found)";
+                    }
+                }, 1500); // Give source JS a moment to execute
+
+            } catch (e) {
+                console.error("[Chart Sync] Error accessing source frame:", e);
+                const statusEl = document.getElementById('chart_sync_status');
+                if (statusEl) statusEl.textContent = "Sync failed (Access Error)";
+            }
+        };
+
+
+    </script>
+    {% endblock %}

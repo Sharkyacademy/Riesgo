@@ -1876,6 +1876,25 @@ function initHSCHF() {
 
 // --- HELPER FUNCTIONS ---
 
+/**
+ * Updates hidden debug fields for Inspection Planning projection interactions
+ */
+function updateDebugFields(mech, data) {
+    try {
+        // Update Base DF for Projection
+        const baseDfEl = document.getElementById(`pof_debug_${mech}_base_df`);
+        if (baseDfEl && data.baseDF !== undefined) {
+            baseDfEl.textContent = data.baseDF;
+        }
+
+        // We could also update SVI or Susceptibility if needed for debug
+        // console.log(`[Debug] Updated ${mech} BaseDF: ${data.baseDF}`);
+
+    } catch (e) {
+        console.warn("[updateDebugFields] Error updating debug fields", e);
+    }
+}
+
 function attachListeners(ids, handler) {
     ids.forEach(id => {
         const el = document.getElementById(id);

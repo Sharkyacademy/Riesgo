@@ -20,7 +20,7 @@ function calculateProjectedTotalDF(ageInYears) {
 
     // 1. Thinning Mechanisms Projection
     // Explicit mapping to match component_form.html IDs exactly
-    const thinningMechanisms = [
+    const thinning = [
         { id: 'co2', checkbox: 'id_mech_thinning_co2_active', rate: 'id_co2_corrosion_rate_mpy' },
         { id: 'hcl', checkbox: 'id_mech_thinning_hcl_active', rate: 'id_hcl_corrosion_rate_mpy' },
         { id: 'h2so4', checkbox: 'id_mech_thinning_h2so4_active', rate: 'id_h2so4_corrosion_rate_mpy' },
@@ -33,7 +33,7 @@ function calculateProjectedTotalDF(ageInYears) {
         { id: 'sulfidic', checkbox: 'id_mech_thinning_sulfidic_active', rate: 'id_sulfidic_corrosion_rate_mpy' }
     ];
 
-    thinningMechanisms.forEach(mech => {
+    thinning.forEach(mech => {
         const checkbox = document.getElementById(mech.checkbox);
         const rateInput = document.getElementById(mech.rate);
 
@@ -255,11 +255,35 @@ function updateInspectionChart() {
     const commYear = commDate.getFullYear();
     const currentAge = (new Date() - commDate) / (1000 * 60 * 60 * 24 * 365.25);
 
+    // Get Last Inspection Date (if available) for Sawtooth/Effective Age
+    const lastInspDateStr = document.getElementById('id_last_inspection_date')?.value;
+    let lastInspAge = 0;
+    if (lastInspDateStr) {
+        const lastInspDate = new Date(lastInspDateStr);
+        lastInspAge = (lastInspDate - commDate) / (1000 * 60 * 60 * 24 * 365.25);
+        if (lastInspAge < 0) lastInspAge = 0;
+        console.log(`[Risk Chart] Last Inspection Age: ${lastInspAge.toFixed(2)} years`);
+    }
+
     // Helper: Calculate Risk per Age
     function calculateRisk(age) {
+        // Effective Age Calculation:
+        // If an inspection occurred, the "Clock" for damage accumulation effectively resets 
+        // (or rather, we project from the condition at inspection).
+        // API 581 implies using posterior probability, but for this projection chart, 
+        // we simulate a reset of the 'time in service' for variable degradation.
+
+        let effectiveAge = age;
+        if (lastInspAge > 0 && age > lastInspAge) {
+            effectiveAge = age - lastInspAge;
+        }
+
+        // Handle case where effective age is very small (avoid 0 if log needed, but linear is fine)
+        if (effectiveAge < 0) effectiveAge = 0;
+
         // Enforce Minimum DF of 1.0 (Baseline GFF)
         // If totalDF comes back 0 (no active mechanisms), we use 1.0
-        let df = calculateProjectedTotalDF(age);
+        let df = calculateProjectedTotalDF(effectiveAge);
         if (df < 1.0) df = 1.0;
 
         // Risk = PoF * CoF
@@ -471,9 +495,18 @@ window.initInspectionPlanning = initInspectionPlanning;
 window.updateInspectionPlanning = updateInspectionChart;
 
 // Init on load if tab active? Or just expose it.
+// Init on load since it's now in the main Dashboard view
 document.addEventListener('DOMContentLoaded', () => {
-    // We will init when tab is clicked effectively
-    const tabBtn = document.querySelector('[data-tab="inspection-planning"]'); // ID TBD
+    // Initialize immediately (with small delay to ensure COF values are populated)
+    setTimeout(() => {
+        if (typeof initInspectionPlanning === 'function') {
+            initInspectionPlanning();
+            console.log('[Inspection Planning] Initialized on load.');
+        }
+    }, 800);
+
+    // Keep listener if tab exists (legacy/fallback)
+    const tabBtn = document.querySelector('[data-tab="inspection-planning"]');
     if (tabBtn) {
         tabBtn.addEventListener('click', () => {
             setTimeout(initInspectionPlanning, 200);

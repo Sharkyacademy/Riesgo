@@ -228,6 +228,15 @@
 
                 <!-- Styles for custom purple theme -->
                 <form method="post" id="component-form" novalidate>
+                    <div class="hidden">
+                        <!-- COF Calculation Bridge for Inspection Planning -->
+                        <div id="val_final_cmd">0</div>
+                        <div id="val_final_inj">0</div>
+                        <!-- GFF & FMS Inputs -->
+                        <input id="id_gff_value"
+                            value="{{ form.instance.gff_value|stringformat:'E'|default:'3.06E-05' }}">
+                        <input id="id_fms_factor" value="{{ form.instance.fms_factor|stringformat:'f'|default:'1.0' }}">
+                    </div>
                     {% csrf_token %}
 
                     {% if form.errors %}
@@ -1500,6 +1509,22 @@
                             <div class="space-y-6">
                                 <div class="card bg-white shadow-lg border-t-4 border-purple-900 h-full">
                                     <div class="bg-purple-900 text-white p-3 font-bold rounded-t-lg">CoF Chart</div>
+
+                                    <!-- Debug Panel for Chart Discrepancy -->
+                                    <div class="p-2 bg-yellow-50 border-b border-yellow-200 text-xs">
+                                        <h5 class="font-bold text-yellow-800">Chart Data Debug (Live):</h5>
+                                        <div class="grid grid-cols-2 gap-2 mt-1">
+                                            <div>GFF: <span id="debug_chart_gff" class="font-mono font-bold">--</span>
+                                            </div>
+                                            <div>FMS: <span id="debug_chart_fms" class="font-mono font-bold">--</span>
+                                            </div>
+                                            <div>COF (CMD): <span id="debug_chart_cof_cmd"
+                                                    class="font-mono font-bold">--</span></div>
+                                            <div>Risk (Yr 0): <span id="debug_chart_risk_0"
+                                                    class="font-mono font-bold">--</span></div>
+                                        </div>
+                                    </div>
+
                                     <div class="p-4 flex items-center justify-center h-full min-h-[400px]">
                                         <!-- Canvas for Chart.js -->
                                         <canvas id="cofChart"></canvas>
@@ -2194,6 +2219,27 @@
 
                                     <!-- Chart Area -->
                                     <div class="lg:col-span-2">
+
+                                        <!-- Debug Panel for Inspection Planning Discrepancy -->
+                                        <div class="mb-4 p-2 bg-yellow-50 border-b border-yellow-200 text-xs">
+                                            <h5 class="font-bold text-yellow-800">Inspection Chart Data Debug (Live):
+                                            </h5>
+                                            <div class="grid grid-cols-2 lg:grid-cols-6 gap-2 mt-1">
+                                                <div>GFF: <span id="debug_plan_gff"
+                                                        class="font-mono font-bold">--</span></div>
+                                                <div>FMS: <span id="debug_plan_fms"
+                                                        class="font-mono font-bold">--</span></div>
+                                                <div>COF: <span id="debug_plan_cof_cmd"
+                                                        class="font-mono font-bold">--</span></div>
+                                                <div>Risk(0): <span id="debug_plan_risk_0"
+                                                        class="font-mono font-bold">--</span></div>
+                                                <div>Age: <span id="debug_plan_age"
+                                                        class="font-mono font-bold text-blue-600">--</span></div>
+                                                <div>Max Rate: <span id="debug_plan_rate"
+                                                        class="font-mono font-bold text-red-600">--</span></div>
+                                            </div>
+                                        </div>
+
                                         <div class="w-full relative" style="height: 50vh;">
                                             <canvas id="inspection_chart"></canvas>
                                         </div>
@@ -2764,5 +2810,74 @@
 <script src="{% static 'dashboard/js/calculations/amine_water_specialized.js' %}"></script>
 <script src="{% static 'dashboard/js/calculations/external_damage.js' %}"></script>
 <script src="{% static 'dashboard/js/calculations/brittle_fracture.js' %}"></script>
+<script src="{% static 'dashboard/js/cof_dashboard.js' %}"></script>
 <script src="{% static 'dashboard/js/calculations/inspection_planning.js' %}"></script>
+
+<script>
+    // --- DEBUG CHART DISCREPANCY ---
+    function updateDebugChartPanel() {
+        try {
+            const gff = parseFloat(document.getElementById('id_gff_value')?.value || 0);
+            const fms = parseFloat(document.getElementById('id_fms_factor')?.value || 1);
+            const cmdEl = document.getElementById('val_final_cmd');
+            const cmd = cmdEl ? parseFloat(cmdEl.innerText || cmdEl.value || 0) : 0;
+
+            // Calc Age
+            const commDateStr = document.getElementById('id_commissioning_date')?.value;
+            const commDate = commDateStr ? new Date(commDateStr) : new Date();
+            const age = (new Date() - commDate) / (1000 * 60 * 60 * 24 * 365.25);
+
+            // Calc Max Rate
+            let maxRate = 0;
+            ['id_co2_corrosion_rate_mpy', 'id_hcl_corrosion_rate_mpy', 'id_external_corrosion_rate_mpy'].forEach(id => {
+                const el = document.getElementById(id);
+                const val = parseFloat(el?.value || el?.innerText || 0);
+                if (val > maxRate) maxRate = val;
+            });
+
+            // 1. Consequence Tab Panel
+            if (document.getElementById('debug_chart_gff')) document.getElementById('debug_chart_gff').innerText = gff.toExponential(2);
+            if (document.getElementById('debug_chart_fms')) document.getElementById('debug_chart_fms').innerText = fms.toFixed(3);
+            if (document.getElementById('debug_chart_cof_cmd')) document.getElementById('debug_chart_cof_cmd').innerText = cmd.toFixed(2);
+            if (document.getElementById('debug_chart_risk_0')) document.getElementById('debug_chart_risk_0').innerText = (gff * fms * cmd).toExponential(4);
+
+            // 2. Inspection Planning Tab Panel
+            if (document.getElementById('debug_plan_gff')) document.getElementById('debug_plan_gff').innerText = gff.toExponential(2);
+            if (document.getElementById('debug_plan_fms')) document.getElementById('debug_plan_fms').innerText = fms.toFixed(3);
+            if (document.getElementById('debug_plan_cof_cmd')) document.getElementById('debug_plan_cof_cmd').innerText = cmd.toFixed(2);
+            if (document.getElementById('debug_plan_risk_0')) document.getElementById('debug_plan_risk_0').innerText = (gff * fms * cmd).toExponential(4);
+
+            // New Plan Debugs
+            if (document.getElementById('debug_plan_age')) document.getElementById('debug_plan_age').innerText = age.toFixed(1) + " yrs";
+            if (document.getElementById('debug_plan_rate')) document.getElementById('debug_plan_rate').innerText = maxRate.toFixed(1) + " mpy";
+
+            // DEBUG SCC BASE DF (For parity with Report)
+            const sccMechs = ['caustic', 'amine', 'ssc', 'hic', 'acscc', 'pascc', 'clscc', 'hschf'];
+            const sccVals = sccMechs.map(m => {
+                const el = document.getElementById(`pof_debug_${m}_base_df`);
+                return el ? (m + ":" + (el.textContent || '0')) : '';
+            }).filter(v => v !== '' && v.split(':')[1] !== '0').join(', ');
+
+            if (sccVals) {
+                const ageEl = document.getElementById('debug_plan_age');
+                // Avoid duplicating if already appended
+                if (ageEl && !ageEl.innerHTML.includes('SCC:')) {
+                    ageEl.innerHTML += `<br><span class="text-xs text-gray-500">SCC: ${sccVals}</span>`;
+                } else if (ageEl) {
+                    // Update existing
+                    const span = ageEl.querySelector('span');
+                    if (span) span.innerText = `SCC: ${sccVals}`;
+                }
+            }
+
+        } catch (e) {
+            console.error("Debug Panel Error", e);
+        }
+    }
+    // Run periodically
+    setInterval(updateDebugChartPanel, 1000);
+
+    // Initial run
+    document.addEventListener('DOMContentLoaded', updateDebugChartPanel);
+</script>
 {% endblock %}
