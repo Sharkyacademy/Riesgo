@@ -416,6 +416,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         updateChart(FC_inj, FC_bus, FC_env, FC_total);
+
+        // Update Risk Matrix if it exists (so it shows latest COF values)
+        if (typeof updateRiskMatrix === 'function') {
+            setTimeout(() => updateRiskMatrix(), 100);
+        }
     }
 
     function formatCurrency(val) {

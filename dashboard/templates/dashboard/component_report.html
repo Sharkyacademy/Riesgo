@@ -308,6 +308,288 @@
                             </div>
 
                         </div>
+
+                        <!-- RISK TAB CONTENT -->
+                        <div id="risk-tab-content" class="hidden p-6">
+
+                            <!-- Risk Matrix Configuration Selector -->
+                            <div class="card bg-white shadow-md border-l-4 border-purple-900 mb-6">
+                                <div class="card-body p-4">
+                                    <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4">
+                                            </path>
+                                        </svg>
+                                        Matrix Configuration
+                                    </h4>
+
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                                        <!-- Computation Type -->
+                                        <div>
+                                            <label class="label pb-1">
+                                                <span class="label-text font-semibold text-gray-700">Computation
+                                                    Type</span>
+                                            </label>
+                                            <div class="space-y-2">
+                                                <label
+                                                    class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
+                                                    <input type="radio" name="computation_type" value="qualitative"
+                                                        class="radio radio-sm radio-primary">
+                                                    <span class="text-sm">Qualitative</span>
+                                                </label>
+                                                <label
+                                                    class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
+                                                    <input type="radio" name="computation_type"
+                                                        value="semi_quantitative" class="radio radio-sm radio-primary">
+                                                    <span class="text-sm">Semi-Quantitative</span>
+                                                </label>
+                                                <label
+                                                    class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
+                                                    <input type="radio" name="computation_type" value="quantitative"
+                                                        class="radio radio-sm radio-primary" checked>
+                                                    <span class="text-sm">Quantitative</span>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <!-- CA/FC Toggle -->
+                                        <div>
+                                            <label class="label pb-1">
+                                                <span class="label-text font-semibold text-gray-700">Consequence
+                                                    Metric</span>
+                                            </label>
+                                            <div class="space-y-2">
+                                                <label
+                                                    class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
+                                                    <input type="radio" name="consequence_metric" value="ca"
+                                                        class="radio radio-sm radio-secondary">
+                                                    <span class="text-sm">CA (Consequence Area)</span>
+                                                </label>
+                                                <label
+                                                    class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
+                                                    <input type="radio" name="consequence_metric" value="fc"
+                                                        class="radio radio-sm radio-secondary" checked>
+                                                    <span class="text-sm">FC (Financial Consequence)</span>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <!-- Pf/Df Toggle -->
+                                        <div>
+                                            <label class="label pb-1">
+                                                <span class="label-text font-semibold text-gray-700">Probability
+                                                    Metric</span>
+                                            </label>
+                                            <div class="space-y-2">
+                                                <label
+                                                    class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
+                                                    <input type="radio" name="probability_metric" value="pf"
+                                                        class="radio radio-sm radio-accent" checked>
+                                                    <span class="text-sm">Pf (Probability Factor)</span>
+                                                </label>
+                                                <label
+                                                    class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
+                                                    <input type="radio" name="probability_metric" value="df"
+                                                        class="radio radio-sm radio-accent">
+                                                    <span class="text-sm">Df (Damage Factor)</span>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Current Values Summary -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                                <!-- POF Card -->
+                                <div class="card bg-blue-50 shadow-md border-t-4 border-blue-900">
+                                    <div class="card-body p-4">
+                                        <h4 class="font-bold text-sm text-gray-600 mb-2">Current POF</h4>
+                                        <div id="risk_pof_value" class="text-5xl font-bold text-blue-900">--</div>
+                                        <div id="risk_pof_label" class="text-xs text-gray-500 mt-1">Level -- </div>
+                                    </div>
+                                </div>
+
+                                <!-- COF Card -->
+                                <div class="card bg-purple-50 shadow-md border-t-4 border-purple-900">
+                                    <div class="card-body p-4">
+                                        <h4 class="font-bold text-sm text-gray-600 mb-2">Current COF</h4>
+                                        <div id="risk_cof_category" class="text-5xl font-bold text-purple-900">--</div>
+                                        <div id="risk_cof_label" class="text-xs text-gray-500 mt-1">Category --</div>
+                                    </div>
+                                </div>
+
+                                <!-- Risk Level Card -->
+                                <div class="card shadow-md border-t-4" id="risk_level_card">
+                                    <div class="card-body p-4">
+                                        <h4 class="font-bold text-sm text-gray-600 mb-2">Risk Level</h4>
+                                        <div id="risk_level_value" class="text-2xl font-bold">--</div>
+                                        <div id="risk_priority" class="text-xs text-gray-500 mt-1">--</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Risk Matrix -->
+                            <div class="card bg-white shadow-lg">
+                                <div class="card-body p-6">
+                                    <h3 class="font-bold text-xl text-blue-900 mb-4">Risk Matrix (API 580/581)</h3>
+
+                                    <!-- Matrix Grid -->
+                                    <div class="mb-6" style="display: flex; justify-content: center; padding: 20px;">
+                                        <div id="risk-matrix-grid"
+                                            style="display: grid !important; grid-template-columns: 80px repeat(5, 90px) !important; grid-template-rows: repeat(5, 90px) 60px !important; gap: 2px !important; background: #e5e7eb; padding: 2px; border: 1px solid #d1d5db;">
+                                            <!-- Grid cells will be generated by JavaScript -->
+                                        </div>
+                                    </div>
+
+
+                                    <!-- Legend -->
+                                    <div class="flex flex-wrap justify-center gap-4 mb-4">
+                                        <div class="flex items-center gap-2">
+                                            <div
+                                                style="width: 28px; height: 28px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.15);">
+                                            </div>
+                                            <span class="text-sm font-semibold text-gray-700">Low Risk</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <div
+                                                style="width: 28px; height: 28px; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.15);">
+                                            </div>
+                                            <span class="text-sm font-semibold text-gray-700">Medium Risk</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <div
+                                                style="width: 28px; height: 28px; background: linear-gradient(135deg, #fb923c 0%, #ea580c 100%); border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.15);">
+                                            </div>
+                                            <span class="text-sm font-semibold text-gray-700">Medium-High Risk</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <div
+                                                style="width: 28px; height: 28px; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.15);">
+                                            </div>
+                                            <span class="text-sm font-semibold text-gray-700">High Risk</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Collapsible Details Section -->
+                            <div class="collapse collapse-arrow bg-base-200 mt-6">
+                                <input type="checkbox" />
+                                <div class="collapse-title text-xl font-medium">
+                                    📊 Detailed Risk Calculation Breakdown
+                                </div>
+                                <div class="collapse-content">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+
+                                        <!-- POF Breakdown -->
+                                        <div class="card bg-white shadow">
+                                            <div class="card-body p-4">
+                                                <h4 class="font-bold text-blue-900 mb-3">Probability of Failure (POF)
+                                                    Details</h4>
+                                                <div class="overflow-x-auto">
+                                                    <table class="table table-sm">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Damage Mechanism</th>
+                                                                <th>POF Level</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>Metal Loss (Thinning)</td>
+                                                                <td><span id="detail_pof_metal_loss"
+                                                                        class="badge badge-primary">--</span></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Cracking (SCC)</td>
+                                                                <td><span id="detail_pof_cracking"
+                                                                        class="badge badge-primary">--</span></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>External Damage</td>
+                                                                <td><span id="detail_pof_external"
+                                                                        class="badge badge-primary">--</span></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Metallurgical (HTHA/Brittle)</td>
+                                                                <td><span id="detail_pof_metallurgical"
+                                                                        class="badge badge-primary">--</span></td>
+                                                            </tr>
+                                                            <tr class="font-bold bg-blue-50">
+                                                                <td>Maximum POF (Final)</td>
+                                                                <td><span id="detail_pof_final"
+                                                                        class="badge badge-info badge-lg">--</span></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div class="text-xs text-gray-500 mt-2">
+                                                    <strong>Note:</strong> Final POF is the maximum value across all
+                                                    damage
+                                                    mechanisms.
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- COF Breakdown -->
+                                        <div class="card bg-white shadow">
+                                            <div class="card-body p-4">
+                                                <h4 class="font-bold text-purple-900 mb-3">Consequence of Failure (COF)
+                                                    Details</h4>
+                                                <div class="overflow-x-auto">
+                                                    <table class="table table-sm">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Consequence Area</th>
+                                                                <th>Value</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>Flammable Consequences</td>
+                                                                <td id="detail_fc_flam">$0</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Toxic Consequences</td>
+                                                                <td id="detail_fc_toxic">$0</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Injury Consequences</td>
+                                                                <td id="detail_fc_inj">$0</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Environmental Consequences</td>
+                                                                <td id="detail_fc_env">$0</td>
+                                                            </tr>
+                                                            <tr class="font-bold bg-purple-50">
+                                                                <td>Total Financial Consequence</td>
+                                                                <td id="detail_fc_total" class="text-lg">$0</td>
+                                                            </tr>
+                                                            <tr class="font-bold bg-purple-100">
+                                                                <td>COF Category</td>
+                                                                <td><span id="detail_cof_category"
+                                                                        class="badge badge-secondary badge-lg">--</span>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div class="text-xs text-gray-500 mt-2">
+                                                    <strong>Categories:</strong> A (&lt;$10K), B ($10K-$100K), C
+                                                    ($100K-$1M), D ($1M-$10M), E (&gt;$10M)
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
                     </div>
 
                 </div>
@@ -2175,286 +2457,7 @@
                             </div>
                         </div>
 
-                        <!-- RISK TAB CONTENT -->
-                        <div id="risk-tab-content" class="hidden p-6">
 
-                            <!-- Risk Matrix Configuration Selector -->
-                            <div class="card bg-white shadow-md border-l-4 border-purple-900 mb-6">
-                                <div class="card-body p-4">
-                                    <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4">
-                                            </path>
-                                        </svg>
-                                        Matrix Configuration
-                                    </h4>
-
-                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-                                        <!-- Computation Type -->
-                                        <div>
-                                            <label class="label pb-1">
-                                                <span class="label-text font-semibold text-gray-700">Computation
-                                                    Type</span>
-                                            </label>
-                                            <div class="space-y-2">
-                                                <label
-                                                    class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
-                                                    <input type="radio" name="computation_type" value="qualitative"
-                                                        class="radio radio-sm radio-primary">
-                                                    <span class="text-sm">Qualitative</span>
-                                                </label>
-                                                <label
-                                                    class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
-                                                    <input type="radio" name="computation_type"
-                                                        value="semi_quantitative" class="radio radio-sm radio-primary">
-                                                    <span class="text-sm">Semi-Quantitative</span>
-                                                </label>
-                                                <label
-                                                    class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
-                                                    <input type="radio" name="computation_type" value="quantitative"
-                                                        class="radio radio-sm radio-primary" checked>
-                                                    <span class="text-sm">Quantitative</span>
-                                                </label>
-                                            </div>
-                                        </div>
-
-                                        <!-- CA/FC Toggle -->
-                                        <div>
-                                            <label class="label pb-1">
-                                                <span class="label-text font-semibold text-gray-700">Consequence
-                                                    Metric</span>
-                                            </label>
-                                            <div class="space-y-2">
-                                                <label
-                                                    class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
-                                                    <input type="radio" name="consequence_metric" value="ca"
-                                                        class="radio radio-sm radio-secondary">
-                                                    <span class="text-sm">CA (Consequence Area)</span>
-                                                </label>
-                                                <label
-                                                    class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
-                                                    <input type="radio" name="consequence_metric" value="fc"
-                                                        class="radio radio-sm radio-secondary" checked>
-                                                    <span class="text-sm">FC (Financial Consequence)</span>
-                                                </label>
-                                            </div>
-                                        </div>
-
-                                        <!-- Pf/Df Toggle -->
-                                        <div>
-                                            <label class="label pb-1">
-                                                <span class="label-text font-semibold text-gray-700">Probability
-                                                    Metric</span>
-                                            </label>
-                                            <div class="space-y-2">
-                                                <label
-                                                    class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
-                                                    <input type="radio" name="probability_metric" value="pf"
-                                                        class="radio radio-sm radio-accent" checked>
-                                                    <span class="text-sm">Pf (Probability Factor)</span>
-                                                </label>
-                                                <label
-                                                    class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
-                                                    <input type="radio" name="probability_metric" value="df"
-                                                        class="radio radio-sm radio-accent">
-                                                    <span class="text-sm">Df (Damage Factor)</span>
-                                                </label>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Current Values Summary -->
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                                <!-- POF Card -->
-                                <div class="card bg-blue-50 shadow-md border-t-4 border-blue-900">
-                                    <div class="card-body p-4">
-                                        <h4 class="font-bold text-sm text-gray-600 mb-2">Current POF</h4>
-                                        <div id="risk_pof_value" class="text-5xl font-bold text-blue-900">--</div>
-                                        <div id="risk_pof_label" class="text-xs text-gray-500 mt-1">Level -- </div>
-                                    </div>
-                                </div>
-
-                                <!-- COF Card -->
-                                <div class="card bg-purple-50 shadow-md border-t-4 border-purple-900">
-                                    <div class="card-body p-4">
-                                        <h4 class="font-bold text-sm text-gray-600 mb-2">Current COF</h4>
-                                        <div id="risk_cof_category" class="text-5xl font-bold text-purple-900">--</div>
-                                        <div id="risk_cof_label" class="text-xs text-gray-500 mt-1">Category --</div>
-                                    </div>
-                                </div>
-
-                                <!-- Risk Level Card -->
-                                <div class="card shadow-md border-t-4" id="risk_level_card">
-                                    <div class="card-body p-4">
-                                        <h4 class="font-bold text-sm text-gray-600 mb-2">Risk Level</h4>
-                                        <div id="risk_level_value" class="text-2xl font-bold">--</div>
-                                        <div id="risk_priority" class="text-xs text-gray-500 mt-1">--</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Risk Matrix -->
-                            <div class="card bg-white shadow-lg">
-                                <div class="card-body p-6">
-                                    <h3 class="font-bold text-xl text-blue-900 mb-4">Risk Matrix (API 580/581)</h3>
-
-                                    <!-- Matrix Grid -->
-                                    <div class="mb-6" style="display: flex; justify-content: center; padding: 20px;">
-                                        <div id="risk-matrix-grid"
-                                            style="display: grid !important; grid-template-columns: 80px repeat(5, 90px) !important; grid-template-rows: repeat(5, 90px) 60px !important; gap: 2px !important; background: #e5e7eb; padding: 2px; border: 1px solid #d1d5db;">
-                                            <!-- Grid cells will be generated by JavaScript -->
-                                        </div>
-                                    </div>
-
-
-                                    <!-- Legend -->
-                                    <div class="flex flex-wrap justify-center gap-4 mb-4">
-                                        <div class="flex items-center gap-2">
-                                            <div
-                                                style="width: 28px; height: 28px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.15);">
-                                            </div>
-                                            <span class="text-sm font-semibold text-gray-700">Low Risk</span>
-                                        </div>
-                                        <div class="flex items-center gap-2">
-                                            <div
-                                                style="width: 28px; height: 28px; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.15);">
-                                            </div>
-                                            <span class="text-sm font-semibold text-gray-700">Medium Risk</span>
-                                        </div>
-                                        <div class="flex items-center gap-2">
-                                            <div
-                                                style="width: 28px; height: 28px; background: linear-gradient(135deg, #fb923c 0%, #ea580c 100%); border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.15);">
-                                            </div>
-                                            <span class="text-sm font-semibold text-gray-700">Medium-High Risk</span>
-                                        </div>
-                                        <div class="flex items-center gap-2">
-                                            <div
-                                                style="width: 28px; height: 28px; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.15);">
-                                            </div>
-                                            <span class="text-sm font-semibold text-gray-700">High Risk</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Collapsible Details Section -->
-                            <div class="collapse collapse-arrow bg-base-200 mt-6">
-                                <input type="checkbox" />
-                                <div class="collapse-title text-xl font-medium">
-                                    📊 Detailed Risk Calculation Breakdown
-                                </div>
-                                <div class="collapse-content">
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-
-                                        <!-- POF Breakdown -->
-                                        <div class="card bg-white shadow">
-                                            <div class="card-body p-4">
-                                                <h4 class="font-bold text-blue-900 mb-3">Probability of Failure (POF)
-                                                    Details</h4>
-                                                <div class="overflow-x-auto">
-                                                    <table class="table table-sm">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Damage Mechanism</th>
-                                                                <th>POF Level</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>Metal Loss (Thinning)</td>
-                                                                <td><span id="detail_pof_metal_loss"
-                                                                        class="badge badge-primary">--</span></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Cracking (SCC)</td>
-                                                                <td><span id="detail_pof_cracking"
-                                                                        class="badge badge-primary">--</span></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>External Damage</td>
-                                                                <td><span id="detail_pof_external"
-                                                                        class="badge badge-primary">--</span></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Metallurgical (HTHA/Brittle)</td>
-                                                                <td><span id="detail_pof_metallurgical"
-                                                                        class="badge badge-primary">--</span></td>
-                                                            </tr>
-                                                            <tr class="font-bold bg-blue-50">
-                                                                <td>Maximum POF (Final)</td>
-                                                                <td><span id="detail_pof_final"
-                                                                        class="badge badge-info badge-lg">--</span></td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                                <div class="text-xs text-gray-500 mt-2">
-                                                    <strong>Note:</strong> Final POF is the maximum value across all
-                                                    damage
-                                                    mechanisms.
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- COF Breakdown -->
-                                        <div class="card bg-white shadow">
-                                            <div class="card-body p-4">
-                                                <h4 class="font-bold text-purple-900 mb-3">Consequence of Failure (COF)
-                                                    Details</h4>
-                                                <div class="overflow-x-auto">
-                                                    <table class="table table-sm">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Consequence Area</th>
-                                                                <th>Value</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>Flammable Consequences</td>
-                                                                <td id="detail_fc_flam">$0</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Toxic Consequences</td>
-                                                                <td id="detail_fc_toxic">$0</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Injury Consequences</td>
-                                                                <td id="detail_fc_inj">$0</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Environmental Consequences</td>
-                                                                <td id="detail_fc_env">$0</td>
-                                                            </tr>
-                                                            <tr class="font-bold bg-purple-50">
-                                                                <td>Total Financial Consequence</td>
-                                                                <td id="detail_fc_total" class="text-lg">$0</td>
-                                                            </tr>
-                                                            <tr class="font-bold bg-purple-100">
-                                                                <td>COF Category</td>
-                                                                <td><span id="detail_cof_category"
-                                                                        class="badge badge-secondary badge-lg">--</span>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                                <div class="text-xs text-gray-500 mt-2">
-                                                    <strong>Categories:</strong> A (&lt;$10K), B ($10K-$100K), C
-                                                    ($100K-$1M), D ($1M-$10M), E (&gt;$10M)
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
                         <!-- /RISK TAB CONTENT -->
 
                         <!-- Placeholder for Inspection Planning (Moved to Dashboard) -->
@@ -2715,6 +2718,32 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            console.log('[Main] DOM Fully Loaded - initializing application...');
+
+            // Initialize Risk Matrix immediately (make it visible by default)
+            if (typeof initRiskMatrix === 'function') {
+                console.log('[Main] Initializing Risk Matrix...');
+                initRiskMatrix();
+                window.riskMatrixInitialized = true;
+            }
+
+            // Update risk matrix with current values - LONGER delay to ensure CoF calcs complete
+            if (typeof updateRiskMatrix === 'function') {
+                console.log('[Main] Scheduling Risk Matrix update...');
+                setTimeout(() => {
+                    console.log('[Main] Updating Risk Matrix with current values...');
+                    updateRiskMatrix();
+                }, 1500); // Increased delay to 1.5s to ensure all calculations complete
+            }
+
+            // Open Risk tab by default (make it visible)
+            setTimeout(() => {
+                const riskTab = document.getElementById('risk-tab-content');
+                if (riskTab) {
+                    riskTab.classList.remove('hidden');
+                    console.log('[Main] Risk tab made visible');
+                }
+            }, 100);
             // Init Mini COF Chart with delay for calc
             setTimeout(() => {
                 const getVal = (id) => {
