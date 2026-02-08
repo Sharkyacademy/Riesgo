@@ -460,6 +460,12 @@ class Component(models.Model):
     fms_pscore = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, verbose_name="FMS P-Score")
     final_pof = models.DecimalField(max_digits=15, decimal_places=10, null=True, blank=True, verbose_name="Final POF (failures/year)")
     
+    # Persisted Calculated Results (Populated by JS before save)
+    calculated_consequence_area = models.DecimalField(max_digits=15, decimal_places=4, null=True, blank=True, verbose_name="Calculated Consequence Area (m2)")
+    calculated_total_damage_factor = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Calculated Total DF")
+    calculated_risk = models.DecimalField(max_digits=20, decimal_places=10, null=True, blank=True, verbose_name="Calculated Risk (m2/yr)")
+    calculated_cof = models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True, verbose_name="Calculated Financial COF ($)")
+
     # GFF Equipment/Component Type (Links to formula_app for API 581 data)
     gff_equipment_type = models.ForeignKey(
         'formula_app.EquipmentType', 

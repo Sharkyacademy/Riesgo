@@ -104,6 +104,8 @@
                                 <td class="text-gray-600">{{ unit.people_density|floatformat:4 }}</td>
                                 <td class="text-right pr-8">
                                     <div class="flex justify-end gap-2">
+                                        <a href="{% url 'unit_report' unit.pk %}"
+                                            class="btn btn-ghost btn-xs text-green-600 hover:bg-green-50">Report</a>
                                         <button
                                             onclick="openEditUnitModal('{{ unit.id|escapejs }}', '{{ facility.id|escapejs }}', '{{ unit.name|escapejs }}', '{% if unit.description %}{{ unit.description|escapejs }}{% endif %}', '{{ unit.people_density|default:0.0|escapejs }}')"
                                             class="btn btn-ghost btn-xs text-blue-950 hover:bg-blue-100">Edit</button>

@@ -524,6 +524,16 @@ function updateInspectionChart() {
             dashRiskLbl.className = "badge badge-success text-white";
         }
     }
+
+    // --- PERSISTENCE: Write to Hidden Inputs ---
+    // 1. Total Damage Factor
+    const currentDF = calculateProjectedTotalDF(currentAge);
+    const calcDfInput = document.getElementById('id_calculated_total_damage_factor');
+    if (calcDfInput) calcDfInput.value = currentDF.toFixed(2);
+
+    // 2. Risk (already calculated above)
+    const calcRiskInput = document.getElementById('id_calculated_risk');
+    if (calcRiskInput) calcRiskInput.value = currentRiskVal.toFixed(10);
 }
 
 // Hook into the global window for access

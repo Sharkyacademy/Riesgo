@@ -245,18 +245,50 @@ async function runCofCalculations() {
         const bbls = volFt3 / 5.615;
         const costEnv = bbls * envCostBbl;
 
-        // Update DOM
-        if (document.getElementById('val_fc_bus')) document.getElementById('val_fc_bus').innerText = `${costBus.toFixed(2)}`;
-        if (document.getElementById('val_fc_inj')) document.getElementById('val_fc_inj').innerText = `${calcSafe.toFixed(2)}`;
-        if (document.getElementById('val_fc_env')) document.getElementById('val_fc_env').innerText = `${costEnv.toFixed(2)}`;
+        // Financials (Consequences Tab)
+        // Assuming FC_inj, FC_env, FC_bus, FC_total are equivalent to calcSafe, costEnv, costBus, costTotal respectively
+        const FC_inj = calcSafe;
+        const FC_env = costEnv;
+        const FC_bus = costBus;
+        const FC_total = costBus + calcSafe + costEnv; // Recalculate total for clarity
 
-        const costTotal = costBus + calcSafe + costEnv;
-        if (document.getElementById('val_fc_total')) document.getElementById('val_fc_total').innerText = `${costTotal.toFixed(2)}`;
+        if (document.getElementById('val_fc_inj')) document.getElementById('val_fc_inj').textContent = FC_inj.toFixed(2); // Using toFixed for consistency
+        if (document.getElementById('val_fc_env')) document.getElementById('val_fc_env').textContent = FC_env.toFixed(2);
+        if (document.getElementById('val_fc_bus')) document.getElementById('val_fc_bus').textContent = FC_bus.toFixed(2);
+        if (document.getElementById('val_fc_bus_env')) document.getElementById('val_fc_bus_env').textContent = (FC_bus + FC_env).toFixed(2); // As per image label
+        if (document.getElementById('val_fc_total')) document.getElementById('val_fc_total').textContent = FC_total.toFixed(2);
+
+        // --- PERSISTENCE: Write to Hidden Inputs ---
+        const calcCofInput = document.getElementById('id_calculated_cof');
+        if (calcCofInput) calcCofInput.value = FC_total.toFixed(2);
+
+        // Calculate Consequence Area (Safety/Total) - Using max of fit
+        // Note: Logic in inspection_planning.js uses max(cmd, inj) area. 
+        // Here we have totalCmd cost. Area is roughly Cost / CostFactor? No, Area is computed earlier as res.cmd/res.inj
+        // The totalCmd variable holds the Area weighted by GFF? No the variable name is confusing.
+        // Let's look at loop: totalCmd += res.cmd * gff[i] -> This is weighted area sum.
+        // Wait, 'res' from calcFlammableCA returns {cmd: area, inj: area}.
+        // So totalCmd IS the weighted average consequence area.
+        const CA_cmd = cmdArea; // Assuming cmdArea is the totalCmd equivalent
+        const CA_inj = injArea; // Assuming injArea is the totalInj equivalent
+        const finalCA = Math.max(CA_cmd, CA_inj);
+
+        const calcCaInput = document.getElementById('id_calculated_consequence_area');
+        if (calcCaInput) calcCaInput.value = finalCA.toFixed(4);
+
+        // Calculate Risk (PoF * CoF)
+        // We need PoF. 
+        // PoF = GFF * FMS * Df-total. Df-total is in inspection_planning.js.
+        // Ideally we save CoF and CA here, and let inspection_planning sync the final Risk because it has Df.
+        // BUT, we can try to get Df if it's on page.
+        // For now, let's save what we have. Risk might be updated by inspection_planning.js
+
+        // updateChart(FC_inj, FC_bus, FC_env, FC_total); // Commented out as updateChart is not defined in the provided context
 
         // KPI: Financial Exposure
         const dashFinRisk = document.getElementById('dash_fin_risk');
         if (dashFinRisk) {
-            dashFinRisk.textContent = '$' + costTotal.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+            dashFinRisk.textContent = '$' + FC_total.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
         }
 
         // DEBUG PANEL UPDATES

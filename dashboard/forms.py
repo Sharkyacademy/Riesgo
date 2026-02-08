@@ -237,7 +237,11 @@ class ComponentForm(forms.ModelForm):
             # COF Financial Fields
             'material_construction', 'cost_factor', 'equipment_cost_per_sqft',
             'production_cost_per_day', 'outage_multiplier', 'injury_cost_per_person',
-            'environmental_cost_per_bbl'
+            'environmental_cost_per_bbl',
+            
+            # Calculated fields for persistence
+            'calculated_consequence_area', 'calculated_total_damage_factor', 
+            'calculated_risk', 'calculated_cof'
         ]
         widgets = {
             # Original widgets

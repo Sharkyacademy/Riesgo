@@ -1647,6 +1647,16 @@
                                     </div>
 
                                 </div>
+                                <!-- Hidden Fields for Metrics -->
+                                {{ form.gff_value }}
+                                {{ form.fms_factor }}
+                                {{ form.final_pof }}
+
+                                <!-- Hidden Fields for Persisted Client-Side Calculations -->
+                                {{ form.calculated_consequence_area }}
+                                {{ form.calculated_total_damage_factor }}
+                                {{ form.calculated_risk }}
+                                {{ form.calculated_cof }}
                             </details>
 
                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -3069,7 +3079,7 @@
 <script src="{% static 'dashboard/js/calculations/amine_water_specialized.js' %}"></script>
 <script src="{% static 'dashboard/js/calculations/external_damage.js' %}"></script>
 <script src="{% static 'dashboard/js/calculations/brittle_fracture.js' %}"></script>
-<script src="{% static 'dashboard/js/cof_dashboard.js' %}"></script>
+<!-- cof_dashboard.js already loaded as module above -->
 <script src="{% static 'dashboard/js/calculations/inspection_planning.js' %}"></script>
 
 <script>

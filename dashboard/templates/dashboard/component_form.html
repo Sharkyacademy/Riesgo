@@ -236,6 +236,12 @@
                         <input id="id_gff_value"
                             value="{{ form.instance.gff_value|stringformat:'E'|default:'3.06E-05' }}">
                         <input id="id_fms_factor" value="{{ form.instance.fms_factor|stringformat:'f'|default:'1.0' }}">
+
+                        <!-- Hidden Fields for Persisted Client-Side Calculations -->
+                        {{ form.calculated_consequence_area }}
+                        {{ form.calculated_total_damage_factor }}
+                        {{ form.calculated_risk }}
+                        {{ form.calculated_cof }}
                     </div>
                     {% csrf_token %}
 
@@ -298,11 +304,13 @@
                                 <!-- Row 2: Equipment Type & Component Type -->
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div class="form-control">
-                                        <label class="label"><span class="label-text font-semibold text-gray-700">RBIX Equipment Type</span></label>
+                                        <label class="label"><span class="label-text font-semibold text-gray-700">RBIX
+                                                Equipment Type</span></label>
                                         {{ form.rbix_equipment_type }}
                                     </div>
                                     <div class="form-control">
-                                        <label class="label"><span class="label-text font-semibold text-gray-700">RBIX Component Type</span></label>
+                                        <label class="label"><span class="label-text font-semibold text-gray-700">RBIX
+                                                Component Type</span></label>
                                         {{ form.rbix_component_type }}
                                     </div>
                                 </div>
@@ -2808,7 +2816,7 @@
 <script src="{% static 'dashboard/js/calculations/amine_water_specialized.js' %}"></script>
 <script src="{% static 'dashboard/js/calculations/external_damage.js' %}"></script>
 <script src="{% static 'dashboard/js/calculations/brittle_fracture.js' %}"></script>
-<script src="{% static 'dashboard/js/cof_dashboard.js' %}"></script>
+<!-- cof_dashboard.js already loaded as module above -->
 <script src="{% static 'dashboard/js/calculations/inspection_planning.js' %}"></script>
 
 <script>

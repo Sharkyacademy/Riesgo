@@ -16,6 +16,7 @@ urlpatterns = [
     path('components/<int:pk>/report/', views.component_report, name='component_report'),
     path('facility/<int:pk>/edit/', views.facility_edit, name='facility_edit'),
     path('unit/<int:pk>/edit/', views.unit_edit, name='unit_edit'),
+    path('units/<int:pk>/report/', views.unit_report, name='unit_report'),
     path('system/<int:pk>/edit/', views.system_edit, name='system_edit'),
     path('equipment/<int:pk>/edit/', views.equipment_edit, name='equipment_edit'),
     path('systems', views.systems, name='systems_home'),

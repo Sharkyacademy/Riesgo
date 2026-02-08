@@ -397,6 +397,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (document.getElementById('val_fc_bus_env')) document.getElementById('val_fc_bus_env').textContent = formatCurrency(FC_bus + FC_env); // As per image label
         if (document.getElementById('val_fc_total')) document.getElementById('val_fc_total').textContent = formatCurrency(FC_total);
 
+        // --- PERSISTENCE: Write to Hidden Inputs for Database Storage ---
+        const calcCofInput = document.getElementById('id_calculated_cof');
+        if (calcCofInput) {
+            calcCofInput.value = FC_total.toFixed(2);
+            console.log('[COF Persistence] Wrote CoF to hidden input:', FC_total.toFixed(2));
+        } else {
+            console.warn('[COF Persistence] Hidden input id_calculated_cof not found!');
+        }
+
+        const finalCA = Math.max(totalCmd, totalInj);
+        const calcCaInput = document.getElementById('id_calculated_consequence_area');
+        if (calcCaInput) {
+            calcCaInput.value = finalCA.toFixed(4);
+            console.log('[COF Persistence] Wrote CA to hidden input:', finalCA.toFixed(4));
+        } else {
+            console.warn('[COF Persistence] Hidden input id_calculated_consequence_area not found!');
+        }
+
         updateChart(FC_inj, FC_bus, FC_env, FC_total);
     }
 

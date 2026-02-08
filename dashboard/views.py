@@ -182,6 +182,27 @@ def component_report(request, pk):
     })
 
 @login_required
+def unit_report(request, pk):
+    from .models import Unit, Component
+    from django.shortcuts import get_object_or_404
+    
+    # Get the unit ensuring ownership
+    unit = get_object_or_404(Unit, pk=pk, facility__owner=request.user)
+    
+    # Get all components for this unit through the hierarchy: Unit -> System -> Equipment -> Component
+    components = Component.objects.filter(
+        equipment__system__unit=unit
+    ).select_related(
+        'equipment', 'equipment__system'
+    ).order_by('equipment__number', 'rbix_component_type')
+    
+    return render(request, 'dashboard/unit_report.html', {
+        'unit': unit,
+        'components': components
+    })
+
+
+@login_required
 def systems(request):
     from .models import Facility, System
     from .forms import SystemForm
