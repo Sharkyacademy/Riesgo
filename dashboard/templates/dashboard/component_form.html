@@ -194,7 +194,7 @@
                     <div class="flex gap-2">
                         {% if is_edit and component.equipment %}
                         <a href="{% url 'component_report' component.pk %}"
-                            class="btn bg-indigo-600 hover:bg-indigo-700 text-white border-none gap-2">
+                            class="btn bg-blue-950 hover:bg-blue-800 text-white border-none gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -298,13 +298,11 @@
                                 <!-- Row 2: Equipment Type & Component Type -->
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div class="form-control">
-                                        <label class="label"><span class="label-text font-semibold text-gray-700">RBIX
-                                                Equipment Type</span></label>
+                                        <label class="label"><span class="label-text font-semibold text-gray-700">RBIX Equipment Type</span></label>
                                         {{ form.rbix_equipment_type }}
                                     </div>
                                     <div class="form-control">
-                                        <label class="label"><span class="label-text font-semibold text-gray-700">RBIX
-                                                Component Type</span></label>
+                                        <label class="label"><span class="label-text font-semibold text-gray-700">RBIX Component Type</span></label>
                                         {{ form.rbix_component_type }}
                                     </div>
                                 </div>
