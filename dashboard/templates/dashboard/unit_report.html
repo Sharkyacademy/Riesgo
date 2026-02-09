@@ -65,7 +65,9 @@
                             <td>{{ component.material_construction|default:"-" }}</td>
                             <td class="text-center">
                                 {% if component.pof_category %}
-                                <span class="badge badge-primary font-bold">{{ component.pof_category }}</span>
+                                <span
+                                    class="badge {% if component.pof_category == 1 %}badge-success{% elif component.pof_category == 2 %}badge-warning{% elif component.pof_category == 3 %}badge-warning bg-orange-500{% elif component.pof_category == 4 or component.pof_category == 5 %}badge-error{% endif %} font-bold">{{
+                                    component.pof_category }}</span>
                                 {% else %}
                                 <span class="text-gray-400">-</span>
                                 {% endif %}
@@ -74,7 +76,7 @@
                                 {% if component.cof_category %}
                                 <span
                                     class="badge {% if component.cof_category == 'A' %}badge-success{% elif component.cof_category == 'B' %}badge-info{% elif component.cof_category == 'C' %}badge-warning{% elif component.cof_category == 'D' %}badge-error{% elif component.cof_category == 'E' %}badge-error{% endif %} font-bold">
-                                    {{   component.cof_category }}</span>
+                                    {{ component.cof_category }}</span>
                                 {% else %}
                                 <span class="text-gray-400">-</span>
                                 {% endif %}
