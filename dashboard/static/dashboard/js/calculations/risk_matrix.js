@@ -374,6 +374,13 @@ function updateRiskMatrix() {
 
     console.log(`[Risk Matrix] Current values: Probability=${currentProbability}, COF=${cofCategory}`);
 
+    // Populate hidden field for database persistence
+    const cofCategoryField = document.getElementById('id_cof_category');
+    if (cofCategoryField) {
+        cofCategoryField.value = cofCategory || '';
+        console.log(`[Risk Matrix] ✓ COF category field updated: ${cofCategory}`);
+    }
+
     // Regenerate matrix if mode changed
     const container = document.getElementById('risk-matrix-grid');
     if (container && container.dataset.currentMode !== config.probabilityMetric) {

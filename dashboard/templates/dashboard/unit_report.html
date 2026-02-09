@@ -12,7 +12,7 @@
                 <h1 class="text-3xl font-bold text-blue-950">Unit Report</h1>
                 <p class="text-gray-600 mt-2">{{ unit.facility.name }} / {{ unit.name }}</p>
             </div>
-            <a href="{% url 'units_home' %}" class="btn bg-gray-500 hover:bg-gray-600 text-white">
+            <a href="{% url 'units_home' %}" class="btn bg-blue-950 hover:bg-blue-800 text-white">
                 ← Back to Units
             </a>
         </div>
@@ -47,6 +47,8 @@
                             <th>Equipment</th>
                             <th>Component Type</th>
                             <th>Material</th>
+                            <th class="text-center">POF Cat.</th>
+                            <th class="text-center">COF Cat.</th>
                             <th class="text-right">CA (m²)</th>
                             <th class="text-right">Df-total</th>
                             <th class="text-right">Risk (m²/yr)</th>
@@ -61,6 +63,22 @@
                             <td class="font-semibold">{{ component.equipment.number }}</td>
                             <td>{{ component.get_rbix_component_type_display }}</td>
                             <td>{{ component.material_construction|default:"-" }}</td>
+                            <td class="text-center">
+                                {% if component.pof_category %}
+                                <span class="badge badge-primary font-bold">{{ component.pof_category }}</span>
+                                {% else %}
+                                <span class="text-gray-400">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                {% if component.cof_category %}
+                                <span
+                                    class="badge {% if component.cof_category == 'A' %}badge-success{% elif component.cof_category == 'B' %}badge-info{% elif component.cof_category == 'C' %}badge-warning{% elif component.cof_category == 'D' %}badge-error{% elif component.cof_category == 'E' %}badge-error{% endif %} font-bold">
+                                    {{   component.cof_category }}</span>
+                                {% else %}
+                                <span class="text-gray-400">-</span>
+                                {% endif %}
+                            </td>
                             <td class="text-right font-mono">
                                 {% if component.calculated_consequence_area %}
                                 {{ component.calculated_consequence_area|floatformat:2 }}

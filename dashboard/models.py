@@ -455,6 +455,9 @@ class Component(models.Model):
 
     # POF Calculation Fields (GFF + FMS)
     pof_category = models.IntegerField(null=True, blank=True, verbose_name="POF Category (1-5)")
+    cof_category = models.CharField(max_length=1, null=True, blank=True, verbose_name="COF Category (A-E)", 
+                                    choices=[('A', 'A - Negligible'), ('B', 'B - Minor'), ('C', 'C - Moderate'), 
+                                            ('D', 'D - Major'), ('E', 'E - Catastrophic')])
     gff_value = models.DecimalField(max_digits=15, decimal_places=10, null=True, blank=True, verbose_name="Generic Failure Frequency")
     fms_factor = models.DecimalField(max_digits=5, decimal_places=3, null=True, blank=True, verbose_name="FMS Factor")
     fms_pscore = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, verbose_name="FMS P-Score")

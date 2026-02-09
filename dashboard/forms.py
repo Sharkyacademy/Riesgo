@@ -208,7 +208,7 @@ class ComponentForm(forms.ModelForm):
             'htha_material_verification', 'htha_damage_factor',
 
             # POF Calculation Fields (GFF + FMS)
-            'pof_category', 'gff_value', 'fms_factor', 'fms_pscore', 'final_pof',
+            'pof_category', 'cof_category', 'gff_value', 'fms_factor', 'fms_pscore', 'final_pof',
             'gff_equipment_type', 'gff_component_type',
             
             # External Damage
@@ -543,6 +543,7 @@ class ComponentForm(forms.ModelForm):
                 ('', '-- Auto --'), ('1', '1 - Very Low'), ('2', '2 - Low'), ('3', '3 - Medium'),
                 ('4', '4 - High'), ('5', '5 - Very High')
             ]),
+            'cof_category': forms.HiddenInput(attrs={'id': 'id_cof_category'}),
             'gff_value': forms.NumberInput(attrs={'class': 'input input-bordered w-full bg-gray-100', 'readonly': 'readonly', 'step': 'any'}),
             'fms_factor': forms.NumberInput(attrs={'class': 'input input-bordered w-full bg-gray-100', 'readonly': 'readonly', 'step': '0.001'}),
             'fms_pscore': forms.NumberInput(attrs={'class': 'input input-bordered w-full bg-gray-100', 'readonly': 'readonly', 'step': '0.01'}),

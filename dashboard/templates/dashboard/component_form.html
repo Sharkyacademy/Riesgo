@@ -242,6 +242,7 @@
                         {{ form.calculated_total_damage_factor }}
                         {{ form.calculated_risk }}
                         {{ form.calculated_cof }}
+                        {{ form.cof_category }}
                     </div>
                     {% csrf_token %}
 
@@ -2885,5 +2886,82 @@
 
     // Initial run
     document.addEventListener('DOMContentLoaded', updateDebugChartPanel);
+
+    // ============================================================================
+    // FORM SUBMIT HANDLER - Ensure Categories are Updated Before Save
+    // ============================================================================
+    document.addEventListener('DOMContentLoaded', function () {
+        const componentForm = document.getElementById('component-form');
+        if (componentForm) {
+            componentForm.addEventListener('submit', function (e) {
+                console.log('[Form Submit] Updating category fields before save...');
+
+                // Read POF value from summary card
+                const pofValueEl = document.getElementById('risk_pof_value');
+                const pofCategoryField = document.getElementById('id_pof_category');
+
+                if (pofValueEl && pofCategoryField) {
+                    const pofText = pofValueEl.textContent.trim();
+                    console.log(`[Form Submit] 🔍 POF Card Text: "${pofText}"`);
+
+                    // Extract numeric value (could be "4" or "550.0" for Df mode)
+                    let pofValue = parseInt(pofText);
+                    console.log(`[Form Submit] 🔍 POF parseInt result: ${pofValue}`);
+
+                    // Convert Df to POF category
+                    // If value is 1-5, it's already a POF category - keep it
+                    // If value is >= 10, it's a Df value - convert it
+                    if (pofValue >= 1 && pofValue <= 5) {
+                        // Already a valid POF category (1-5), keep as-is
+                        console.log(`[Form Submit] Already POF category ${pofValue}, keeping it`);
+                    } else if (pofValue >= 1000) {
+                        pofValue = 4;
+                        console.log(`[Form Submit] Converting Df >= 1000 to POF 4`);
+                    } else if (pofValue >= 100) {
+                        pofValue = 3;
+                        console.log(`[Form Submit] Converting Df 100-999 to POF 3`);
+                    } else if (pofValue >= 10) {
+                        pofValue = 2;
+                        console.log(`[Form Submit] Converting Df 10-99 to POF 2`);
+                    } else if (pofValue > 5 && pofValue < 10) {
+                        pofValue = 1;
+                        console.log(`[Form Submit] Converting Df 6-9 to POF 1`);
+                    }
+
+                    // Always update with calculated value from summary card
+                    if (!isNaN(pofValue) && pofValue > 0) {
+                        pofCategoryField.value = pofValue;
+                        console.log(`[Form Submit] ✓ POF Category updated to: ${pofValue}`);
+                    } else {
+                        console.warn(`[Form Submit] Invalid POF value from "${pofText}": ${pofValue}`);
+                    }
+                }
+
+                // Read COF category from summary card  
+                const cofCategoryEl = document.getElementById('risk_cof_category');
+                const cofCategoryField = document.getElementById('id_cof_category');
+
+                if (cofCategoryEl && cofCategoryField) {
+                    const cofCategory = cofCategoryEl.textContent.trim();
+
+                    // COF category should be A, B, C, D, or E
+                    if (cofCategory && /^[A-E]$/.test(cofCategory)) {
+                        cofCategoryField.value = cofCategory;
+                        console.log(`[Form Submit] ✓ COF Category updated: ${cofCategory}`);
+                    } else {
+                        console.warn(`[Form Submit] Invalid COF category: "${cofCategory}"`);
+                    }
+                }
+
+                // Log final values
+                console.log(`[Form Submit] Final POF Category: ${pofCategoryField?.value || '(empty)'}`);
+                console.log(`[Form Submit] Final COF Category: ${cofCategoryField?.value || '(empty)'}`);
+
+                // Allow form to submit
+                return true;
+            });
+            console.log('[Form Submit] Handler attached to component-form');
+        }
+    });
 </script>
 {% endblock %}
