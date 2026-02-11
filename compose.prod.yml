@@ -1,0 +1,33 @@
+services:
+  web:
+    build: .
+    command: gunicorn web.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DEBUG=False
+      - DB_ENGINE=django.db.backends.postgresql
+      - DB_NAME=stii_database
+      - DB_USER=stiiuser
+      - DB_PASSWORD=admin
+      - DB_HOST=db
+      - DB_PORT=5432
+      - NPM_BIN_PATH=/usr/bin/npm
+      - ALLOWED_HOSTS=${DOMAIN_NAME},localhost,127.0.0.1
+      - CSRF_TRUSTED_ORIGINS=https://${DOMAIN_NAME}
+
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=stii_database
+      - POSTGRES_USER=stiiuser
+      - POSTGRES_PASSWORD=admin
+
+volumes:
+  postgres_data:
